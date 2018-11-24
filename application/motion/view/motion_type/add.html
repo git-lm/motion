@@ -1,0 +1,29 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('add_info')}" data-auto="true" method="post">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属类型</label>
+        <div class="layui-input-block">
+            <select required class="layui-select full-width block" lay-verify="required"  name="parent_id" lay-ignore="">
+                <option  selected="selected" value="0"> - 顶级类型 -</option>
+                <!--{volist name="types" id="type"}-->
+                <option  value="{$type.id}"> - {$type.name} -</option>
+                <!--{/volist}-->
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型名称</label>
+        <div class="layui-input-block">
+            <input required type="tel" autofocus name="name" lay-verify="required" value='' maxlength="10" title="请输入类型名称" placeholder="请输入类型名称" class="layui-input">
+        </div>
+    </div>
+
+
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>

@@ -1,0 +1,36 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('edit_info')}" data-auto="true" method="post">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属类型</label>
+        <div class="layui-input-block">
+            <select required="" class="layui-select full-width block" name="tid" lay-ignore="">
+                <option  {eq name="$list.tid" value="0"}selected{/eq} value="0"> - 请选择类型 -</option>
+                <!--{volist name="types" id="type"}-->
+                <option {eq name="$list.tid" value="$type.id"}selected{/eq} value="{$type.id}"> - {$type.name} -</option>
+                <!--{/volist}-->
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">动作名称</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus required lay-verify="required" name="name" value='{$list.name|default=""}' maxlength="10" title="请输入动作名称" placeholder="请输入动作名称" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">动作视频地址</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus required lay-verify="required" name="url" value='{$list.url|default=""}' title="请输入动作视频地址" placeholder="请输入动作视频地址" class="layui-input">
+        </div>
+    </div>
+    {if isset($list.id)}<input type='hidden' value='{$list.id}' name='id'>{/if}
+
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>

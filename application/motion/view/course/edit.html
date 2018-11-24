@@ -1,0 +1,54 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('edit_info')}" data-auto="true" method="post">
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属大类</label>
+        <div class="layui-input-block">
+            <select required="" lay-verify="required" class="layui-select full-width block" name="p_id" lay-ignore="">
+                <option  {eq name="0" value="$list.pid"}selected{/eq} value=""> - 顶级类 -</option>
+                <!--{volist name="courses" id="course"}-->
+                <option {eq name="$course.id" value="$list.pid"}selected{/eq} value="{$course.id}"> - {$course.name} -</option>
+                <!--{/volist}-->
+
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">课程名称</label>
+        <div class="layui-input-block">
+            <input type="tel" autofocus name="name" required lay-verify="required" value='{$list.name|default=""}' maxlength="5" minlength="2" title="请输入会员名称" placeholder="请输入会员名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">热身语</label>
+        <div class="layui-input-block">
+            <textarea name="warmup" maxlength="10000" class="form-control" placeholder="请输入热身语">{$list.warmup|default=""}</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">结束语</label>
+        <div class="layui-input-block">
+            <textarea name="colldown" maxlength="10000" class="form-control" placeholder="请输入结束语">{$list.colldown|default=""}</textarea>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">课程类型</label>
+        <div class="layui-input-block">
+            <select required="" lay-verify="required" class="layui-select full-width block" name="t_id" lay-ignore="">
+                <option  selected="selected" value=""> - 请选择类型 -</option>
+                <!--{volist name="types" id="type"}-->
+                <option {eq name="$list.t_id" value="$type.id"}selected{/eq}  value="{$type.id}"> - {$type.name} -</option>
+                <!--{/volist}-->
+
+            </select>
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+    {if isset($list.id)}<input type='hidden' value='{$list.id}' name='id'>{/if}
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>

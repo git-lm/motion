@@ -1,0 +1,36 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('add_info')}" data-auto="true" method="post">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属类型</label>
+        <div class="layui-input-block">
+            <select required lay-verify="required" class="layui-select full-width block" name="tid" lay-ignore="">
+                <option  selected="selected" value=""> - 请选择类型 -</option>
+                <!--{volist name="types" id="type"}-->
+                <option  value="{$type.id}"> - {$type.name} -</option>
+                <!--{/volist}-->
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">动作名称</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus required lay-verify="required" name="name" value='' maxlength="10" title="请输入动作名称" placeholder="请输入动作名称" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">动作视频地址</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus required lay-verify="required" name="url" value='' title="请输入动作视频地址" placeholder="请输入动作视频地址" class="layui-input">
+        </div>
+    </div>
+
+
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>

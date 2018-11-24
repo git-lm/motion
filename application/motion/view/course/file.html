@@ -1,0 +1,20 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('file_info')}" data-auto="true" method="post">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">动作库</label>
+        <div class="layui-input-block">
+            <select required="" lay-verify="required" class="layui-select full-width block" name="b_ids" lay-ignore="" lay-search>
+                <option  value=""> - 请选择动作 -</option>
+                <!--{volist name="motions" id="motion"}-->
+                <option {eq name="$motion.id" value="$list.b_ids"}selected{/eq}   value="{$motion.id}"> - {$motion.name} -</option>
+                <!--{/volist}-->
+            </select>
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+    {if isset($list.id)}<input type='hidden' value='{$list.id}' name='id'>{/if}
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
