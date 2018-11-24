@@ -1,27 +1,21 @@
 {extend name='admin@public/content'}
 {block name="button"}
-<button data-modal='{:url("$classuri/add")}' data-title="添加会员" class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>
+<button data-modal='{:url("$classuri/add")}?mid={$mid}' data-title="添加动作" class='layui-btn layui-btn-sm layui-btn-primary'>添加动作</button>
 {/block}
 
 {block name="content"}
 
 <!-- 表单搜索 开始 -->
 <div class="layui-form-item layui-inline">
-    <label class="layui-form-label">会员名称</label>
+    <label class="layui-form-label">课程名称</label>
     <div class="layui-input-inline">
-        <input name="name" value="" placeholder="请输入会员名称" class="layui-input">
+        <input name="cname" value="" placeholder="请输入课程名称" class="layui-input">
     </div>
 </div>
 <div class="layui-form-item layui-inline">
-    <label class="layui-form-label">教练名称</label>
+    <label class="layui-form-label">上课时间</label>
     <div class="layui-input-inline">
-        <input name="cname" value="" placeholder="请输入教练名称" class="layui-input">
-    </div>
-</div>
-<div class="layui-form-item layui-inline">
-    <label class="layui-form-label">到期时间</label>
-    <div class="layui-input-inline">
-        <input name="expire_time" id="expire_time" value="" placeholder="请选择到期时间" class="layui-input">
+        <input name="class_time" id="class_time" value="" placeholder="请选择上课时间" class="layui-input">
     </div>
 </div>
 <div class="layui-form-item layui-inline">
@@ -33,12 +27,12 @@
 <script>
     $(function () {
         $.layuitable('arrangeTable');
-        laydate.render({range: true, elem: '#expire_time'});
+        laydate.render({range: true, elem: '#class_time'});
     })
     table.render({
         elem: '#arrangeTable',
         height: 312,
-        url: '{:url("$classuri/get_arrange_lists") , ["id"=>$mid]}', //数据接口 
+        url: '{:url("$classuri/get_arrange_lists")}?id={$mid}', //数据接口 
         page: true, //开启分页
         toolbar: '<div>排课列表</div>',
         loading: true,
@@ -62,22 +56,22 @@
         }
     });
     //搜索按钮绑定事件
-    form.on('submit(member_search)', function () {
-        var name = $('input[name="name"]').val();
+    form.on('submit(arrange_search)', function () {
         var cname = $('input[name="cname"]').val();
-        var expire_time = $('input[name="expire_time"]').val();
-        table.reload('memberTable', {
+        var class_time = $('input[name="class_time"]').val();
+        table.reload('arrangeTable', {
             where: {
-                name: name,
                 cname: cname,
-                expire_time: expire_time
+                class_time: class_time
             },
             page: {curr: 1}
         })
     })
 </script>
 <script type="text/html" id="arrangehandle">
-    <a class="layui-btn layui-btn-xs" layui-action="{:url('arrange')}"  lay-event="href">查看排课</a>
+    <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-title="编辑动作" lay-event="open">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}"  lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-xs" data-action="{:url('check')}"  lay-event="href">查看动作</a>
 
 </script>
 

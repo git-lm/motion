@@ -465,26 +465,26 @@ $(function () {
             var tr = obj.tr; //获得当前行 tr 的DOM对象
 
             if (layEvent === 'open') { //查看
-                var filed = $(this).attr('data-field');
+                var filed = $(this).attr('data-field') || 'id';
                 var url = $(this).attr('data-action');
                 var title = $(this).attr('data-title');
                 url = url + '?' + filed + '=' + data.id;
                 return $.form.modal(url, 'open_type=modal', title || '编辑');
             } else if (layEvent === 'href') { //删除
-            	var href = $(this).attr('layui-action');
-                var field = $(this).attr('layui-field') || 'id';
-                var url = href + '?' + [field] + '=' + id;
+                var href = $(this).attr('data-action');
+                var field = $(this).attr('data-field') || 'id';
+                var url = href + '?' + [field] + '=' + data.id;
                 $.form.href(url, this);
 
             } else if (layEvent === 'update') { //编辑
-                var field = $(this).attr('data-field');
+                var field = $(this).attr('data-field') || 'id';
                 var url = $(this).attr('data-action');
                 var value = $(this).attr('data-value');
                 $.msg.confirm('确定要操作这些数据吗？', function () {
                     $.form.load(action, {value: value, [field]: data.id}, 'post');
                 });
             } else if (layEvent === 'del') { //编辑
-                var field = $(this).attr('data-field');
+                var field = $(this).attr('data-field') || 'id';
                 var url = $(this).attr('data-action');
                 $.msg.confirm('确定要操作这些数据吗？', function () {
                     $.form.load(url, {value: value, [field]: data.id}, 'post');

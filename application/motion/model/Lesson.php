@@ -51,9 +51,9 @@ class Lesson extends Model {
      */
     protected function getStateAttr($val) {
         if ($val == 1) {
-            return '已上课';
+            return '已完成';
         } else if ($val == 0) {
-            return '未上课';
+            return '未完成';
         } else {
             return '异常';
         }
@@ -74,12 +74,54 @@ class Lesson extends Model {
         $db->leftJoin('motion_member m', 'p.m_id=m.id');
         $db->leftJoin('motion_course c', 'p.c_id=c.id');
         $db->leftJoin('motion_coach coach', 'p.coach_id=coach.id');
-        $db->field(['p.*', 'm.name' => 'mname', 'c.name' => 'cname', 'coach.name' => 'coachname']);
+        $db->field(['p.*', 'm.name' => 'mname', 'c.name' => 'cname', 'coach.name' => 'coach_name']);
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+            $list['class_time_show'] = $this->getDateAttr($list['class_time']);
+            $list['status_show'] = $this->getStatusAttr($list['status']);
+            $list['state_show'] = $this->getStateAttr($list['state']);
         }
         return $lists;
+    }
+
+    /**
+     * 获取单个课程
+     * @param Array $where  查询条件
+     * @param Array $order  排序条件
+     */
+    public function get_arrange_list($where = [], $order = []) {
+        $list = DbService::queryOne($this->table, $where, $order);
+        return $list;
+    }
+
+    /**
+     * 新增会员动作
+     * @param type $data 保存的数据
+     */
+    public function add($data = []) {
+        if (empty($data['create_time'])) {
+            $data['create_time'] = time();
+        }
+        if (empty($data['password'])) {
+            $data['password'] = md5('123456');
+        }
+        $code = DbService::save($this->table, $data);
+        return $code;
+    }
+
+    /**
+     * 编辑会员动作
+     * @param type $data    保存的数据
+     * @param type $where   编辑条件
+     */
+    public function edit($data = [], $where = []) {
+        if (empty($data['update_time'])) {
+            $data['update_time'] = time();
+        }
+
+        $code = DbService::update($this->table, $data, $where);
+        return $code;
     }
 
     /**
@@ -88,21 +130,11 @@ class Lesson extends Model {
      */
     public function validate($data) {
         $rule = [
-            'name' => 'require|max:10|min:2',
-            'warmup' => 'require|max:1000',
-            'colldown' => 'require|max:1000',
-            't_id' => 'require|number'
+            'class_time' => 'require|date',
         ];
         $message = [
-            'name.require' => '会员名称必填',
-            'name.min' => '会员名称最少两个字',
-            'name.max' => '会员名称最多十个字',
-            'warmup.require' => '热身语必填',
-            'warmup.max' => '热身语最多不超过一千个字',
-            'colldown.require' => '结束语必填',
-            'colldown.max' => '结束语最多不超过一千个字',
-            't_id.require' => '请选择类型',
-            't_id.number' => '请正确选择类型',
+            'class_time.require' => '上课时间必填',
+            'class_time.date' => '请正确选择时间',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

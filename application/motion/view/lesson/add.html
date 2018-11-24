@@ -3,20 +3,25 @@
 
 
     <div class="layui-form-item">
-        <label class="layui-form-label">教练名称</label>
+        <label class="layui-form-label">添加动作</label>
         <div class="layui-input-block">
-            <input type="tel" autofocus name="name" required lay-verify="required" value='' maxlength="5" minlength="2" title="请输入会员名称" placeholder="请输入会员名称" class="layui-input">
+            <select required="" class="layui-select full-width block" name="c_id" lay-ignore="">
+                <option  selected="selected" value=""> - 请选择动作 -</option>
+                <!--{volist name="courses" id="course"}-->
+                <option  value="{$course.id}"> - {$course.name} -</option>
+                <!--{/volist}-->
+            </select>
         </div>
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label">手机号码</label>
+        <label class="layui-form-label">上课时间</label>
         <div class="layui-input-block">
-            <input type="tel" autofocus name="phone"  required lay-verify="required|phone|number" value='' maxlength="11" title="请输入手机号码" placeholder="请输入手机号码" class="layui-input">
+            <input type="text"  required lay-verify="required" value='' id="class_time"  maxlength="11"name="class_time" title="请选择上课时间" placeholder="请选择上课时间" class="layui-input">
         </div>
     </div>
 
-
+    {if isset($mid)}<input type='hidden' value='{$mid}' name='mid'>{/if}
     <div class="hr-line-dashed"></div>
 
     <div class="layui-form-item text-center">
@@ -24,3 +29,11 @@
         <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
     </div>
 </form>
+{block name="script"}
+<script>
+    $(function () {
+        laydate.render({elem: '#class_time', calendar: true ,min:0});
+    })
+
+</script>
+{/block}

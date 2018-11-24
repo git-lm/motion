@@ -1,6 +1,6 @@
 {extend name='admin@public/content'}
 {block name="button"}
-<button data-modal='{:url("$classuri/add")}' data-title="添加会员" class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>
+<!--<button data-modal='{:url("$classuri/add")}' data-title="添加会员" class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>-->
 {/block}
 
 {block name="content"}
@@ -79,7 +79,7 @@
     })
 </script>
 <script type="text/html" id="memberhandle">
-    <a class="layui-btn layui-btn-xs" layui-action="{:url('arrange')}"  lay-event="href">查看排课</a>
+    <a class="layui-btn layui-btn-xs" data-action="{:url('arrange')}"  lay-event="href">查看排课</a>
 
 </script>
 
