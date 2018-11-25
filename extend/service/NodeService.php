@@ -11,8 +11,7 @@ use think\Db;
  * @author Anyon 
  * @date 2017/05/08 11:28
  */
-class NodeService
-{
+class NodeService {
 
     /**
      * 应用用户权限节点
@@ -21,8 +20,7 @@ class NodeService
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public static function applyAuthNode()
-    {
+    public static function applyAuthNode() {
         cache('need_access_node', null);
         if (($userid = session('user.id'))) {
             session('user', Db::name('SystemUser')->where(['id' => $userid])->find());
@@ -43,8 +41,7 @@ class NodeService
      * 获取授权节点
      * @return array
      */
-    public static function getAuthNode()
-    {
+    public static function getAuthNode() {
         $nodes = cache('need_access_node');
         if (empty($nodes)) {
             $nodes = Db::name('SystemNode')->where(['is_auth' => '1'])->column('node');
@@ -58,17 +55,16 @@ class NodeService
      * @param string $node 节点
      * @return bool
      */
-    public static function checkAuthNode($node)
-    {
+    public static function checkAuthNode($node) {
         list($module, $controller, $action) = explode('/', str_replace(['?', '=', '&'], '/', $node . '///'));
         $currentNode = self::parseNodeStr("{$module}/{$controller}") . strtolower("/{$action}");
-        if (session('user.username') === 'admin' || stripos($node, 'admin/index') === 0) {
+        if (session('user.is_admin') == 1 || stripos($node, 'admin/index') === 0) {
             return true;
         }
         if (!in_array($currentNode, self::getAuthNode())) {
             return true;
         }
-        return in_array($currentNode, (array)session('user.nodes'));
+        return in_array($currentNode, (array) session('user.nodes'));
     }
 
     /**
@@ -76,8 +72,7 @@ class NodeService
      * @param array $nodes
      * @return array
      */
-    public static function get($nodes = [])
-    {
+    public static function get($nodes = []) {
         $alias = Db::name('SystemNode')->column('node,is_menu,is_auth,is_login,title');
         $ignore = ['index', 'wechat/review', 'admin/plugs', 'admin/login', 'admin/index'];
         foreach (self::getNodeTree(env('app_path')) as $thr) {
@@ -104,8 +99,7 @@ class NodeService
      * @param array $nodes 额外数据
      * @return array
      */
-    public static function getNodeTree($dirPath, $nodes = [])
-    {
+    public static function getNodeTree($dirPath, $nodes = []) {
         foreach (self::scanDirFile($dirPath) as $filename) {
             $matches = [];
             if (!preg_match('|/(\w+)/controller/(\w+)|', str_replace(DIRECTORY_SEPARATOR, '/', $filename), $matches) || count($matches) !== 3) {
@@ -129,8 +123,7 @@ class NodeService
      * @param string $node
      * @return string
      */
-    public static function parseNodeStr($node)
-    {
+    public static function parseNodeStr($node) {
         $tmp = [];
         foreach (explode('/', $node) as $name) {
             $tmp[] = strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $name), "_"));
@@ -145,8 +138,7 @@ class NodeService
      * @param string $ext 有文件后缀
      * @return array
      */
-    private static function scanDirFile($dirPath, $data = [], $ext = 'php')
-    {
+    private static function scanDirFile($dirPath, $data = [], $ext = 'php') {
         foreach (scandir($dirPath) as $dir) {
             if (strpos($dir, '.') === 0) {
                 continue;

@@ -111,6 +111,7 @@ class Member extends Model {
         if (empty($data['password'])) {
             $data['password'] = md5('123456');
         }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员');
         $code = DbService::save($this->table, $data);
         return $code;
     }
@@ -121,10 +122,11 @@ class Member extends Model {
      * @param type $where   编辑条件
      */
     public function edit($data = [], $where = []) {
+        $member = $this->get_member($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-
+        DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员');
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }
@@ -139,13 +141,14 @@ class Member extends Model {
     }
 
     /**
-     * 新增会员
+     * 新增会员绑定教练
      * @param type $data 保存的数据
      */
     public function add_member_coach($data = []) {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员绑定教练');
         $code = DbService::save('member_coach', $data);
         return $code;
     }
@@ -156,9 +159,11 @@ class Member extends Model {
      * @param array $data   更新数据
      */
     public function edit_member_coach($data = [], $where = []) {
+        $member_coach = $this->get_member_coach($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
+        DbService::save_log('motion_log', json_encode($member_coach), json_encode($data), json_encode($where), '更新会员绑定教练信息');
         $code = DbService::update('motion_member_coach', $data, $where);
         return $code;
     }

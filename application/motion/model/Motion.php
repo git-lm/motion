@@ -91,6 +91,7 @@ class Motion extends Model {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增动作库');
         $code = DbService::save($this->table, $data);
         return $code;
     }
@@ -101,9 +102,11 @@ class Motion extends Model {
      * @param type $where   编辑条件
      */
     public function edit($data = [], $where = []) {
+        $motion = $this->get_motion($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
+        DbService::save_log('motion_log', json_encode($motion), json_encode($data), json_encode($where), '编辑动作库');
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }

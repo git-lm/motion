@@ -55,7 +55,11 @@ class Coach extends Model {
      * @param bool $isWhere 是否直接查询
      */
     public function get_coachs($where = [], $order = [], $page = 0, $limit = 0) {
-        $lists = DbService::queryALL($this->table, $where, $order, $page, $limit);
+        $db = Db::table($this->table);
+        $db->alias('c');
+        $db->leftJoin(['system_user' => 'u'], 'u.id=c.u_id');
+        $db->field('c.* , u.id uid , u.username');
+        $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
@@ -74,7 +78,7 @@ class Coach extends Model {
     }
 
     /**
-     * 新增会员
+     * 新增教练
      * @param type $data 保存的数据
      */
     public function add($data = []) {
@@ -84,22 +88,41 @@ class Coach extends Model {
         if (empty($data['password'])) {
             $data['password'] = md5('123456');
         }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增教练');
         $code = DbService::save($this->table, $data);
+
         return $code;
     }
 
     /**
-     * 编辑会员
+     * 编辑教练
      * @param type $data    保存的数据
      * @param type $where   编辑条件
      */
     public function edit($data = [], $where = []) {
+        $coach = $this->get_coach($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-
+        DbService::save_log('motion_log', json_encode($coach), json_encode($data), json_encode($where), '编辑教练');
         $code = DbService::update($this->table, $data, $where);
         return $code;
+    }
+
+    /**
+     * 获取未授权的账号  和  已选择的账户
+     * @param int $uid 账户ID
+     * 
+     */
+    public function get_user($uid = 0) {
+        $db = Db::table('system_user');
+        $db->alias('u');
+        $db->leftJoin(['motion_coach' => 'c'], 'c.u_id = u.id');
+        $db->field('u.id uid ,u.username');
+        $db->whereNull('c.id', ' is null');
+        $db->whereOr('u.id', '=', $uid);
+        $lists = DbService::queryALL($db);
+        return $lists;
     }
 
     /**

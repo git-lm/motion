@@ -103,9 +103,7 @@ class Lesson extends Model {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        if (empty($data['password'])) {
-            $data['password'] = md5('123456');
-        }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员动作');
         $code = DbService::save($this->table, $data);
         return $code;
     }
@@ -116,16 +114,77 @@ class Lesson extends Model {
      * @param type $where   编辑条件
      */
     public function edit($data = [], $where = []) {
+        $lesson = $this->get_arrange_list($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-
+        DbService::save_log('motion_log', json_encode($lesson), json_encode($data), json_encode($where), '编辑会员动作');
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }
 
     /**
-     * 验证类型数据有效性
+     * 查看小动作
+     * @param Array $order  排序条件
+     * @param Arry $field  获取的字段
+     * @param int $page     查询页数
+     * @param int $limit    每页显示条数
+     * @param bool $isWhere 是否直接查询
+     */
+    public function get_little_courses($where = [], $order = [], $page = 0, $limit = 0) {
+        $db = Db::table('motion_lesson_course');
+        $db->alias('lc');
+        $db->leftJoin('motion_course c', 'lc.c_id=c.id');
+        $db->field(['lc.*', 'c.name' => 'cname']);
+        $lists = DbService::queryALL($db, $where, $order, $page, $limit);
+        foreach ($lists as &$list) {
+            $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+            $list['status_show'] = $this->getStatusAttr($list['status']);
+            $list['state_show'] = $this->getStateAttr($list['state']);
+        }
+        return $lists;
+    }
+
+    /**
+     * 获取单个课程
+     * @param Array $where  查询条件
+     * @param Array $order  排序条件
+     */
+    public function get_little_course($where = [], $order = []) {
+        $list = DbService::queryOne('motion_lesson_course', $where, $order);
+        return $list;
+    }
+
+    /**
+     * 新增会员小动作
+     * @param type $data 保存的数据
+     */
+    public function little_add($data = []) {
+        if (empty($data['create_time'])) {
+            $data['create_time'] = time();
+        }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作');
+        $code = DbService::save('motion_lesson_course', $data);
+        return $code;
+    }
+
+    /**
+     * 编辑会员小动作
+     * @param type $data    保存的数据
+     * @param type $where   编辑条件
+     */
+    public function little_edit($data = [], $where = []) {
+        $little = $this->get_little_course($where);
+        if (empty($data['update_time'])) {
+            $data['update_time'] = time();
+        }
+        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑会员小动作');
+        $code = DbService::update('motion_lesson_course', $data, $where);
+        return $code;
+    }
+
+    /**
+     * 验证排课数据有效性
      * @param type $data 需要验证的数据
      */
     public function validate($data) {
@@ -135,6 +194,22 @@ class Lesson extends Model {
         $message = [
             'class_time.require' => '上课时间必填',
             'class_time.date' => '请正确选择时间',
+        ];
+        $validate = new \think\Validate();
+        $validate->rule($rule)->message($message)->check($data);
+        return $validate->getError();
+    }
+
+    /**
+     * 验证小动作数据有效性
+     * @param type $data 需要验证的数据
+     */
+    public function course_validate($data) {
+        $rule = [
+            'remark' => 'max:1000',
+        ];
+        $message = [
+            'remark.max' => '备注不超过一千个字',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

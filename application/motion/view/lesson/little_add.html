@@ -1,0 +1,38 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('little_add_info')}" data-auto="true" method="post">
+
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">添加动作</label>
+        <div class="layui-input-block">
+            <select required="" class="layui-select full-width block" name="c_id" lay-ignore="">
+                <option  selected="selected" value=""> - 请选择动作 -</option>
+                <!--{volist name="courses" id="course"}-->
+                <option  value="{$course.id}"> - {$course.name} -</option>
+                <!--{/volist}-->
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <textarea name="remark" maxlength="10000" class="form-control" placeholder="请输入备注"></textarea>
+        </div>
+    </div>
+
+    {if isset($lid)}<input type='hidden' value='{$lid}' name='lid'>{/if}
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
+{block name="script"}
+<script>
+    $(function () {
+        laydate.render({elem: '#class_time', calendar: true, min: 0});
+    })
+
+</script>
+{/block}

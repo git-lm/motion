@@ -33,6 +33,7 @@
         cols: [[//表头
                 {title: '序号', fixed: 'left', type: 'numbers'},
                 {field: 'name', title: '教练名称'},
+                {field: 'username', title: '所属账号'},
                 {field: 'phone', title: '手机号码'},
                 {field: 'status_show', title: '状态'},
                 {field: 'create_time_show', title: '添加时间'},
@@ -63,10 +64,11 @@
 <script type="text/html" id="coachhandle">
     <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="id" data-title="编辑会员" lay-event="open">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="id" lay-event="del">删除</a>
-     {{#if (d.status == 1){}}
+    {{#if (d.status == 1){}}
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-value="-1" data-action="{:url('handle')}" data-field="id" lay-event="update">禁用</a>
-     {{#}else{}}
+    {{#}else{}}
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-value="1" data-action="{:url('handle')}" data-field="id" lay-event="update">启用</a>
-      {{#}}}
+    {{#}}}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('auth')}" data-title="授权账号" lay-event="open">授权账号</a>
 </script>
 {/block}

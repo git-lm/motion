@@ -244,8 +244,8 @@ class Member extends BasicAdmin {
         $list = $this->check_data($mid);
         //获取所有教练
         $coachModel = new \app\motion\model\Coach;
-        $where['status'] = 1;
-        $oders['create_time'] = 'desc';
+        $where['c.status'] = 1;
+        $oders['c.create_time'] = 'desc';
         $coachs = $coachModel->get_coachs($where, $oders);
         $this->assign('list', $list);
         $this->assign('coachs', $coachs);

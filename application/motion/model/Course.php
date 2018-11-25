@@ -72,7 +72,7 @@ class Course extends Model {
      * @param Array $where  查询条件
      * @param Array $order  排序条件
      */
-    public function get_coach($where = [], $order = []) {
+    public function get_course($where = [], $order = []) {
         $list = DbService::queryOne($this->table, $where, $order);
         return $list;
     }
@@ -88,6 +88,7 @@ class Course extends Model {
         if (empty($data['password'])) {
             $data['password'] = md5('123456');
         }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增课程');
         $code = DbService::save($this->table, $data);
         return $code;
     }
@@ -98,10 +99,12 @@ class Course extends Model {
      * @param type $where   编辑条件
      */
     public function edit($data = [], $where = []) {
+        $course = $this->get_course($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-
+        DbService::save_log('motion_log', json_encode($course), json_encode($data), json_encode($where), '编辑课程');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增课程');
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }

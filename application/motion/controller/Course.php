@@ -229,7 +229,7 @@ class Course extends BasicAdmin {
     public function check_data($id = 0) {
         //判断类型是否存在
         $where['id'] = $id;
-        $list = $this->courseModel->get_coach($where);
+        $list = $this->courseModel->get_course($where);
         if (empty($list)) {
             $this->error('无此会员');
         }

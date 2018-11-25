@@ -119,4 +119,29 @@ class DbService {
         return $code;
     }
 
+    /**
+     * 保存操作日志
+     * @param string $table             表名
+     * @param string(json) $before     操作前数据
+     * @param string(json) $after      操作后数据
+     * @param string(json) $where      操作条件
+     * @param string $content           描述
+     * @return int $code                日志ID
+     */
+    public static function save_log($table = '', $before = '', $after = '', $where = '', $content = '') {
+        $data['ip'] = request()->ip();
+        $data['node'] = strtolower(join('/', [request()->module(), request()->controller(), request()->action()]));
+        $data['username'] = session('user.username') . '';
+        $data['u_id'] = session('user.id') . '';
+        $data['agent'] = request()->server('HTTP_USER_AGENT');
+        $data['create_time'] = time();
+        $data['before_param'] = $before;
+        $data['after_param'] = $after;
+        $data['where_param'] = $where;
+        $data['content'] = $content;
+        $db = Db::table($table);
+        $code = $db->strict(false)->insertGetId($data);
+        return $code;
+    }
+
 }
