@@ -5,7 +5,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">添加动作</label>
         <div class="layui-input-block">
-            <select required="" class="layui-select full-width block" name="c_id" lay-ignore="">
+            <select required="" class="layui-select full-width block" xm-select="c_id"  xm-select-search name="c_id" lay-ignore="">
                 <option   value=""> - 请选择动作 -</option>
                 <!--{volist name="courses" id="course"}-->
                 <option {eq name="$course.id" value="$list.c_id"}selected{/eq}  value="{$course.id}"> - {$course.name} -</option>
@@ -32,6 +32,8 @@
 {block name="script"}
 <script>
     $(function () {
+        formSelects.render();
+        form.render();
         laydate.render({elem: '#class_time', calendar: true, min: 0});
     })
 

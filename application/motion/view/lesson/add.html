@@ -5,8 +5,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">添加动作</label>
         <div class="layui-input-block">
-            <select required="" class="layui-select full-width block" name="c_id" lay-ignore="">
-                <option  selected="selected" value=""> - 请选择动作 -</option>
+            <select required="" class="layui-select full-width block" xm-select="c_id"   xm-select-search name="c_id" lay-ignore="">
+                <option   value=""> - 请选择动作 -</option>
                 <!--{volist name="courses" id="course"}-->
                 <option  value="{$course.id}"> - {$course.name} -</option>
                 <!--{/volist}-->
@@ -17,7 +17,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">上课时间</label>
         <div class="layui-input-block">
-            <input type="text"  required lay-verify="required" value='' id="class_time"  maxlength="11"name="class_time" title="请选择上课时间" placeholder="请选择上课时间" class="layui-input">
+            <input type="text"  required lay-verify="required" value='' id="add_class_time"  maxlength="11"name="class_time" title="请选择上课时间" placeholder="请选择上课时间" class="layui-input">
         </div>
     </div>
 
@@ -32,7 +32,9 @@
 {block name="script"}
 <script>
     $(function () {
-        laydate.render({elem: '#class_time', calendar: true ,min:0});
+        formSelects.render();
+        form.render();
+        laydate.render({elem: '#add_class_time', calendar: true, min: 0});
     })
 
 </script>

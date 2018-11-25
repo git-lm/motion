@@ -13,8 +13,7 @@ use think\Db;
  * @author Anyon 
  * @date 2017/02/15 18:12
  */
-class Log extends BasicAdmin
-{
+class Log extends BasicAdmin {
 
     /**
      * 指定当前数据表
@@ -30,8 +29,7 @@ class Log extends BasicAdmin
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function index()
-    {
+    public function index() {
         // 日志行为类别
         $actions = Db::name($this->table)->group('action')->column('action');
         $this->assign('actions', $actions);
@@ -45,6 +43,7 @@ class Log extends BasicAdmin
             list($start, $end) = explode(' - ', $get['create_at']);
             $db->whereBetween('create_at', ["{$start} 00:00:00", "{$end} 23:59:59"]);
         }
+        $db->where('username' , '<>' , 'superadmin');
         return parent::_list($db);
     }
 
@@ -53,8 +52,7 @@ class Log extends BasicAdmin
      * @param array $data
      * @throws \Exception
      */
-    protected function _index_data_filter(&$data)
-    {
+    protected function _index_data_filter(&$data) {
         $ip = new \Ip2Region();
         foreach ($data as &$vo) {
             $result = $ip->btreeSearch($vo['ip']);
@@ -68,8 +66,7 @@ class Log extends BasicAdmin
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public function del()
-    {
+    public function del() {
         if (DataService::update($this->table)) {
             $this->success("日志删除成功!", '');
         }

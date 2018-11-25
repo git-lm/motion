@@ -9,6 +9,7 @@ if (typeof layui !== 'undefined') {
     var form = layui.form,
             layer = layui.layer,
             table = layui.table,
+            formSelects = layui.formSelects,
             laydate = layui.laydate;
     if (typeof jQuery === 'undefined') {
         var $ = jQuery = layui.$;

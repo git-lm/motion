@@ -162,7 +162,8 @@ class Lesson extends BasicAdmin {
      * 新增会员动作信息
      */
     public function add_info() {
-        $c_id = request()->has('c_id', 'post') ? request()->post('c_id/d') : 0;
+
+        $c_id = request()->has('c_id', 'post') ? request()->post('c_id/s') : '';
         $class_time = request()->has('class_time', 'post') ? request()->post('class_time/s') : '';
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
         if (!$mid) {
@@ -180,17 +181,26 @@ class Lesson extends BasicAdmin {
         if (empty($member) || empty($member['c_id'])) {
             $this->error('无此会员或者该会员无教练');
         }
-        //验证数据有效性
-        $data['c_id'] = $c_id;
-        $data['class_time'] = $class_time;
-        $data['coach_id'] = $member['c_id'];
-        $data['m_id'] = $mid;
-        $validate = $this->lessonModel->validate($data);
-        if ($validate) {
-            $this->error($validate);
+        if (empty($member['expire_time']) || $member['expire_time'] < time()) {
+            $this->error('该会员已过期');
         }
-        $data['class_time'] = strtotime($class_time);
-        $code = $this->lessonModel->add($data);
+        $c_ids = explode(',', $c_id);
+        foreach ($c_ids as $val) {
+            //验证数据有效性
+            $data['c_id'] = $val;
+            $data['class_time'] = $class_time;
+            $data['coach_id'] = $member['c_id'];
+            $data['m_id'] = $mid;
+            $validate = $this->lessonModel->validate($data);
+            if ($validate) {
+                $this->error($validate);
+            }
+            $data['class_time'] = strtotime($class_time);
+            $code = $this->lessonModel->add($data);
+            if (!$code) {
+                $this->error('保存失败');
+            }
+        }
         if ($code) {
             $this->success('保存成功', '');
         } else {
