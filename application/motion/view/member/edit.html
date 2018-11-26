@@ -20,6 +20,24 @@
             <input type="tel" autofocus name="phone"  required lay-verify="required|phone|number" value='{$list.phone|default=""}' maxlength="11" title="请输入手机号码" placeholder="请输入手机号码" class="layui-input">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">身高</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="height" value='{$list.height|default=""}' maxlength="10" title="请输入会员身高"  placeholder="请输入会员生日" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">体重</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="weight" value='{$list.weight|default=""}' maxlength="10" title="请输入会员体重" placeholder="请输入会员生日" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">年龄</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus  name="age"  lay-verify="number" value='{$list.age|default=""}' maxlength="10" title="请输入会员年龄" placeholder="请输入会员生日" class="layui-input">
+        </div>
+    </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">会员性别</label>

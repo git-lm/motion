@@ -118,13 +118,13 @@ class Motion extends Model {
     public function validate($data) {
         $rule = [
             'tid' => 'require',
-            'name' => 'require|max:10|min:2',
+            'name' => 'require|max:50|min:2',
             'url' => 'require|url',
         ];
         $message = [
             'tid.require' => '所属类型必选',
             'name.require' => '类型名称必填',
-            'name.max' => '类型名称最多不超过十个字',
+            'name.max' => '类型名称最多不超过五十个字',
             'name.min' => '类型名称最少不小于两个字',
             'url.require' => '视频地址必填',
             'url.url' => '请正确填写视频地址',

@@ -83,6 +83,7 @@ class Member extends Model {
             } else {
                 $list['expire_time_show'] = $this->getDateAttr($list['expire_time']);
             }
+            $list['sex_show'] = $this->getSexAttr($list['sex']);
             if (empty($list['cname'])) {
                 $list['cname'] = '无教练';
             }
@@ -212,7 +213,8 @@ class Member extends Model {
     public function validate($data) {
         $rule = [
             'name' => 'require|max:5|min:2|chsAlpha',
-            'phone' => 'require|mobile'
+            'phone' => 'require|mobile',
+            'age' => 'between:1,120|number'
         ];
         $message = [
             'name.require' => '会员名称必填',
@@ -221,6 +223,8 @@ class Member extends Model {
             'name.chsAlpha' => '会员名称只能汉子和字母',
             'phone.require' => '手机号码必填',
             'phone.mobile' => '手机号码格式不正确',
+            'age.between' => '年龄在1-120之间',
+            'age.number' => '正确填写年龄',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

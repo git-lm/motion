@@ -131,12 +131,12 @@ class MotionType extends Model {
     public function validate($data) {
         $rule = [
             'parent_id' => 'require',
-            'name' => 'require|max:10|min:2',
+            'name' => 'require|max:50|min:2',
         ];
         $message = [
             'parent_id.require' => '所属类型必选',
             'name.require' => '类型名称必填',
-            'name.max' => '类型名称最多不超过十个字',
+            'name.max' => '类型名称最多不超过五十个字',
             'name.min' => '类型名称最少不小于两个字',
         ];
         $validate = new \think\Validate();
