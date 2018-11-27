@@ -34,10 +34,24 @@
     $(function () {
         $.layuitable('memberTable');
         laydate.render({range: true, elem: '#expire_time'});
+        $('body').on('mouseenter', '.end_time_show', function () {
+            var that = this;
+            var mid = $(this).attr('data-itemid');
+            $.post('{:url("/motion/member/get_member_times")}', {'mid': mid}, function (data) {
+                if (data.data.length != 0) {
+                    var tipsHtml = '到期时间：<br />';
+                    for (var i = 0; i < data.data.length; i++) {
+                        tipsHtml += data.data[i].begin_time_show + ' - ' + data.data[i].end_time_show + '<br />';
+                    }
+                    layer.tips(tipsHtml, that);
+                }
+            }, 'json')
+
+        })
     })
     table.render({
         elem: '#memberTable',
-       
+
         url: '{:url("$classuri/get_all_lists")}', //数据接口 
         page: true, //开启分页
         toolbar: '<div>会员列表</div>',
@@ -51,7 +65,7 @@
                 {field: 'phone', title: '手机号码'},
                 {field: 'cname', title: '教练'},
                 {field: 'status_show', title: '状态'},
-                {field: 'expire_time_show', title: '到期时间'},
+                {field: 'end_time_show', title: '到期时间', templet: '#end_time_show'},
                 {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#memberhandle'}
             ]],
         parseData: function (res) { //res 即为原始返回的数据
@@ -79,8 +93,15 @@
     })
 </script>
 <script type="text/html" id="memberhandle">
-    <a class="layui-btn layui-btn-xs" data-action="{:url('arrange')}"  lay-event="href">查看排课</a>
+    <a class="layui-btn layui-btn-xs" data-action="{:url('arrange')}"  lay-event="href">查看计划</a>
 
+</script>
+<script type="text/html" id="end_time_show">
+    {{#if(d.end_time == '' || d.end_time == null){  }}
+    <div>{{d.end_time_show}}</div>
+    {{#}else{}}
+    <div><a class="end_time_show" data-field='mid' data-action="{:url('/motion/member/time')}" data-itemid="{{d.id}}" lay-event="href">{{d.end_time_show}}</a></div>
+    {{#}}}
 </script>
 
 {/block}
