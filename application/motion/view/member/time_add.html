@@ -8,11 +8,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">到期时间</label>
         <div class="layui-input-block">
-            {empty name="$list.end_time"}
-            <input autofocus  value='未开通' readonly="readonly" disabled="disabled" class="layui-input">
-            {else /}
-            <input autofocus  value='{$list.end_time_show}' readonly="readonly" disabled="disabled" class="layui-input">
-            {/empty}
+            <input autofocus  value='{$time.end_time_show|default="未开通"}' readonly="readonly" disabled="disabled" class="layui-input">
+
         </div>
     </div>
     <div class="layui-form-item">

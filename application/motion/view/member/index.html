@@ -38,7 +38,6 @@
             var that = this;
             var mid = $(this).attr('data-itemid');
             $.post('{:url("get_member_times")}', {'mid': mid}, function (data) {
-                console.log(data.data);
                 if (data.data.length != 0) {
                     var tipsHtml = '到期时间：<br />';
                     for (var i = 0; i < data.data.length; i++) {

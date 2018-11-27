@@ -225,6 +225,14 @@ class Member extends Model {
         return $code;
     }
 
+    public function get_max_time($where = [], $order = []) {
+        $db = Db::table('motion_member_time')
+                ->field(['MAX(end_time)' => 'end_time', 'm_id'])
+                ->group('m_id');
+        $list = DbService::queryOne($db, $where, $order);
+        return $list;
+    }
+
     /**
      * 获取会员列表
      * @param Array $where  查询条件

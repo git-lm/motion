@@ -84,8 +84,9 @@ class Lesson extends BasicAdmin {
                 $where[] = ['expire_time', '<=', $end_time];
             }
         }
-        $where[] = ['status', '<>', 0];
-        $order['create_time'] = 'desc';
+        $where[] = ['m.status', '<>', 0];
+        $order['c.id'] = 'desc';
+        $order['m.create_time'] = 'desc';
         $lists = $this->memberModel->get_members($where, $order, $page, $limit);
         $count = count($this->memberModel->get_members($where));
         return $this->tableReturn($lists, $count);

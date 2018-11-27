@@ -213,10 +213,14 @@ class Member extends BasicAdmin {
         if (!$mid) {
             $this->error('请正确选择会员');
         }
-        //获取现在时间
+        //获取会员信息
         $list = $this->check_data($mid);
-        
         $this->assign('list', $list);
+        //获取最大时间
+        $where['m_id'] = $mid;
+        $time = $this->memberModel->get_max_time($where);
+        $time['end_time_show'] = empty($time['end_time']) ? '' : date('Y-m-d', $time['end_time']);
+        $this->assign('time', $time);
         return $this->fetch();
     }
 
