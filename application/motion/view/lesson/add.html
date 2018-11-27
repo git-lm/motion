@@ -3,17 +3,58 @@
 
 
     <div class="layui-form-item">
-        <label class="layui-form-label">添加动作</label>
+        <label class="layui-form-label">课程名称</label>
         <div class="layui-input-block">
-            <select required="" class="layui-select full-width block" xm-select="c_id"   xm-select-search name="c_id" lay-ignore="">
-                <option   value=""> - 请选择动作 -</option>
-                <!--{volist name="courses" id="course"}-->
-                <option  value="{$course.id}"> - {$course.name} -</option>
-                <!--{/volist}-->
-            </select>
+            <input type="tel" autofocus name="name" required lay-verify="required" value='' maxlength="50" minlength="2" title="请输入会员名称，不超过五十个字" placeholder="请输入会员名称，不超过五十个字" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">热身语</label>
+        <div class="layui-input-block">
+            <textarea name="warmup" maxlength="10000" class="form-control" placeholder="请输入热身语"></textarea>
         </div>
     </div>
 
+    <div class="layui-form-item">
+        <label class="layui-form-label">热身视频</label>
+        <div class="layui-input-block">
+            <select required="" xm-select-search xm-select="warmup_mids"  lay-verify="required" class="layui-select full-width block" name="warmup_mids" lay-ignore="">
+                <option  value=""> - 请选择类型 -</option>
+                <!--{volist name="types" id="type"}-->
+                <optgroup label="{$type.name}">
+                    <!--{volist name="type.motion" id="m"}-->
+                    <option value="{$m.id}">{$m.name}</option>
+                    <!--{/volist}-->
+                </optgroup>
+                <!--{/volist}-->
+
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">冷身语</label>
+        <div class="layui-input-block">
+            <textarea name="colldown" maxlength="10000" class="form-control" placeholder="请输入结束语"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">冷身视频</label>
+        <div class="layui-input-block">
+            <select required="" xm-select-search xm-select="colldown_mids" lay-verify="required" class="layui-select full-width block" name="colldown_mids" lay-ignore="">
+                <option  value=""> - 请选择类型 -</option>
+                <!--{volist name="types" id="type"}-->
+                <optgroup label="{$type.name}">
+                    <!--{volist name="type.motion" id="m"}-->
+                    <option value="{$m.id}">{$m.name}</option>
+                    <!--{/volist}-->
+                </optgroup>
+                <!--{/volist}-->
+
+
+
+            </select>
+        </div>
+    </div>
     <div class="layui-form-item">
         <label class="layui-form-label">上课时间</label>
         <div class="layui-input-block">
@@ -34,6 +75,7 @@
     $(function () {
         formSelects.render();
         form.render();
+
         laydate.render({elem: '#add_class_time', calendar: true, min: 0});
     })
 

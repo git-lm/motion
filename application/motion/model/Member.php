@@ -69,19 +69,22 @@ class Member extends Model {
      * @param bool $isWhere 是否直接查询
      */
     public function get_members($where = [], $order = [], $page = 0, $limit = 0) {
-        $db = Db::table($this->table);
-        $db->alias('m');
-        $buildSql = Db::table('motion_coach')->field('id cid, name cname')->where('status', '=', 1)->buildSql();
-        $db->leftJoin([$buildSql => 't'], 't.cid = m.c_id');
+        $db = Db::table($this->table)
+                ->alias('m')
+                ->field('m.* ,c.name cname ,t.end_time')
+                ->leftJoin(['motion_coach' => 'c'], 'c.id = m.c_id');
+        $buildSql = Db::table('motion_member_time')->field(['MAX(end_time)' => 'end_time', 'm_id'])->where('status', '=', 1)->group('m_id')->buildSql();
+        $db->leftJoin([$buildSql => 't'], 't.m_id = m.id');
+
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
             $list['sex_show'] = $this->getSexAttr($list['sex']);
-            if (empty($list['expire_time'])) {
-                $list['expire_time_show'] = '未开通';
+            if (empty($list['end_time'])) {
+                $list['end_time_show'] = '未开通';
             } else {
-                $list['expire_time_show'] = $this->getDateAttr($list['expire_time']);
+                $list['end_time_show'] = $this->getDateAttr($list['end_time']);
             }
             $list['sex_show'] = $this->getSexAttr($list['sex']);
             if (empty($list['cname'])) {
@@ -204,6 +207,78 @@ class Member extends Model {
             Db::rollback();
             return 0;
         }
+    }
+
+    /**
+     * 添加会员时间
+     * @param Array $data   要添加的数据
+     */
+    public function time_add($data) {
+        if (empty($data['create_time'])) {
+            $data['create_time'] = time();
+        }
+        if (empty($data['u_id'])) {
+            $data['u_id'] = session('user.id');
+        }
+        DbService::save_log('motion_log', '', json_encode($data), '', '添加会员时间');
+        $code = DbService::save('motion_member_time', $data);
+        return $code;
+    }
+
+    /**
+     * 获取会员列表
+     * @param Array $where  查询条件
+     * @param Array $order  排序条件
+     * @param Arry $field  获取的字段
+     * @param int $page     查询页数
+     * @param int $limit    每页显示条数
+     * @param bool $isWhere 是否直接查询
+     */
+    public function get_member_times($where = [], $order = [], $page = 0, $limit = 0) {
+        $db = Db::table('motion_member_time')
+                ->alias('mt')
+                ->field('mt.* , u.username')
+                ->leftJoin(['system_user' => 'u'], 'u.id = mt.u_id');
+
+        $lists = DbService::queryALL($db, $where, $order, $page, $limit);
+        foreach ($lists as &$list) {
+            $list['begin_time_show'] = $this->getDateAttr($list['begin_time']);
+            $list['end_time_show'] = $this->getDateAttr($list['end_time']);
+            $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+        }
+        return $lists;
+    }
+
+    /**
+     * 获取会员列表
+     * @param Array $where  查询条件
+     * @param Array $order  排序条件
+     * @param Arry $field  获取的字段
+     * @param int $page     查询页数
+     * @param int $limit    每页显示条数
+     * @param bool $isWhere 是否直接查询
+     */
+    public function get_member_time($where = [], $order = []) {
+        $db = Db::table('motion_member_time')
+                ->alias('mt')
+                ->field('mt.* , u.username')
+                ->leftJoin(['system_user' => 'u'], 'u.id = mt.u_id');
+
+        $list = DbService::queryOne($db, $where, $order);
+        $list['begin_time_show'] = $this->getDateAttr($list['begin_time']);
+        $list['end_time_show'] = $this->getDateAttr($list['end_time']);
+        $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+        return $list;
+    }
+
+    public function time_edit($data = [], $where = []) {
+        $member_time = $this->get_member_time($where);
+        if (empty($data['update_time'])) {
+            $data['update_time'] = time();
+        }
+        DbService::save_log('motion_log', json_encode($member_time), json_encode($data), json_encode($where), '编辑会员时间');
+        $code = DbService::update('motion_member_time mt', $data, $where);
+        return $code;
     }
 
     /**

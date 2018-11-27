@@ -3,13 +3,25 @@
 
 
     <div class="layui-form-item">
+        <label class="layui-form-label">动作名称</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="name" required lay-verify="required" value='{$list.name}' maxlength="50" minlength="2" title="请输入动作名称，不超过五十个字" placeholder="请输入动作名称，不超过五十个字" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
         <label class="layui-form-label">添加动作</label>
         <div class="layui-input-block">
-            <select required="" class="layui-select full-width block" name="c_id" lay-ignore="">
-                <option  {eq name="0" value="$list.c_id"}selected{/eq}  value=""> - 请选择动作 -</option>
-                <!--{volist name="courses" id="course"}-->
-                <option {eq name="$course.id" value="$list.c_id"}selected{/eq}  value="{$course.id}"> - {$course.name} -</option>
+            <select required="" xm-select-search xm-select="m_ids"  lay-verify="required" class="layui-select full-width block" name="m_ids" lay-ignore="">
+                <option  value=""> - 请选择类型 -</option>
+                <!--{volist name="types" id="type"}-->
+                <optgroup label="{$type.name}">
+                    <!--{volist name="type.motion" id="m"}-->
+                    <option {in name="$m.id" value="$list.m_ids"}selected{/in} value="{$m.id}">{$m.name}</option>
+                    <!--{/volist}-->
+                </optgroup>
                 <!--{/volist}-->
+
             </select>
         </div>
     </div>
@@ -31,6 +43,7 @@
 {block name="script"}
 <script>
     $(function () {
+         formSelects.render();
         laydate.render({elem: '#class_time', calendar: true, min: 0});
     })
 

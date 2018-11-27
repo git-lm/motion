@@ -70,11 +70,10 @@ class Lesson extends Model {
      */
     public function get_arrange_lists($where = [], $order = [], $page = 0, $limit = 0) {
         $db = Db::table($this->table);
-        $db->alias('p');
-        $db->leftJoin('motion_member m', 'p.m_id=m.id');
-        $db->leftJoin('motion_course c', 'p.c_id=c.id');
-        $db->leftJoin('motion_coach coach', 'p.coach_id=coach.id');
-        $db->field(['p.*', 'm.name' => 'mname', 'c.name' => 'cname', 'coach.name' => 'coach_name']);
+        $db->alias('l');
+        $db->leftJoin('motion_member m', 'l.m_id=m.id');
+        $db->leftJoin('motion_coach coach', 'l.coach_id=coach.id');
+        $db->field(['l.*', 'm.name' => 'mname', 'coach.name' => 'coach_name']);
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
@@ -132,11 +131,7 @@ class Lesson extends Model {
      * @param bool $isWhere 是否直接查询
      */
     public function get_little_courses($where = [], $order = [], $page = 0, $limit = 0) {
-        $db = Db::table('motion_lesson_course');
-        $db->alias('lc');
-        $db->leftJoin('motion_course c', 'lc.c_id=c.id');
-        $db->field(['lc.*', 'c.name' => 'cname']);
-        $lists = DbService::queryALL($db, $where, $order, $page, $limit);
+        $lists = DbService::queryALL('motion_lesson_course', $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
@@ -189,11 +184,18 @@ class Lesson extends Model {
      */
     public function validate($data) {
         $rule = [
+            'name' => 'require|max:50',
             'class_time' => 'require|date',
+            'warmup' => 'max:10000',
+            'colldown' => 'max:10000',
         ];
         $message = [
+            'name.require' => '课程名称必填',
+            'name.max' => '课程名称最多五十个字',
             'class_time.require' => '上课时间必填',
             'class_time.date' => '请正确选择时间',
+            'warmup.max' => '热身语最多一千个字',
+            'colldown.max' => '冷身语最多一千个字',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);
@@ -207,9 +209,12 @@ class Lesson extends Model {
     public function course_validate($data) {
         $rule = [
             'remark' => 'max:1000',
+            'name' => 'require|max:50',
         ];
         $message = [
             'remark.max' => '备注不超过一千个字',
+            'name.require' => '动作名称必填',
+            'name.max' => '动作名称最多五十个字',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

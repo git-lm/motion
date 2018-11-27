@@ -1,0 +1,40 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('time_add_info')}" data-auto="true" method="post">
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员名称</label>
+        <div class="layui-input-block">
+            <input type="tel"   value='{$list.name}'  readonly="readonly" disabled="disabled" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">到期时间</label>
+        <div class="layui-input-block">
+            {empty name="$list.end_time"}
+            <input autofocus  value='未开通' readonly="readonly" disabled="disabled" class="layui-input">
+            {else /}
+            <input autofocus  value='{$list.end_time_show}' readonly="readonly" disabled="disabled" class="layui-input">
+            {/empty}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">添加时间</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="expire_time" id="expire_time_add"  required lay-verify="required" value='' title="请选择" placeholder="请选择添加时间" class="layui-input">
+        </div>
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {if isset($list.id)}<input type='hidden' value='{$list.id}' name='mid'>{/if}
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
+<script>
+    $(function () {
+        laydate.render({
+            elem: '#expire_time_add', //指定元素
+            type: 'date',
+            range: true
+        });
+    })
+</script>

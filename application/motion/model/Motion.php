@@ -112,6 +112,24 @@ class Motion extends Model {
     }
 
     /**
+     * 获取分组视频
+     */
+    public function get_type_motions() {
+        //所有带视频的子查询
+        $types = Db::table($this->table)
+                ->field('tid , name ')
+                ->where('status', 1)
+                ->group('tid')
+                ->select();
+        foreach ($types as &$type) {
+            $where['tid'] = $type['tid'];
+            $where['status'] = 1;
+            $type['motion'] = $this->get_motions($where);
+        }
+        return $types;
+    }
+
+    /**
      * 验证类型数据有效性
      * @param type $data 需要验证的数据
      */
