@@ -205,7 +205,7 @@ class Lesson extends BasicAdmin {
         if ($validate) {
             $this->error($validate);
         }
-        $data['class_time'] = strtotime($class_time);
+        $data['class_time'] = strtotime($class_time . ' 23:59:59');
         $code = $this->lessonModel->add($data);
         if ($code) {
             $this->success('保存成功', '');
