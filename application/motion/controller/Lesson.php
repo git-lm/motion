@@ -96,7 +96,7 @@ class Lesson extends BasicAdmin {
      * 查看排课信息
      */
     public function arrange() {
-        $this->assign('title', '排课列表');
+        $this->assign('title', '计划列表');
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         if (!$id) {
             $this->error('请选择会员');
@@ -154,6 +154,8 @@ class Lesson extends BasicAdmin {
         if (!$mid) {
             $this->error('请正确选择会员');
         }
+        //获取该会员的信息
+        $this->check_member_time($mid);
         $this->assign('mid', $mid);
         //获取所有分组视频
         $types = $this->motionModel->get_type_motions();
@@ -183,14 +185,8 @@ class Lesson extends BasicAdmin {
             $this->error('请正确选择上课时间');
         }
         //获取该会员的信息
-        $where['id'] = $mid;
-        $member = $this->memberModel->get_member($where);
-        if (empty($member) || empty($member['c_id'])) {
-            $this->error('无此会员或者该会员无教练');
-        }
-        if (empty($member['expire_time']) || $member['expire_time'] < time()) {
-            $this->error('该会员已过期');
-        }
+        $this->check_member_time($mid);
+
 
         //验证数据有效性
         $data['name'] = $name; // 课程名称
@@ -336,9 +332,11 @@ class Lesson extends BasicAdmin {
         if (!$lid) {
             $this->error('请正确选择');
         }
+
         $this->assign('lid', $lid);
         //验证排课是否存在
         $list = $this->check_arrange_data($lid);
+        $this->check_member_time($list['m_id']);
         //获取所有分组视频
         $types = $this->motionModel->get_type_motions();
         $this->assign('types', $types);
@@ -451,6 +449,20 @@ class Lesson extends BasicAdmin {
     }
 
     /**
+     * 获取视频地址
+     */
+    public function get_motion_url() {
+        //获取数据
+        $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
+        if (!$mid) {
+            $this->error('请正确选择');
+        }
+        $where['id'] = $mid;
+        $list = $this->motionModel->get_motion($where);
+        echo $this->success($list);
+    }
+
+    /**
      * 获取课程
      * @return type
      */
@@ -477,6 +489,26 @@ class Lesson extends BasicAdmin {
     }
 
     /**
+     * 验证会员是否在时间内
+     * @param type $id
+     */
+    public function check_member_time($id = 0) {
+        $where[] = ['id', '=', $id];
+        $member = $this->memberModel->get_member($where);
+        if (empty($member) || empty($member['c_id'])) {
+            $this->error('无此会员或者该会员无教练');
+        }
+
+        $twhere[] = ['mt.m_id', '=', $id];
+        $twhere[] = ['mt.status', '=', 1];
+        $twhere[] = ['end_time|begin_time', '>', time()];
+        $time = $this->memberModel->get_member_time($twhere);
+        if (empty($time)) {
+            $this->error('该会员未开通或未到时间');
+        }
+    }
+
+    /**
      * 判断排课是否存在
      */
     public function check_arrange_data($id = 0) {
@@ -486,9 +518,7 @@ class Lesson extends BasicAdmin {
         if (empty($list)) {
             $this->error('无此排课');
         }
-        if ($list['class_time'] < time()) {
-            $this->error('该课程已结束');
-        }
+
         $list['class_time_show'] = date('Y-m-d', $list['class_time']);
         return $list;
     }

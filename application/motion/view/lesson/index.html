@@ -43,10 +43,15 @@
                     for (var i = 0; i < data.data.length; i++) {
                         tipsHtml += data.data[i].begin_time_show + ' - ' + data.data[i].end_time_show + '<br />';
                     }
-                    layer.tips(tipsHtml, that);
+                    layer.tips(tipsHtml, that, {
+                        time: 0
+                    });
                 }
             }, 'json')
 
+        })
+        $('body').on('mouseleave', '.end_time_show', function () {
+            layer.closeAll()
         })
     })
     table.render({

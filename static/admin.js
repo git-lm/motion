@@ -97,6 +97,7 @@ $(function () {
                 self.dialogIndexs = [];
             }) : self.error(data.msg, 3, function () {
                 !!data.url && (window.location.href = data.url);
+                
             });
         };
     };

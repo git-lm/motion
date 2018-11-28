@@ -258,7 +258,7 @@ class Member extends Model {
     }
 
     /**
-     * 获取会员列表
+     * 获取会员时间列表
      * @param Array $where  查询条件
      * @param Array $order  排序条件
      * @param Arry $field  获取的字段
@@ -273,9 +273,11 @@ class Member extends Model {
                 ->leftJoin(['system_user' => 'u'], 'u.id = mt.u_id');
 
         $list = DbService::queryOne($db, $where, $order);
-        $list['begin_time_show'] = $this->getDateAttr($list['begin_time']);
-        $list['end_time_show'] = $this->getDateAttr($list['end_time']);
-        $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+        if (!empty($list)) {
+            $list['begin_time_show'] = $this->getDateAttr($list['begin_time']);
+            $list['end_time_show'] = $this->getDateAttr($list['end_time']);
+            $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+        }
         return $list;
     }
 

@@ -345,7 +345,7 @@ class Member extends BasicAdmin {
             $this->error('');
         }
         if ($expire_time && validate()->isDate($expire_time)) {
-            $where[] = ['end_time', '>', strtotime($expire_time) . ' or begin_time > ' . strtotime($expire_time)];
+            $where[] = ['end_time|begin_time', '>', strtotime($expire_time)];
         }
         $this->check_data($mid);
         $where[] = ['m_id', '=', $mid];
