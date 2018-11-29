@@ -55,18 +55,20 @@ class Message extends Model {
      * @param int $limit    每页显示条数
      * @param bool $isWhere 是否直接查询
      */
-    public function get_motions($where = [], $order = [], $page = 0, $limit = 0) {
-        $db = Db::table($this->table);
-        $db->alias('mb');
-        $buildSql = Db::table('motion_type')->field('id mtid, name mtname')->where('status', '=', 1)->buildSql();
-        $db->leftJoin([$buildSql => 'mt'], 'mt.mtid = mb.tid');
+    public function get_messages($where = [], $order = [], $page = 0, $limit = 0) {
+        $db = Db::table($this->table)
+                ->alias('m')
+                ->field('m.* , c.name cname , mm.name mname')
+                ->leftJoin(['motion_coach' => 'c'], 'c.id = m.c_id')
+                ->leftJoin(['motion_member' => 'mm'], 'mm.id = m.m_id');
 
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
-            $list['status_show'] = $this->getStatusAttr($list['status']);
-            if (empty($list['mtname'])) {
-                $list['mtname'] = '异常状态';
+            if (!empty($list['cname'])) {
+                $list['sendname'] = $list['cname'];
+            } else {
+                $list['sendname'] = $list['mname'];
             }
         }
         return $lists;
@@ -77,75 +79,51 @@ class Message extends Model {
      * @param Array $where  查询条件
      * @param Array $order  排序条件
      */
-    public function get_motion($where = [], $order = []) {
+    public function get_message($where = [], $order = []) {
         $list = DbService::queryOne($this->table, $where, $order);
 
         return $list;
     }
 
     /**
-     * 新增动作库
+     * 新增留言
      * @param type $data 保存的数据
      */
     public function add($data = []) {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增动作库');
+        DbService::save_log('motion_log', '', json_encode($data), '', '回复留言');
         $code = DbService::save($this->table, $data);
         return $code;
     }
 
     /**
-     * 编辑动作库
+     * 编辑信息
      * @param type $data    保存的数据
      * @param type $where   编辑条件
      */
     public function edit($data = [], $where = []) {
-        $motion = $this->get_motion($where);
+        $member = $this->get_messages($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($motion), json_encode($data), json_encode($where), '编辑动作库');
+        DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员');
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }
 
     /**
-     * 获取分组视频
-     */
-    public function get_type_motions() {
-        //所有带视频的子查询
-        $types = Db::table($this->table)
-                ->field('tid , name ')
-                ->where('status', 1)
-                ->group('tid')
-                ->select();
-        foreach ($types as &$type) {
-            $where['tid'] = $type['tid'];
-            $where['status'] = 1;
-            $type['motion'] = $this->get_motions($where);
-        }
-        return $types;
-    }
-
-    /**
-     * 验证类型数据有效性
+     * 验证留言数据有效性
      * @param type $data 需要验证的数据
      */
     public function validate($data) {
         $rule = [
-            'tid' => 'require',
-            'name' => 'require|max:50|min:2',
-            'url' => 'require|url',
+            'content' => 'require|max:1000',
         ];
         $message = [
-            'tid.require' => '所属类型必选',
-            'name.require' => '类型名称必填',
-            'name.max' => '类型名称最多不超过五十个字',
-            'name.min' => '类型名称最少不小于两个字',
-            'url.require' => '视频地址必填',
-            'url.url' => '请正确填写视频地址',
+            'content.require' => '内容必填',
+            'content.max' => '内容不多于一千字',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

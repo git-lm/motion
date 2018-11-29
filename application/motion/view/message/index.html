@@ -1,74 +1,52 @@
 {extend name='admin@public/content'}
-{block name="button"}
-<button data-modal='{:url("$classuri/add")}' data-title="添加动作库" class='layui-btn layui-btn-sm layui-btn-primary'>添加动作库</button>
-{/block}
 
 {block name="content"}
+<div class="container-message">
+    <div class="contar-wrap" id="contar-wrap">
+        <form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('add_info')}" data-auto="true" method="post">
+            <div class="layui-form-item layui-form-text">
+                <textarea class="layui-textarea" name='content' id="LAY-msg-content"  placeholder="请输入回复，一千字以内" maxlength="1000" style="resize:none"></textarea>
+            </div>
 
-<!-- 表单搜索 开始 -->
-<div class="layui-form-item layui-inline">
-    <label class="layui-form-label">名称</label>
-    <div class="layui-input-inline">
-        <input name="name" value="" placeholder="请输入类型名称" class="layui-input">
+
+            <div class="layui-form-item text-center">
+                {if isset($lid)}<input type='hidden' value='{$lid}' name='lid'>{/if}
+                <button class="layui-btn" type="submit">保存配置</button>
+                <button class="layui-btn layui-btn-danger" type='button' onclick="window.history.back()">取消编辑</button>
+            </div>
+        </form>
+        <div id="LAY-msg-box">
+            <!--{volist name="lists" id="list"}-->
+            <div class="info-box ">
+                <div class="info-item layui-inline  " >
+
+                    <div class="info-text">
+                        <p class="title count" >
+                            <span class="name">发言人 ： {$list.sendname}</span>
+                        </p>
+                        <p class="title count">
+                            <span class="name">发布时间 ：{$list.create_time_show} </span>
+                        </p>
+                        <p class="info-intr">
+                            {$list.content|raw}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!--{/volist}-->
+
+        </div>
     </div>
 </div>
-<div class="layui-form-item layui-inline">
-    <label class="layui-form-label">所属类型</label>
-    <div class="layui-input-inline">
-        <input name="mtname" value="" placeholder="请输入所属类型" class="layui-input">
-    </div>
-</div>
-<div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="motion_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
-</div>
-<table id="motionTable" lay-filter="motionTable"></table>
+
+
 {/block}
 {block name="script"}
 <script>
-    $(function () {
-        $.layuitable('motionTable');
+    require(['jquery', 'ckeditor'], function () {
+        window.form.render();
+        window.createEditor('[name="content"]', {height: 200});
     })
-    table.render({
-        elem: '#motionTable',
-       
-        url: '{:url("$classuri/get_lists")}', //数据接口 
-        page: true, //开启分页
-        toolbar: '<div>动作库列表</div>',
-        loading: true,
-        title: '动作库列表',
-        cols: [[//表头
-                {title: '序号', fixed: 'left', type: 'numbers'},
-                {field: 'name', title: '名称'},
-                {field: 'url', title: '地址', templet: '<div><a target="_blank" href="{{d.url}}" class="layui-table-link">点击查看</a></div>'},
-                {field: 'create_time_show', title: '添加时间'},
-                {field: 'mtname', title: '所属类型'},
-                {field: 'status_show', title: '状态'},
-                {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#motionhandle'}
-            ]],
-        parseData: function (res) { //res 即为原始返回的数据
-            return {
-                "code": res.code, //解析接口状态
-                "msg": res.msg, //解析提示文本
-                "count": res.count, //解析数据长度
-                "data": res.data //解析数据列表
-            };
-        }
-    });
-    //搜索按钮绑定事件
-    form.on('submit(motion_search)', function () {
-        var name = $('input[name="name"]').val();
-        var mtname = $('input[name="mtname"]').val();
-        table.reload('motionTable', {
-            where: {
-                name: name,
-                mtname: mtname,
-            },
-            page: {curr: 1}
-        })
-    })
-</script>
-<script type="text/html" id="motionhandle">
-    <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="id" data-title="编辑动作库" lay-event="open">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="id" lay-event="del">删除</a>
+
 </script>
 {/block}

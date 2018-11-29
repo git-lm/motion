@@ -26,66 +26,52 @@ class Message extends BasicAdmin {
         $lid = request()->has('lid', 'get') ? request()->get('lid/d') : 0;
         if (!$lid) {
             $this->error('请正确选择');
-        } else {
-            $this->error(request()->url());
         }
-//        return $this->fetch();
-    }
-
-    /**
-     * 类型页面获取所有数据
-     */
-    public function get_lists() {
-        $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
-        $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
-        $name = request()->has('name', 'get') ? request()->get('name/s') : '';
-        $mtname = request()->has('mtname', 'get') ? request()->get('mtname/s') : '';
-        if ($name) {
-            $where[] = ['mb.name', 'like', '%' . $name . '%'];
-        }
-        if ($mtname) {
-            $where[] = ['mt.mtname', 'like', '%' . $mtname . '%'];
-        }
-        $where[] = ['mb.status', '<>', 0];
-        $order['mb.create_time'] = 'desc';
-        $lists = $this->motionModel->get_motions($where, $order, $page, $limit);
-        $count = count($this->motionModel->get_motions($where));
-        echo $this->tableReturn($lists, $count);
-    }
-
-    /**
-     * 渲染新增窗口
-     */
-    public function add() {
-        $where[] = ['status', '<>', 0];
-        $order['create_time'] = 'desc';
-        //获取所有类型
-        $motioType = new \app\motion\model\MotionType;
-        $lists = $motioType->get_motion_types($where, $order);
-        $this->assign('types', $lists);
+        $this->assign('lid', $lid);
+        $lists = $this->get_lists($lid);
+        $this->assign('lists', $lists);
+        $this->read_message($lid);
         return $this->fetch();
     }
 
     /**
-     * 新增类型数据
+     * 获取留言信息
+     * @param int $id 记录ID
+     */
+    public function get_lists($id = 0) {
+        $where['p_id'] = $id;
+        $order['create_time'] = 'desc';
+        $lists = $this->messageModel->get_messages($where, $order);
+        return $lists;
+    }
+
+    /**
+     * 发布留言
      */
     public function add_info() {
-        //获取数据
-        $tid = request()->has('tid', 'post') ? request()->post('tid/d') : 0;
-        $name = request()->has('name', 'post') ? request()->post('name/s') : '';
-        $url = request()->has('url', 'post') ? request()->post('url/s') : '';
-        if (!$tid) {
-            $this->error('请选择类型');
+        $content = request()->has('content', 'post') ? request()->post('content/s') : null;
+        //记录ID
+        $lid = request()->has('lid', 'post') ? request()->post('lid/d') : 0;
+        if (!$lid) {
+            $this->error('请正确选择记录');
         }
-        //验证数据
-        $data['tid'] = $tid;
-        $data['name'] = $name;
-        $data['url'] = $url;
-        $validate = $this->motionModel->validate($data);
+        if (!$content) {
+            $this->error('请填写留言');
+        }
+        $data['content'] = $content;
+        $validate = $this->messageModel->validate($data);
         if ($validate) {
             $this->error($validate);
         }
-        $code = $this->motionModel->add($data);
+        //获取教练信息
+        $list = $this->get_lession_data($lid);
+        if (empty($list)) {
+            $this->error('无此记录');
+        }
+        $data['c_id'] = $list['coach_id'];
+        $data['p_id'] = $lid;
+        $data['is_check'] = 1;
+        $code = $this->messageModel->add($data);
         if ($code) {
             $this->success('保存成功', '');
         } else {
@@ -94,85 +80,27 @@ class Message extends BasicAdmin {
     }
 
     /**
-     * 渲染编辑窗口
+     * 点击消息后 全部已读
      */
-    public function edit() {
-        $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
-        if (!$id) {
-            $this->error('请正确选择类型');
-        }
-        //判断类型是否存在
-        $list = $this->check_data($id);
-        $where[] = ['status', '<>', 0];
-        $order['create_time'] = 'desc';
-        //获取所有类型
-        $motioType = new \app\motion\model\MotionType;
-        $lists = $motioType->get_motion_types($where, $order);
-        $this->assign('types', $lists);
-        $this->assign('list', $list);
-        return $this->fetch();
-    }
-
-    /**
-     * 编辑类型数据
-     */
-    public function edit_info() {
-        //获取数据
-        $tid = request()->has('tid', 'post') ? request()->post('tid/d') : 0;
-        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
-        $name = request()->has('name', 'post') ? request()->post('name/s') : '';
-        $url = request()->has('url', 'post') ? request()->post('url/s') : '';
-        if (!$tid) {
-            $this->error('请选择类型');
-        }
-        if (!$id) {
-            $this->error('请正确选择动作库');
-        }
-        //判断类型是否存在
-        $this->check_data($id);
-        //验证数据
-        $data['tid'] = $tid;
-        $data['name'] = $name;
-        $data['url'] = $url;
-        $validate = $this->motionModel->validate($data);
-        if ($validate) {
-            $this->error($validate);
-        }
-        $where['id'] = $id;
-        $code = $this->motionModel->edit($data, $where);
+    public function read_message($id = 0) {
+        $where['p_id'] = $id;
+        $data['is_check'] = 1;
+        $code = $this->messageModel->edit($data, $where);
         if ($code) {
-            $this->success('编辑成功', '');
+            return true;
         } else {
-            $this->error('编辑失败');
-        }
-    }
-
-    public function del() {
-        //获取数据
-        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
-        if (!$id) {
-            $this->error('请正确选择类型');
-        }
-        $list = $this->check_data($id);
-        $where['id'] = $id;
-        $data['status'] = 0;
-        $code = $this->motionModel->edit($data, $where);
-        if ($code) {
-            $this->success('删除成功', '');
-        } else {
-            $this->error('删除失败');
+            return false;
         }
     }
 
     /**
-     * 判断动作库是否存在
+     * 获取记录信息
      */
-    public function check_data($tid = 0) {
-        $where['id'] = $tid;
-        $list = $this->motionModel->get_motion($where);
-        if (empty($list)) {
-            $this->error('无此动作库');
-        }
+    public function get_lession_data($id = 0) {
+
+        $lessonModel = new \app\motion\model\Lesson();
+        $where['id'] = $id;
+        $list = $lessonModel->get_arrange_list($where);
         return $list;
     }
 
