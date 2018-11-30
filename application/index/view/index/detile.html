@@ -1,0 +1,185 @@
+{extend  name="public:main"}
+{block name="main"}
+<!--choose_nav  开始-->
+<div class="choose_nav">
+    <div class="choose_nav_c Header-title width">
+        <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" data-icon="calendar" data-prefix="fas" id="ember1202" class="mrxxs svg-inline--fa fa-calendar fa-w-14 mrxxs ember-view"><path fill="currentColor" d="M12 192h424c6.6 0 12 5.4 12 12v260c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V204c0-6.6 5.4-12 12-12zm436-44v-36c0-26.5-21.5-48-48-48h-48V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H160V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H48C21.5 64 0 85.5 0 112v36c0 6.6 5.4 12 12 12h424c6.6 0 12-5.4 12-12z"></path>
+        </svg>
+        {$list.class_time_show|default=''}
+    </div>
+</div>
+<!--choose_nav  结束-->
+
+<!--main 开始-->
+<div class='main detile  width'>
+    <!--title 开始-->
+    <div class="detile_tit">
+        <span class="titl"> {$list.name|default=''}</span>
+        <div class="detile_tit_r">
+            <i class="layui-icon">&#xe630;</i>
+            <i class="layui-icon">&#xe62e;</i>
+            <i class="layui-icon">&#xe630;</i>
+        </div>
+    </div>
+    <!--title 结束-->
+
+    <div class="detile_in">
+        <h4>Warmup</h4>
+        <div class="font_list"> {$list.warmup|default=''}</div>
+
+        <!--videos-->
+        <div class="videos">
+            {volist name="list.warmup_motions" id="wm"}
+            <div class="video_list">
+                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$wm.name|default=''}</div>
+                <div class="video_show_div">
+                    {$wm.url|default='javascripti'}
+                </div>
+            </div>
+            {/volist}
+        </div>
+        <!--videos-->
+
+        <!--main_list 开始-->
+        <div class="main_list">
+            <!---main_list_l 开始-->
+            {volist name="list.course" id="c"}
+            <div class="main_list_l">
+                <h4 class="main_list_l_l">A)</h4>
+
+                <div class="main_list_l_r">
+                    <!--  main_list_l_r_top start-->
+                    <h4 class="main_list_l_r_top">
+                        {$c.name}
+                        <i class="layui-icon {eq name="$c.state" value="1"}green{else /}red{/eq}">{eq name="$c.state" value="1"}&#x1005;{else /}&#x1007;{/eq}</i>
+                        </h4>
+                        <!--  main_list_l_r_top end-->
+
+                        <!--main_list_l_r_top_b start-->
+                        <div class="main_list_l_r_top_b">
+                            <p class="font_l">{$c.remark|default=''}</p>
+                            <!--视频 开始-->
+                            <div class="videos">
+                                {volist name="c.motions" id="motion"}
+                                <div class="video_list">
+                                    <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$motion.name|default=''}</div>
+                                    <div class="video_show_div">
+                                        {$motion.url|default=''}
+                                    </div>
+                                </div>
+                                {/volist}
+                            </div>
+                            <!--视频 结束-->
+
+                            <!--history 开始-->
+                            <div class="history"><i class="layui-icon">&#xe665;</i><a itemid="{$c.id}">Exercise History</a></div>
+                            <!--history 结束-->
+
+                            <!--textarea_over 开始-->
+                            <div class="textarea_over clearfix">
+                                <i class="layui-icon">&#xe65d;</i>
+                                <textarea itemid="{$c.id|default=0}" placeholder="输入内容">{$c.message|default=''}</textarea>
+                            </div>
+                            <!--textarea_over 结束-->
+                        </div>
+                        <!--main_list_l_r_top_b end-->
+                    </div>
+                </div>
+                {/volist}
+                <!---main_list_l 结束-->
+
+            </div>
+            <!--main_list 结束-->
+
+            <h4>Cooldown</h4>
+            <div class="font_list">{$list.colldown|default=''} </div>
+
+            <!--videos-->
+            <div class="videos">
+                {volist name="$list.colldown_motions" id="cm"}
+                <div class="video_list">
+                    <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$cm.name|default=''}</div>
+                    <div class="video_show_div">
+                        {$cm.url|default=''}
+                    </div>
+                </div>
+                {/volist}
+
+            </div>
+            <!--videos-->
+            <button class="layui-btn  layui-btn-normal">
+                Update Results
+            </button>
+
+        </div>
+
+        <!--chart 开始-->
+        <div class="chart">
+            <textarea class="" placeholder="请输入"></textarea>
+            <div class="chart_b">
+                <i class="layui-icon">&#xe65d;</i>
+                <i class="layui-icon">&#xe60c;</i>
+                <i class="layui-icons">GIF</i>
+                <button class="layui-btn layui-btn-normal">send</button>
+            </div>
+        </div>
+        <!--chart 结束-->
+    </div>
+    <!--main 结束-->
+    {/block}
+    {block name="script"}
+    <script type="text/javascript">
+
+
+        $(function () {
+            //导航点击相应的div显示 开始
+            $(".video_list_top").click(function () {
+                if ($(this).siblings('.video_show_div').is(":hidden")) {
+                    $(this).siblings('.video_show_div').show();
+                } else {
+                    $(this).siblings('.video_show_div').hide()
+                }
+            });
+            //导航点击相应的div显示 结束
+            //状态tips显示 开始
+            $('.green').mouseover(function () {
+                var _this = $(this)
+                layui.use('layer', function () {
+                    var layer = layui.layer;
+                    layer.tips('完成的提示', _this);
+                });
+
+            }).mouseout(function () {
+                layer.closeAll();
+            })
+            $('.red').mouseover(function () {
+                var _this = $(this)
+                layui.use('layer', function () {
+                    var layer = layui.layer;
+                    layer.tips('未完成的提示', _this);
+                });
+            }).mouseout(function () {
+                layer.closeAll();
+            })
+
+            //状态tips显示 结束
+
+            //文本输入记录
+            $('.textarea_over').on('blur', 'textarea', function () {
+                var message = $(this).val();
+                var id = $(this).attr('itemid');
+                if ($.trim(message) != '') {
+                    $.post("{:url('message_add')}", {'id': id, 'message': message}, function (data) {
+                        console.log(data);
+                        if (data.code == 0) {
+                            layui.use('layer', function () {
+                                var layer = layui.layer;
+                                layer.msg(data.msg);
+                            });
+                        }
+                    }, 'json')
+                }
+            })
+        })
+    </script>
+    {/block}

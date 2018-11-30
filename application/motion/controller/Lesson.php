@@ -184,7 +184,8 @@ class Lesson extends BasicAdmin {
         if (!$class_time) {
             $this->error('请正确选择上课时间');
         }
-        //获取该会员的信息
+        $member = $this->check_member_data($mid);
+        //获取该会员时间的信息
         $this->check_member_time($mid);
 
 
