@@ -1,0 +1,136 @@
+.header_cell ul{
+	display: none;
+}
+
+.header_nav{
+	height:auto;
+	padding: 0.2rem 0;
+}
+
+.header_cell .logo_img {
+    width:1rem;
+    height: 0.76rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -0.38rem 0 0 -0.5rem;
+}
+
+.header_cell .logo_img img {
+    width:1rem;
+    height: 0.76rem;
+}
+
+.header_cell{
+	max-width: 90%;
+	height: 1rem;
+}
+
+.width{
+	width: 95%;
+}
+
+.choose_nav_c_span span{
+	font-size: 12px;
+	padding: 3px 4px;
+}
+
+.f12{
+	font-size: 12px;
+}
+
+.choose_nav_c .R img{
+	margin-right:4px;
+}
+
+.choose_nav_c {
+    padding: 0.1rem 0;
+    overflow: hidden;
+    height: 30px;
+    line-height: 30px;
+}
+
+.main ol li a .font_l{
+	display: none;
+}
+
+.footer{
+	display: block;
+	width: 100%;
+	position: fixed;
+	height:auto;
+	background-color: #000;
+	left: 0;
+	bottom: 0;
+}
+
+.footer ul {
+	overflow: hidden;
+	width: 100%;
+	padding: 0.15rem 0;
+	background: #3e4248;
+}
+
+.footer ul li{
+	float: left;
+	width: 25%;
+	text-align: center;
+	color: #fff;
+}
+
+.footer ul li a{
+	color: #fff;
+	font-size: 12px;
+}
+
+.footer ul li img{
+	width: 0.5rem;
+	height: 0.5rem;
+	display: block;
+	margin:0 auto 1%;
+}
+
+.eg_link a{
+	font-size: 14px;
+}
+
+.eg_link{
+	padding: 0.1rem 0;
+}
+
+.profile ul li a{
+	padding: 0.25rem;
+}
+
+.profile_infor_in{
+	padding: 0.25rem 0;
+}
+
+.profile ul li a .a_header{
+	font-size: 0.28rem;
+}
+
+.profile ul li svg{
+	width: 14px;
+}
+
+.header_back{
+	line-height: 1rem;
+}
+
+.Header-title{
+	font-size: 0.3rem;
+}
+
+.Header-title svg{
+	width: 0.3rem;
+	top: 1px;
+}
+.textarea_over textarea{
+	padding-right: 0;
+}
+
+.zhanwei{
+	height: 2rem;
+	display: block;
+}
