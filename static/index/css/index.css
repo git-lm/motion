@@ -1,20 +1,20 @@
 .header_nav{
-  height: 90px;
-  overflow: hidden;
-  background-color: #fff;
-  padding: 5px 0;
+    height: 90px;
+    overflow: hidden;
+    background-color: #fff;
+    padding: 5px 0;
 }
 
 .header_cell{
-   max-width: 700px;
-   margin: auto;
-   position: relative;
-   overflow: hidden;
-   height: 70px;
+    max-width: 700px;
+    margin: auto;
+    position: relative;
+    overflow: hidden;
+    height: 70px;
 }
 
 .header_cell .logo_img{
-    width: 83px;
+    width: 80px;
     height: 50px;
     position: absolute;
     left: 50%;
@@ -23,59 +23,59 @@
 }
 
 .header_cell .logo_img img{
-	width: 83px;
+    width: 80px;
     height: 50px;
 }
 
 .header_cell ul{
-	float: right;
-	overflow: hidden;
+    float: right;
+    overflow: hidden;
 }
 
 .header_cell ul li{
-	float: left;
-	height: 70px;
-	margin-left: 20px;
+    float: left;
+    height: 70px;
+    margin-left: 20px;
 }
 
 .header_cell ul li a{
-	display: block;
-	line-height: 70px;
-	position: relative;
+    display: block;
+    line-height: 70px;
+    position: relative;
 }
 
 .header_cell ul li a img{
-	width: 35px;
-	height: 35px;
+    width: 35px;
+    height: 35px;
     position: relative;
 }
 
 .choose_nav{
-	background: #278cf3;
+    background: #278cf3;
 }
 
 .width{
-	max-width: 700px;
-	margin: auto;
+    max-width: 700px;
+    margin: auto;
 }
 
 .choose_nav_c{
-	padding: 20px 0;
-	overflow: hidden;
-	height: 30px;
-	line-height: 30px;
+    padding: 20px 0;
+    overflow: hidden;
+    height: 30px;
+    line-height: 30px;
 }
 
 .choose_nav_c_span{
-	float: left;
-	width:40%;
-	overflow: hidden;
+    float: left;
+    width:40%;
+    overflow: hidden;
 }
 
 .choose_nav_c .R{
-	float: right;
-	color: #fff;
-	font-size: 14px;
+    float: right;
+    color: #fff;
+    font-size: 14px;
 }
 
 .choose_nav_c_span span{
@@ -93,25 +93,25 @@
     left: -4px;
 }
 .choose_nav_c_span span.span_cur{
-	background-color: #fff;
-	color: #278cf3;
+    background-color: #fff;
+    color: #278cf3;
 }
 
 .choose_nav_c .R img{
-	margin-right: 10px;
+    margin-right: 10px;
 }
 
 body{
-	background-color: #f4f4f4;
+    background-color: #f4f4f4;
 }
 
 .index ol{
-	height: auto;
-	margin: 15px auto;
+    height: auto;
+    margin: 15px auto;
 }
 
 .index ol li{
-	background: #fff;
+    background: #fff;
     -webkit-box-shadow: 0 1px 1px rgba(62,66,72,.25);
     box-shadow: 0 1px 1px rgba(62,66,72,.25);
     margin-bottom: 20px;
@@ -121,16 +121,16 @@ body{
 }
 
 .index ol li a {
-	display: block;
-	height: auto;
+    display: block;
+    height: auto;
 }
 
 .index ol li .a_cover{
-	display: flex;
+    display: flex;
 }
 
 .index ol li a .font_l{
-	-webkit-box-flex: 0;
+    -webkit-box-flex: 0;
     -ms-flex-positive: 0;
     flex-grow: 0;
     -ms-flex-negative: 1;
@@ -216,8 +216,8 @@ body{
 }
 
 .ember_list{
-	font-size: 100%;
-	margin-top: 2%;
+    font-size: 100%;
+    margin-top: 2%;
 }
 
 .tag {
@@ -294,7 +294,7 @@ body{
 }
 
 .profile_infor_c .l_img{
-   -webkit-box-flex: 0;
+    -webkit-box-flex: 0;
     -ms-flex-positive: 0;
     flex-grow: 0;
     -ms-flex-negative: 1;
@@ -319,13 +319,13 @@ body{
 }
 
 .profile_infor_c  .font_r p{
-        font-size: 90%;
-        color: #3e4248;
-        padding-top: 1%;
+    font-size: 90%;
+    color: #3e4248;
+    padding-top: 1%;
 }
 
 .profile_infor_c .l_img img{
-        width: 50px;
+    width: 50px;
     height: 50px;
     -webkit-box-align: center;
     -ms-flex-align: center;
@@ -473,7 +473,7 @@ body{
 }
 
 .detile_in{
-     background: #fff;
+    background: #fff;
     -webkit-box-shadow: 0 1px 1px rgba(62,66,72,.25);
     box-shadow: 0 1px 1px rgba(62,66,72,.25);
     margin-bottom: 20px;
@@ -505,7 +505,7 @@ body{
 }
 
 .videos .video_list_top:hover{
-  background-color: #efefef;
+    background-color: #efefef;
 }
 
 .video_show_div{
@@ -525,7 +525,7 @@ body{
 
 .main_list_l_l{
     margin-right: 5px;
-     -webkit-box-flex: 0;
+    -webkit-box-flex: 0;
     -ms-flex-positive: 0;
     flex-grow: 0;
     -ms-flex-negative: 1;
@@ -577,10 +577,10 @@ body{
 }
 
 .textarea_over{
-   position: relative;
-   height: auto;
-   padding: 10px;
-   border:1px solid #f4f4f4;
+    position: relative;
+    height: auto;
+    padding: 10px;
+    border:1px solid #f4f4f4;
 }
 
 .textarea_over textarea{
@@ -646,8 +646,8 @@ body{
 }
 
 .chart .layui-icons,.chart .layui-icon{
-  font-size: 14px;
-  color: #b0b5bb;
+    font-size: 14px;
+    color: #b0b5bb;
 }
 
 .chart .layui-btn-normal{
@@ -718,9 +718,9 @@ body{
 }
 
 .jamp_a{
-  color: #278cf3;
-  display: block;
-  margin-top: 2%;
+    color: #278cf3;
+    display: block;
+    margin-top: 2%;
 }
 
 .tc_box .font{
@@ -730,9 +730,9 @@ body{
 }
 
 .tc_box .font .cover_video{
-  width: 100%;
-  height: 250px;
-  overflow: hidden;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
 }
 
 .tc_box .font .cover_video video{
@@ -751,7 +751,7 @@ body{
 
 .top_close i
 {
-     font-size: 20px;
+    font-size: 20px;
     cursor: pointer;
     color: #000;
 }
@@ -864,7 +864,7 @@ body{
 }
 
 .infor_r_top_l{
-     width: 50%;
+    width: 50%;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     -webkit-box-flex: 1;
@@ -889,16 +889,16 @@ body{
 }
 
 .infor_r_bot .border_b{
-   border-bottom: 1px solid #ddd;
-   padding-bottom: 1.5%;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1.5%;
 }
 .infor_r_bot .layui-form{
-   margin-top: 1%;
+    margin-top: 1%;
 }
 .infor_r_bot .layui-form .fontspan{
-   padding-left:10px;
-   position: relative;
-   top: 3px;
+    padding-left:10px;
+    position: relative;
+    top: 3px;
 }
 
 .margin20{
@@ -906,7 +906,7 @@ body{
 }
 
 .infor_r_top .layui-select{
-  width: 100%;
+    width: 100%;
 }
 
 .half_lab{
@@ -962,8 +962,8 @@ body{
 }
 
 .change_password_in  .layui-btn{
-  margin-top: 3%;
-  margin-left: 0;
+    margin-top: 3%;
+    margin-left: 0;
 }
 
 .cur_li a{
