@@ -64,20 +64,10 @@ class Member extends BasicAdmin {
      */
     public function add_info() {
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
-        $birthday = request()->has('birthday', 'post') ? request()->post('birthday/s') : '';
         $phone = request()->has('phone', 'post') ? request()->post('phone/s') : '';
-        $sex = request()->has('sex', 'post') ? request()->post('sex/d') : 1;
-        $height = request()->has('height', 'post') ? request()->post('height/s') : '';
-        $weight = request()->has('weight', 'post') ? request()->post('weight/s') : '';
-        $age = request()->has('age', 'post') ? request()->post('age/d') : 1;
         //验证数据有效性
         $data['name'] = $name;
-        $data['birthday'] = $birthday;
         $data['phone'] = $phone;
-        $data['sex'] = $sex;
-        $data['height'] = $height;
-        $data['weight'] = $weight;
-        $data['age'] = $age;
         $validate = $this->memberModel->validate($data);
         if ($validate) {
             $this->error($validate);
@@ -111,12 +101,7 @@ class Member extends BasicAdmin {
         //获取数据
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
-        $birthday = request()->has('birthday', 'post') ? request()->post('birthday/s') : '';
         $phone = request()->has('phone', 'post') ? request()->post('phone/s') : '';
-        $sex = request()->has('sex', 'post') ? request()->post('sex/d') : 1;
-        $height = request()->has('height', 'post') ? request()->post('height/s') : '';
-        $weight = request()->has('weight', 'post') ? request()->post('weight/s') : '';
-        $age = request()->has('age', 'post') ? request()->post('age/d') : 1;
         if (!$mid) {
             $this->error('请正确选择会员');
         }
@@ -124,12 +109,7 @@ class Member extends BasicAdmin {
         $this->check_data($mid);
         //验证数据
         $data['name'] = $name;
-        $data['birthday'] = $birthday;
         $data['phone'] = $phone;
-        $data['sex'] = $sex;
-        $data['height'] = $height;
-        $data['weight'] = $weight;
-        $data['age'] = $age;
         $validate = $this->memberModel->validate($data);
         if ($validate) {
             $this->error($validate);

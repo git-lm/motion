@@ -3,12 +3,13 @@
 namespace app\index\controller;
 
 use think\Controller;
+use app\motion\model\Member as memberModel;
 
 /**
  * 应用入口控制器
  * @author Anyon 
  */
-class Index extends Controller {
+class Member extends Controller {
 
     public function initialize() {
         session('motion_member.id', 6);
@@ -17,18 +18,17 @@ class Index extends Controller {
             $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('@login')];
             return request()->isAjax() ? json($msg) : redirect($msg['url']);
         }
+        $this->m_id = session('motion_member.id');
+        $this->memberModel = new MemberModel();
     }
 
     /**
      *  首页
      */
     public function index() {
-        $type = request()->has('type', 'get') ? request()->get('type/s') : '';
-        if ($type) {
-            $this->assign('type', $type);
-        } else {
-            $this->assign('type', 'upcomming');
-        }
+        $where [] = ['id', '=', $this->m_id];
+        $list = $this->memberModel->get_member($where);
+        $this->assign('list', $list);
         return $this->fetch();
     }
 

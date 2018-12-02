@@ -134,3 +134,30 @@
 	height: 2rem;
 	display: block;
 }
+
+.bgimg{
+	width: 77%;
+}
+
+.infor_l,.infor_r
+{
+	width: 100%;
+    max-width: 100%;
+}
+
+.infor_r_top_l{
+	width: 100%;
+}
+
+.header_tu.header_tu{
+	width: 1.8rem;
+	height: 1.8rem;
+}
+
+.infor_r{
+	margin-top:8%;
+}
+
+.lablediv label span{
+	font-size: 0.3rem;
+}

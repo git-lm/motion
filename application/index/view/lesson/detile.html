@@ -115,71 +115,83 @@
 
         <!--chart 开始-->
         <div class="chart">
-            <textarea class="" placeholder="请输入"></textarea>
-            <div class="chart_b">
-                <i class="layui-icon">&#xe65d;</i>
-                <i class="layui-icon">&#xe60c;</i>
-                <i class="layui-icons">GIF</i>
-                <button class="layui-btn layui-btn-normal">send</button>
+            <textarea class="layui-textarea" name='message'   placeholder="请输入内容，一千字以内" maxlength="1000" style="resize:none"></textarea>
+                <div class="chart_b">
+                    <i class="layui-icon">&#xe65d;</i>
+                    <i class="layui-icon">&#xe60c;</i>
+                    <i class="layui-icons">GIF</i>
+                    <button class="layui-btn layui-btn-normal">send</button>
+                </div>
             </div>
+            <!--chart 结束-->
         </div>
-        <!--chart 结束-->
-    </div>
-    <!--main 结束-->
-    {/block}
-    {block name="script"}
-    <script type="text/javascript">
+        <!--main 结束-->
+        {/block}
+        
+        {block name="script"}
+        <script type="text/javascript" src="__STATIC__/plugs/ckeditor/ckeditor.js"></script>
+        <script type="text/javascript">
 
 
-        $(function () {
-            //导航点击相应的div显示 开始
-            $(".video_list_top").click(function () {
-                if ($(this).siblings('.video_show_div').is(":hidden")) {
-                    $(this).siblings('.video_show_div').show();
-                } else {
-                    $(this).siblings('.video_show_div').hide()
-                }
-            });
-            //导航点击相应的div显示 结束
-            //状态tips显示 开始
-            $('.green').mouseover(function () {
-                var _this = $(this)
-                layui.use('layer', function () {
-                    var layer = layui.layer;
-                    layer.tips('完成的提示', _this);
+            $(function () {
+
+
+                //导航点击相应的div显示 开始
+                $(".video_list_top").click(function () {
+                    if ($(this).siblings('.video_show_div').is(":hidden")) {
+                        $(this).siblings('.video_show_div').show();
+                    } else {
+                        $(this).siblings('.video_show_div').hide()
+                    }
                 });
+                //导航点击相应的div显示 结束
+                //状态tips显示 开始
+                $('.green').mouseover(function () {
+                    var _this = $(this)
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.tips('完成的提示', _this);
+                    });
 
-            }).mouseout(function () {
-                layer.closeAll();
-            })
-            $('.red').mouseover(function () {
-                var _this = $(this)
-                layui.use('layer', function () {
-                    var layer = layui.layer;
-                    layer.tips('未完成的提示', _this);
-                });
-            }).mouseout(function () {
-                layer.closeAll();
-            })
+                }).mouseout(function () {
+                    layer.closeAll();
+                })
+                $('.red').mouseover(function () {
+                    var _this = $(this)
+                    layui.use('layer', function () {
+                        var layer = layui.layer;
+                        layer.tips('未完成的提示', _this);
+                    });
+                }).mouseout(function () {
+                    layer.closeAll();
+                })
 
-            //状态tips显示 结束
+                //状态tips显示 结束
 
-            //文本输入记录
-            $('.textarea_over').on('blur', 'textarea', function () {
-                var message = $(this).val();
-                var id = $(this).attr('itemid');
-                if ($.trim(message) != '') {
-                    $.post("{:url('message_add')}", {'id': id, 'message': message}, function (data) {
-                        console.log(data);
-                        if (data.code == 0) {
-                            layui.use('layer', function () {
-                                var layer = layui.layer;
-                                layer.msg(data.msg);
-                            });
-                        }
-                    }, 'json')
-                }
+                //文本输入记录
+                $('.textarea_over').on('blur', 'textarea', function () {
+                    var message = $(this).val();
+                    var id = $(this).attr('itemid');
+                    if ($.trim(message) != '') {
+                        $.post("{:url('message_add')}", {'id': id, 'message': message}, function (data) {
+                            console.log(data);
+                            if (data.code == 0) {
+                                layui.use('layer', function () {
+                                    var layer = layui.layer;
+                                    layer.msg(data.msg);
+                                });
+                            }
+                        }, 'json')
+                    }
+                })
+                $('.history').on('click', 'a', function () {
+                    var id = $(this).attr('itemid');
+                    layui.use(['layui'], function () {
+                        var layer = layui.layer;
+                        
+                    })
+
+                })
             })
-        })
-    </script>
-    {/block}
+        </script>
+        {/block}
