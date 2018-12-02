@@ -115,6 +115,16 @@ class Lesson extends Controller {
     /**
      * 获取记录
      */
+    public function history() {
+        $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
+        $lwhere['id'] = $id;
+        $little = $this->lessonModel->get_little_course($lwhere);
+        $m_ids = $little['m_ids'];
+        $lists = $this->lessonModel->get_history($m_ids);
+
+        $this->assign('lists', $lists);
+        return $this->fetch();
+    }
 
     /**
      * 获取留言

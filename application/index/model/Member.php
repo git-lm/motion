@@ -8,7 +8,7 @@ use service\DbService;
 
 class Member extends Model {
 
-    protected $table = 'motion_member';
+    protected $table = 'motion_member_info';
 
     /**
      * 时间获取器
@@ -68,7 +68,7 @@ class Member extends Model {
      * @param int $limit    每页显示条数
      * @param bool $isWhere 是否直接查询
      */
-    public function get_members($where = [], $order = [], $page = 0, $limit = 0) {
+    public function get_members_info($where = [], $order = [], $page = 0, $limit = 0) {
         $db = Db::table($this->table)
                 ->alias('m')
                 ->field('m.* ,c.name cname ,t.end_time')
@@ -94,15 +94,7 @@ class Member extends Model {
         return $lists;
     }
 
-    /**
-     * 获取单个会员
-     * @param Array $where  查询条件
-     * @param Array $order  排序条件
-     */
-    public function get_member($where = [], $order = []) {
-        $list = DbService::queryOne($this->table, $where, $order);
-        return $list;
-    }
+    
 
     /**
      * 新增会员

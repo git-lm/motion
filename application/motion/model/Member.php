@@ -80,13 +80,11 @@ class Member extends Model {
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
-            $list['sex_show'] = $this->getSexAttr($list['sex']);
             if (empty($list['end_time'])) {
                 $list['end_time_show'] = '未开通';
             } else {
                 $list['end_time_show'] = $this->getDateAttr($list['end_time']);
             }
-            $list['sex_show'] = $this->getSexAttr($list['sex']);
             if (empty($list['cname'])) {
                 $list['cname'] = '无教练';
             }
@@ -102,6 +100,65 @@ class Member extends Model {
     public function get_member($where = [], $order = []) {
         $list = DbService::queryOne($this->table, $where, $order);
         return $list;
+    }
+
+    /**
+     * 获取单个会员信息
+     * @param Array $where  查询条件
+     * @param Array $order  排序条件
+     */
+    public function get_member_info($where = [], $order = []) {
+        $db = Db::table('motion_member_info')
+                ->alias('mi')
+                ->leftJoin(['motion_member' => 'm'], 'm.id = mi.m_id')
+                ->field('mi.* , m.status mstatus');
+        $list = DbService::queryOne($db, $where, $order);
+        return $list;
+    }
+
+    /**
+     * 编辑或者更新会员信息
+     */
+    public function info($data, $m_id) {
+        unset($data['sex_show']);
+        $where[] = ['m.id', '=', $m_id];
+        $list = $this->get_member_info($where);
+        if (empty($list)) {
+            $data['m_id'] = $m_id;
+            $code = $this->add_info($data);
+        } else {
+            $iwhere [] = ['m_id', '=', $m_id];
+            $code = $this->edit_info($data, $iwhere);
+        }
+        return $code;
+    }
+
+    /**
+     * 新增会员信息
+     * @param type $data 保存的数据
+     */
+    public function add_info($data = []) {
+        if (empty($data['create_time'])) {
+            $data['create_time'] = time();
+        }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员信息');
+        $code = DbService::save('motion_member_info', $data);
+        return $code;
+    }
+
+    /**
+     * 编辑会员
+     * @param type $data    保存的数据
+     * @param type $where   编辑条件
+     */
+    public function edit_info($data = [], $where = []) {
+        $member = $this->get_member_info($where);
+        if (empty($data['update_time'])) {
+            $data['update_time'] = time();
+        }
+        DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员信息');
+        $code = DbService::update('motion_member_info', $data, $where);
+        return $code;
     }
 
     /**
@@ -307,6 +364,38 @@ class Member extends Model {
             'name.chsAlpha' => '会员名称只能汉子和字母',
             'phone.require' => '手机号码必填',
             'phone.mobile' => '手机号码格式不正确',
+        ];
+        $validate = new \think\Validate();
+        $validate->rule($rule)->message($message)->check($data);
+        return $validate->getError();
+    }
+
+    /**
+     * 验证类型数据有效性
+     * @param type $data 需要验证的数据
+     */
+    public function validate_info($data) {
+        $rule = [
+            'height' => 'max:10',
+            'weight' => 'max:10',
+            'age' => 'between:10,80',
+            'first_name' => 'max:50',
+            'last_name' => 'max:50',
+            'email' => 'email',
+            'wechat' => 'max:50',
+            'location' => 'max:50',
+            'birthday' => 'max:50',
+        ];
+        $message = [
+            'height.max' => '身高字数不超过十个',
+            'weight.max' => '体重字数不超过十个',
+            'age.between' => '年龄在十到一百之间',
+            'first_name.max' => '姓名字数不超过五十个字',
+            'last_name.max' => '曾用名字数不超过五十个字',
+            'email.email' => '邮箱格式不正确',
+            'wechat.max' => '微信字数不超过五十个字',
+            'location.max' => '地址字数不超过五十个字',
+            'birthday.max' => '生日字数不超过五十个字',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);
