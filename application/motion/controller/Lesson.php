@@ -352,6 +352,7 @@ class Lesson extends BasicAdmin {
         $m_ids = request()->has('m_ids', 'post') ? request()->post('m_ids/s') : null;
         $name = request()->has('name', 'post') ? request()->post('name/s') : null;
         $remark = request()->has('remark', 'post') ? request()->post('remark/s') : '';
+        $num = request()->has('num', 'post') ? request()->post('num/s') : '';
         if (!$lid) {
             $this->error('请正确选择');
         }
@@ -364,6 +365,7 @@ class Lesson extends BasicAdmin {
         $data['name'] = $name;
         $data['m_ids'] = $m_ids;
         $data['remark'] = $remark;
+        $data['num'] = $num;
         $validate = $this->lessonModel->course_validate($data);
         if ($validate) {
             $this->error($validate);
@@ -401,6 +403,7 @@ class Lesson extends BasicAdmin {
         $m_ids = request()->has('m_ids', 'post') ? request()->post('m_ids/s') : null;
         $name = request()->has('name', 'post') ? request()->post('name/s') : null;
         $remark = request()->has('remark', 'post') ? request()->post('remark/s') : '';
+        $num = request()->has('num', 'post') ? request()->post('num/s') : '';
         if (!$id) {
             $this->error('请正确选择');
         }
@@ -414,6 +417,7 @@ class Lesson extends BasicAdmin {
         $data['name'] = $name;
         $data['m_ids'] = $m_ids;
         $data['remark'] = $remark;
+        $data['num'] = $num;
         $validate = $this->lessonModel->course_validate($data);
         if ($validate) {
             $this->error($validate);

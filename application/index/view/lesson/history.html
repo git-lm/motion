@@ -1,76 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="x-dns-prefetch-control" content="on" />
-        <!-- uc强制竖屏 -->
-        <meta name="screen-orientation" content="portrait">
-        <!-- QQ强制竖屏 -->
-        <meta name="x5-orientation" content="portrait">
-        <!-- UC强制全屏 -->
-        <meta name="full-screen" content="yes">
-        <!-- QQ强制全屏 -->
-        <meta name="x5-fullscreen" content="true">
-        <!-- UC应用模式 -->
-        <meta name="browsermode" content="application">
-        <!-- QQ应用模式 -->
-        <meta name="x5-page-mode" content="app">
-        <!-- windows phone 点击无高光 -->
-        <meta name="msapplication-tap-highlight" content="no" >
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <title>首页</title>
-        <link rel="stylesheet" type="text/css" href="__STATIC__/plugs/layui/css/layui.css?v={:date('ymd')}" >
-        <link rel="stylesheet" type="text/css" href="__STATIC__/index/css/pubilc.css?v={:date('ymd')}" />
-        <link rel="stylesheet" type="text/css" href="__STATIC__/index/css/index.css?v={:date('ymd')}" />
-        <link rel="stylesheet" media="screen and (max-width:750px)"  href="__STATIC__/index/css/mobile.css?v={:date('ymd')}" type="text/css" />
-        <!--js-->
-        <script type="text/javascript" src="__STATIC__/plugs/jquery/jquery.min.js"></script>
+{extend  name="public:main"}
+{block name="main"}
+<!--tc_box 开始-->
+<div class="tc_box">
 
-        <script type="text/javascript" src="__STATIC__/index/js/rem.js"></script>
-    </head>
-    <body>
-        <!--tc_box 开始-->
-        <div class="tc_box">
-
-            <ul>
-                {volist name="lists" id="list"}
-                <li>
-                    <p class="ptit">{$list.lname} - {$list.class_time_show}</p>
-                    <p class="font-tit">{$list.name}</p>
-                    {if $list.state == 0}
-                    <div class="bstx"><i class="layui-icon red">&#x1007;</i>
-                        <span class="font">{$list.message}</span>
-                        <span class="font">
-                            <div class="cover_video">
-                                <video src="https://d2pepuqj211rn4.cloudfront.net/5f3025ec-d145-41d6-8a67-cffc488258a6/BBCBC5BF5AA94B2985AC7CD02A5A3F7E.MOV/output.mp4" controls="controls"></video>
-                            </div>
-                            <!--                            <div class="Download"><i class="layui-icon">&#xe681;</i><a href="https://d2pepuqj211rn4.cloudfront.net/5f3025ec-d145-41d6-8a67-cffc488258a6/BBCBC5BF5AA94B2985AC7CD02A5A3F7E.MOV/output.mp4">Download</a></div>-->
-                        </span>
+    <ul>
+        {volist name="lists" id="list"}
+        <li>
+            <p class="ptit">{$list.lname} - {$list.class_time_show}</p>
+            <p class="font-tit">{$list.name}</p>
+            {if $list.state == 0}
+            <div class="bstx"><i class="layui-icon red">&#x1007;</i>
+                <span class="font">{$list.message}</span>
+                <span class="font">
+                    <div class="cover_video">
+                        <video src="https://d2pepuqj211rn4.cloudfront.net/5f3025ec-d145-41d6-8a67-cffc488258a6/BBCBC5BF5AA94B2985AC7CD02A5A3F7E.MOV/output.mp4" controls="controls"></video>
                     </div>
-                    {else /}
-                    <div class="bstx"><i class="layui-icon green">&#x1005;</i>
-                        <span class="font">{$list.message}</span>
-                        <span class="font">
-                            <div class="cover_video">
-                                <video src="https://d2pepuqj211rn4.cloudfront.net/5f3025ec-d145-41d6-8a67-cffc488258a6/BBCBC5BF5AA94B2985AC7CD02A5A3F7E.MOV/output.mp4" controls="controls"></video>
-                            </div>
-                            <!--                            <div class="Download"><i class="layui-icon">&#xe681;</i><a href="https://d2pepuqj211rn4.cloudfront.net/5f3025ec-d145-41d6-8a67-cffc488258a6/BBCBC5BF5AA94B2985AC7CD02A5A3F7E.MOV/output.mp4">Download</a></div>-->
-                        </span>
+                    <!--                            <div class="Download"><i class="layui-icon">&#xe681;</i><a href="https://d2pepuqj211rn4.cloudfront.net/5f3025ec-d145-41d6-8a67-cffc488258a6/BBCBC5BF5AA94B2985AC7CD02A5A3F7E.MOV/output.mp4">Download</a></div>-->
+                </span>
+            </div>
+            {else /}
+            <div class="bstx"><i class="layui-icon green">&#x1005;</i>
+                <span class="font">{$list.message}</span>
+                <span class="font">
+                    <div class="cover_video">
+                        <video src="https://d2pepuqj211rn4.cloudfront.net/5f3025ec-d145-41d6-8a67-cffc488258a6/BBCBC5BF5AA94B2985AC7CD02A5A3F7E.MOV/output.mp4" controls="controls"></video>
                     </div>
-                    {/if}
+                    <!--                            <div class="Download"><i class="layui-icon">&#xe681;</i><a href="https://d2pepuqj211rn4.cloudfront.net/5f3025ec-d145-41d6-8a67-cffc488258a6/BBCBC5BF5AA94B2985AC7CD02A5A3F7E.MOV/output.mp4">Download</a></div>-->
+                </span>
+            </div>
+            {/if}
 
-                    <a href="javascript:;" itemid="{$list.lid}" class="jamp_a historyview">View workout</a>
-                </li>
-                {/volist}
+            <a href="javascript:;" itemid="{$list.lid}" class="jamp_a historyview">View workout</a>
+        </li>
+        {/volist}
 
 
 
-            </ul>
-        </div>
-        <!--tc_box 结束-->
-    </body>
-</html>
+    </ul>
+</div>
+<!--tc_box 结束-->
+{/block}
+{block name="script"}
 <script type="text/javascript">
     $(function () {
         $('.historyview').click(function () {
@@ -88,3 +58,4 @@
         //导航点击相应的div显示 结束
     })
 </script>
+{/block}

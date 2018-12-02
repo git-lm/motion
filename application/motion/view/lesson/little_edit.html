@@ -1,11 +1,16 @@
 <form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('little_edit_info')}" data-auto="true" method="post">
 
 
-
+    <div class="layui-form-item">
+        <label class="layui-form-label">动作编号</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="num" required lay-verify="required" value='{$list.num|default=""}' maxlength="10"  title="请输入编号，不超过十个字" placeholder="请输入编号，不超过十个字" class="layui-input">
+        </div>
+    </div>
     <div class="layui-form-item">
         <label class="layui-form-label">动作名称</label>
         <div class="layui-input-block">
-            <input type="text" autofocus name="name" required lay-verify="required" value='{$list.name}' maxlength="50" minlength="2" title="请输入动作名称，不超过五十个字" placeholder="请输入动作名称，不超过五十个字" class="layui-input">
+            <input type="text" autofocus name="name" required lay-verify="required" value='{$list.name|default=""}' maxlength="50" minlength="2" title="请输入动作名称，不超过五十个字" placeholder="请输入动作名称，不超过五十个字" class="layui-input">
         </div>
     </div>
 
@@ -28,7 +33,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">备注</label>
         <div class="layui-input-block">
-            <textarea name="remark" maxlength="10000" class="form-control" placeholder="请输入备注">{$list.remark}</textarea>
+            <textarea name="remark" maxlength="10000" class="form-control" placeholder="请输入备注">{$list.remark|default=""}</textarea>
         </div>
     </div>
 
@@ -43,12 +48,7 @@
 {block name="script"}
 <script>
     $(function () {
-        formSelects.render('m_ids', {
-            template: function (name, value, selected, disabled) {
-                var mid = value.value;
-                return value.name + '<a  data-value="' + mid + '"  class="selecthref" style="position: absolute; right: 0; color: #A0A0A0; font-size: 12px;">点击查看</a>';
-            }
-        });
+        formSelects.render();
         $('.selecthref').on('click', function () {
             var mid = $(this).attr('data-value');
             $.post('{:url("get_motion_url")}', {'mid': mid}, function (data) {

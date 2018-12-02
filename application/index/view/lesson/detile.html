@@ -45,159 +45,208 @@
             <!---main_list_l 开始-->
             {volist name="list.course" id="c"}
             <div class="main_list_l">
-                <h4 class="main_list_l_l">A)</h4>
+
 
                 <div class="main_list_l_r">
                     <!--  main_list_l_r_top start-->
                     <h4 class="main_list_l_r_top">
-                        {$c.name}
-                        <i class="layui-icon {eq name="$c.state" value="1"}green{else /}red{/eq}">{eq name="$c.state" value="1"}&#x1005;{else /}&#x1007;{/eq}</i>
-                        </h4>
-                        <!--  main_list_l_r_top end-->
+                        {$c.num|default=""} {$c.name|default=""}
+                        {if $c.state == 1}
+                        <i class="layui-icon green" itemid="{$c.id}">&#x1005;</i>
+                        {else /}
+                        <i class="layui-icon red" itemid="{$c.id}">&#x1007;</i>
+                        {/if}
 
-                        <!--main_list_l_r_top_b start-->
-                        <div class="main_list_l_r_top_b">
-                            <p class="font_l">{$c.remark|default=''}</p>
-                            <!--视频 开始-->
-                            <div class="videos">
-                                {volist name="c.motions" id="motion"}
-                                <div class="video_list">
-                                    <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$motion.name|default=''}</div>
-                                    <div class="video_show_div">
-                                        {$motion.url|default=''}
-                                    </div>
+                    </h4>
+                    <!--  main_list_l_r_top end-->
+
+                    <!--main_list_l_r_top_b start-->
+                    <div class="main_list_l_r_top_b">
+                        <p class="font_l">{$c.remark|default=''}</p>
+                        <!--视频 开始-->
+                        <div class="videos">
+                            {volist name="c.motions" id="motion"}
+                            <div class="video_list">
+                                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$motion.name|default=''}</div>
+                                <div class="video_show_div">
+                                    {$motion.url|default=''}
                                 </div>
-                                {/volist}
                             </div>
-                            <!--视频 结束-->
-
-                            <!--history 开始-->
-                            <div class="history"><i class="layui-icon">&#xe665;</i><a itemid="{$c.id}">Exercise History</a></div>
-                            <!--history 结束-->
-
-                            <!--textarea_over 开始-->
-                            <div class="textarea_over clearfix">
-                                <i class="layui-icon">&#xe65d;</i>
-                                <textarea itemid="{$c.id|default=0}" placeholder="输入内容">{$c.message|default=''}</textarea>
-                            </div>
-                            <!--textarea_over 结束-->
+                            {/volist}
                         </div>
-                        <!--main_list_l_r_top_b end-->
+                        <!--视频 结束-->
+
+                        <!--history 开始-->
+                        <div class="history"><i class="layui-icon">&#xe665;</i><a href='{:url("history")}?id={$c.id}'  target='_blank'>Exercise History</a></div>
+                        <!--history 结束-->
+
+                        <!--textarea_over 开始-->
+                        <div class="textarea_over clearfix">
+                            <i class="layui-icon">&#xe65d;</i>
+                            <textarea itemid="{$c.id|default=0}" placeholder="输入内容">{$c.message|default=''}</textarea>
+                        </div>
+                        <!--textarea_over 结束-->
                     </div>
+                    <!--main_list_l_r_top_b end-->
                 </div>
-                {/volist}
-                <!---main_list_l 结束-->
-
             </div>
-            <!--main_list 结束-->
-
-            <h4>Cooldown</h4>
-            <div class="font_list">{$list.colldown|default=''} </div>
-
-            <!--videos-->
-            <div class="videos">
-                {volist name="$list.colldown_motions" id="cm"}
-                <div class="video_list">
-                    <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$cm.name|default=''}</div>
-                    <div class="video_show_div">
-                        {$cm.url|default=''}
-                    </div>
-                </div>
-                {/volist}
-
-            </div>
-            <!--videos-->
-            <button class="layui-btn  layui-btn-normal">
-                Update Results
-            </button>
+            {/volist}
+            <!---main_list_l 结束-->
 
         </div>
+        <!--main_list 结束-->
 
-        <!--chart 开始-->
-        <div class="chart">
-            <textarea class="layui-textarea" name='message'   placeholder="请输入内容，一千字以内" maxlength="1000" style="resize:none"></textarea>
-                <div class="chart_b">
-                    <i class="layui-icon">&#xe65d;</i>
-                    <i class="layui-icon">&#xe60c;</i>
-                    <i class="layui-icons">GIF</i>
-                    <button class="layui-btn layui-btn-normal">send</button>
+        <h4>Cooldown</h4>
+        <div class="font_list">{$list.colldown|default=''} </div>
+
+        <!--videos-->
+        <div class="videos">
+            {volist name="$list.colldown_motions" id="cm"}
+            <div class="video_list">
+                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$cm.name|default=''}</div>
+                <div class="video_show_div">
+                    {$cm.url|default=''}
                 </div>
             </div>
-            <!--chart 结束-->
+            {/volist}
+
         </div>
-        <!--main 结束-->
-        {/block}
+        <!--videos-->
+        {if $list.state == 0}
+        <button class="layui-btn  layui-btn-normal complete" itemid="{$list.id}">
+            完成
+        </button>
+        {else}
+        <button class="layui-btn  layui-btn-normal layui-btn-disabled">
+            已完成
+        </button>
+        {/if}
+    </div>
 
-        {block name="script"}
-        <script type="text/javascript" src="__STATIC__/plugs/ckeditor/ckeditor.js"></script>
-        <script type="text/javascript">
+    <!--chart 开始-->
+    <div class="chart">
+        <textarea class="layui-textarea" name='message'   placeholder="请输入内容，一千字以内" maxlength="1000" style="resize:none"></textarea>
+        <div class="chart_b">
+            <!--            <i class="layui-icon">&#xe65d;</i>
+                        <i class="layui-icon">&#xe60c;</i>
+                        <i class="layui-icons">GIF</i>-->
+            <button class="layui-btn layui-btn-normal send" itemid="{$list.id}">发送</button>
+        </div>
+    </div>
+    <!--chart 结束-->
+</div>
+<!--main 结束-->
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__STATIC__/plugs/ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
 
 
-            $(function () {
+    $(function () {
+        layui.use('layer', function () {
+            var layer = layui.layer;
+        });
 
+        //导航点击相应的div显示 开始
+        $(".video_list_top").click(function () {
+            if ($(this).siblings('.video_show_div').is(":hidden")) {
+                $(this).siblings('.video_show_div').show();
+            } else {
+                $(this).siblings('.video_show_div').hide()
+            }
+        });
+        //导航点击相应的div显示 结束
+        //状态tips显示 开始
 
-                //导航点击相应的div显示 开始
-                $(".video_list_top").click(function () {
-                    if ($(this).siblings('.video_show_div').is(":hidden")) {
-                        $(this).siblings('.video_show_div').show();
+        $('.green').mouseover(function () {
+            var _this = $(this)
+            index = layer.tips('完成的提示', _this);
+        })
+        $('.red').mouseover(function () {
+            var _this = $(this)
+            index = layer.tips('未完成的提示', _this);
+        })
+
+        $('.main_list_l_r_top').on('click', '.green', function () {
+            var _this = $(this);
+            layer.confirm('确定未完成该项内容', function () {
+                var id = _this.attr('itemid');
+                $.post('{:url("handle")}', {'id': id, 'state': 0}, function (data) {
+                    if (data.code == 1) {
+                        _this.removeClass('green').addClass('red');
+                        _this.html('&#x1007;');
+                        layer.closeAll();
                     } else {
-                        $(this).siblings('.video_show_div').hide()
+                        layer.msg(data.msg);
                     }
-                });
-                //导航点击相应的div显示 结束
-                //状态tips显示 开始
-                $('.green').mouseover(function () {
-                    var _this = $(this)
-                    layui.use('layer', function () {
-                        var layer = layui.layer;
-                        layer.tips('完成的提示', _this);
-                    });
+                }, 'json');
+            })
+        })
+        $('.main_list_l_r_top').on('click', '.red', function () {
+            var _this = $(this);
 
-                }).mouseout(function () {
-                    layer.closeAll();
-                })
-                $('.red').mouseover(function () {
-                    var _this = $(this)
-                    layui.use('layer', function () {
-                        var layer = layui.layer;
-                        layer.tips('未完成的提示', _this);
-                    });
-                }).mouseout(function () {
-                    layer.closeAll();
-                })
-
-                //状态tips显示 结束
-
-                //文本输入记录
-                $('.textarea_over').on('blur', 'textarea', function () {
-                    var message = $(this).val();
-                    var id = $(this).attr('itemid');
-                    if ($.trim(message) != '') {
-                        $.post("{:url('message_add')}", {'id': id, 'message': message}, function (data) {
-                            console.log(data);
-                            if (data.code == 0) {
-                                layui.use('layer', function () {
-                                    var layer = layui.layer;
-                                    layer.msg(data.msg);
-                                });
-                            }
-                        }, 'json')
+            layer.confirm('确定完成该项内容', function () {
+                var id = _this.attr('itemid');
+                $.post('{:url("handleCourse")}', {'id': id, 'state': 1}, function (data) {
+                    if (data.code == 1) {
+                        _this.removeClass('red').addClass('green');
+                        _this.html('&#x1005;');
+                        layer.closeAll();
+                    } else {
+                        layer.msg(data.msg);
                     }
-                })
-                $('.history').on('click', 'a', function () {
-                    var id = $(this).attr('itemid');
-                    layui.use(['layer'], function () {
-                        var layer = layui.layer;
-                        layer.open({
-                            title: false,
-                            type: 2,
-                            area: ['90%', '90%'],
-                            content: '{:url("history")}?id=' + id //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
-                        });
+                }, 'json');
+            })
+        })
 
-                    })
 
+        $('.complete').click(function () {
+            var _this = $(this);
+            layer.confirm('确定完成', function () {
+                var id = _this.attr('itemid');
+                $.post('{:url("handleMotion")}', {'id': id}, function (data) {
+                    if (data.code == 1) {
+                        _this.addClass('layui-btn-disabled').removeClass('complete');
+                        _this.html('已完成');
+                        layer.closeAll();
+                    } else {
+                        layer.msg(data.msg);
+                    }
                 })
             })
-        </script>
-        {/block}
+        })
+
+        //状态tips显示 结束
+
+        //文本输入记录
+        $('.textarea_over').on('blur', 'textarea', function () {
+            var message = $(this).val();
+            var id = $(this).attr('itemid');
+            if ($.trim(message) != '') {
+                $.post("{:url('message_add')}", {'id': id, 'message': message}, function (data) {
+                    console.log(data);
+                    if (data.code == 0) {
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+                            layer.msg(data.msg);
+                        });
+                    }
+                }, 'json')
+            }
+        })
+
+        //发送留言
+        $('.send').click(function () {
+            var message = $('textarea[name="message"]').val();
+            var id = $(this).attr('itemid');
+            if ($.trim(message) != '') {
+                $.post('{:url("message")}', {'id': id, 'message': message}, function (data) {
+                    layer.msg(data.msg)
+                }, 'json')
+            }
+
+        })
+    })
+</script>
+{/block}

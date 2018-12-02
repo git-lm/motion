@@ -185,13 +185,13 @@ class Lesson extends Model {
      */
     public function get_history($m_ids = 0, $order = [], $page = 0, $limit = 0) {
         //获取相同视频的课程
-        $where = 'm_ids in ( ' . $m_ids . ')';
+        $where = ' m_ids in ( ' . $m_ids . ')';
         $db = Db::table('motion_lesson_course')
                 ->alias('lc')
                 ->leftJoin(['motion_lesson' => 'l'], 'l.id = lc.l_id')
                 ->field('lc.* ,l.id lid ,  l.name lname , l.class_time');
         $order ['class_time'] = 'desc';
-        $lists = DbService::queryALL($db, $where, $order, $page, $limit);
+        $lists = DbService::queryALL($db, $where, $order, $page, $limit );
         foreach ($lists as &$list) {
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
         }

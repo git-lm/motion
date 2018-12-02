@@ -3,7 +3,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">课程名称</label>
         <div class="layui-input-block">
-            <input type="tel" autofocus name="name" required lay-verify="required" value='{$list.name}' maxlength="50" minlength="2" title="请输入会员名称，不超过五十个字" placeholder="请输入会员名称，不超过五十个字" class="layui-input">
+            <input type="text" autofocus name="name" required lay-verify="required" value='{$list.name}' maxlength="50" minlength="2" title="请输入会员名称，不超过五十个字" placeholder="请输入会员名称，不超过五十个字" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -72,12 +72,7 @@
 {block name="script"}
 <script>
     $(function () {
-        formSelects.render('warmup_mids', {
-            template: function (name, value, selected, disabled) {
-                var mid = value.value;
-                return value.name + '<a data-value="' + mid + '"  class="selecthref" style="position: absolute; right: 0; color: #A0A0A0; font-size: 12px;">点击查看</a>';
-            }
-        });
+        formSelects.render();
         formSelects.render('colldown_mids', {
             template: function (name, value, selected, disabled) {
                 var mid = value.value;

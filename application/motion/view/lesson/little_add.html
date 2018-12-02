@@ -1,9 +1,14 @@
 <form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('little_add_info')}" data-auto="true" method="post">
-
+    <div class="layui-form-item">
+        <label class="layui-form-label">动作编号</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="num" required lay-verify="required" value='' maxlength="10"  title="请输入编号，不超过十个字" placeholder="请输入编号，不超过十个字" class="layui-input">
+        </div>
+    </div>
     <div class="layui-form-item">
         <label class="layui-form-label">动作名称</label>
         <div class="layui-input-block">
-            <input type="tel" autofocus name="name" required lay-verify="required" value='' maxlength="50" minlength="2" title="请输入动作名称，不超过五十个字" placeholder="请输入动作名称，不超过五十个字" class="layui-input">
+            <input type="text" autofocus name="name" required lay-verify="required" value='' maxlength="50" minlength="2" title="请输入动作名称，不超过五十个字" placeholder="请输入动作名称，不超过五十个字" class="layui-input">
         </div>
     </div>
 

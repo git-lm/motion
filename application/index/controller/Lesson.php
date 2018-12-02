@@ -119,11 +119,78 @@ class Lesson extends Controller {
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         $lwhere['id'] = $id;
         $little = $this->lessonModel->get_little_course($lwhere);
+        if (empty($little['m_ids'])) {
+            $this->error('无此相关记录');
+        }
         $m_ids = $little['m_ids'];
         $lists = $this->lessonModel->get_history($m_ids);
 
         $this->assign('lists', $lists);
         return $this->fetch();
+    }
+
+    /**
+     * 操作动作完成情况
+     */
+    public function handleCourse() {
+        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
+        $state = request()->has('state', 'post') ? request()->post('state/d') : 0;
+        $lwhere['id'] = $id;
+        $little = $this->lessonModel->get_little_course($lwhere);
+        if (empty($little)) {
+            $this->error('无此相关记录');
+        }
+        $data['state'] = $state;
+        $code = $this->lessonModel->little_edit($data, $lwhere);
+        if ($code) {
+            $this->success('保存成功');
+        } else {
+            $this->error('保存失败');
+        }
+    }
+
+    /**
+     * 操作动作完成情况
+     */
+    public function handleMotion() {
+        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
+        $lwhere['id'] = $id;
+        $little = $this->lessonModel->get_arrange_list($lwhere);
+        if (empty($little)) {
+            $this->error('无此相关记录');
+        }
+        $data['state'] = 1;
+        $code = $this->lessonModel->edit($data, $lwhere);
+        if ($code) {
+            $this->success('保存成功');
+        } else {
+            $this->error('保存失败');
+        }
+    }
+
+    /**
+     * 发送记录信息
+     */
+    public function message() {
+        $messageModel =new \app\motion\model\Message();
+        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
+        $messsage = request()->has('message', 'post') ? request()->post('message/s') : '';
+        if (!$id) {
+            $this->error('请正确选择');
+        }
+        $data['content'] = $messsage;
+        $validate = $messageModel->validate($data);
+        if ($validate) {
+            $this->error($validate);
+        }
+        $data['p_id'] = $id;
+        $data['m_id'] = $this->m_id;
+        $code = $messageModel->add($data);
+        if ($code) {
+            $this->success('发送成功');
+        } else {
+            $this->error('发送失败');
+        }
     }
 
     /**
