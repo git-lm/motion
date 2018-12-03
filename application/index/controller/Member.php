@@ -83,6 +83,20 @@ class Member extends Controller {
     }
 
     /**
+     * 更换头像
+     */
+    public function picture_add() {
+        $picture = request()->has('picture', 'post') ? request()->post('picture/s') : '';
+        $data['picture'] = $picture;
+        $code = $this->memberModel->info($data, $this->m_id);
+        if ($code) {
+            $this->success('修改成功');
+        } else {
+            $this->error('修改失败');
+        }
+    }
+
+    /**
      * 验证密码
      */
     public function check_pwd() {

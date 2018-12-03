@@ -39,6 +39,7 @@ class Plugs extends BasicAdmin {
      * 2、产品图片
      * 3、留言图片
      * 4、会员运动记录
+     * 5、会员头像
      */
 
     /**
@@ -62,6 +63,8 @@ class Plugs extends BasicAdmin {
             $pr = 'message';
         } else if ($filetype == 4) {
             $pr = 'record';
+        } else if ($filetype == 5) {
+            $pr = 'member';
         } else {
             $pr = 'others';
         }

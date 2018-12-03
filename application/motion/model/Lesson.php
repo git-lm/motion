@@ -211,6 +211,27 @@ class Lesson extends Model {
     }
 
     /**
+     * 获取课程文件记录
+     */
+    public function get_course_file($where = [], $order = []) {
+        $list = DbService::queryOne('motion_lesson_course_file', $where, $order);
+        return $list;
+    }
+
+    /**
+     * 编辑课程文件记录
+     */
+    public function file_edit($data = [], $where = []) {
+        $file = $this->get_course_file($where);
+        if (empty($data['update_time'])) {
+            $data['update_time'] = time();
+        }
+        DbService::save_log('motion_log', json_encode($file), json_encode($data), json_encode($where), '编辑会员课程文件记录');
+        $code = DbService::update('motion_lesson_course_file', $data, $where);
+        return $code;
+    }
+
+    /**
      * 验证排课数据有效性
      * @param type $data 需要验证的数据
      */

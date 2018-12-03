@@ -120,7 +120,9 @@ class Member extends Model {
      * 编辑或者更新会员信息
      */
     public function info($data, $m_id) {
-        unset($data['sex_show']);
+        if (!empty($data['sex_show'])) {
+            unset($data['sex_show']);
+        }
         $where[] = ['m.id', '=', $m_id];
         $list = $this->get_member_info($where);
         if (empty($list)) {

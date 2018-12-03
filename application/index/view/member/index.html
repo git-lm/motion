@@ -6,12 +6,13 @@
         <div class="infor_in">
             <!-- infor_l 开始 -->
             <div class="infor_l">
-                <h3>Edit Profile</h3>
-                <div class="header_tu"><img src="images/bg.png" alt=""></div>
+                <h3>编辑信息</h3>
+                <div class="header_tu"><img src="{$list.picture|default='sysconf("site_log")'}" alt=""></div>
+                <input type="hidden" name="picture" onchange="picturechange()"   class="layui-input" />
+                <a href="javascript:void(0)"  data-field="picture" data-file="one" data-type="jpg,png" data-title="上传头像" data-filetype="5" class="layui-btn layui-btn-primary">
 
-                <button class="layui-btn layui-btn-primary">
                     <i class="layui-icon">&#xe65d;</i> 修改头像
-                </button>
+                </a>
                 <br/>
                 <a href="pas.html" class="layui-btn layui-btn-primary">
                     修改密码
@@ -149,5 +150,16 @@
             })
         });
     })
+    function picturechange() {
+
+        var picture = $('input[name="picture"]').val()
+        $.post('{:url("picture_add")}', {'picture': picture}, function (data) {
+            if (data.code == 0) {
+                layer.msg(data.msg);
+            } else {
+                $('.header_tu img').attr('src', picture);
+            }
+        }, 'json')
+    }
 </script>
 {/block}

@@ -214,8 +214,19 @@ class Lesson extends Controller {
         }
     }
 
-    public function test() {
-        
+    public function file_del() {
+        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
+        if (!$id) {
+            $this->error('删除失败');
+        }
+        $data['status'] = 0;
+        $where['id'] = $id;
+        $code = $this->lessonModel->file_edit($data, $where);
+        if ($code) {
+            $this->success('删除成功');
+        } else {
+            $this->error('删除失败');
+        }
     }
 
     /**
@@ -243,7 +254,16 @@ class Lesson extends Controller {
             $motions = $this->get_motion($c['m_ids']);
             $c['motions'] = $motions;
             //获取课程记录
-            
+            $fwhere ['lc_id'] = $c['id'];
+            $forder ['create_time'] = 'desc';
+            $file = $this->lessonModel->get_course_file($fwhere, $forder);
+            if (!empty($file)) {
+                $pathinf = pathinfo($file['url'], PATHINFO_EXTENSION);
+                $c['pathinf'] = $pathinf;
+            } else {
+                $c['pathinf'] = '';
+            }
+            $c['file'] = $file;
         }
         return $course;
     }
