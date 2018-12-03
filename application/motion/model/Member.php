@@ -254,7 +254,7 @@ class Member extends Model {
             if ($c_id) {
                 $amcdata['c_id'] = $c_id;
                 $amcdata['m_id'] = $mid;
-               
+
                 $this->add_member_coach($amcdata);
             }
             $mdata['c_id'] = $c_id;
@@ -349,6 +349,29 @@ class Member extends Model {
         }
         DbService::save_log('motion_log', json_encode($member_time), json_encode($data), json_encode($where), '编辑会员时间');
         $code = DbService::update('motion_member_time mt', $data, $where);
+        return $code;
+    }
+
+    /**
+     * 写入操作日志
+     * @param string $action
+     * @param string $content
+     * @return bool
+     */
+    public static function write($action, $content, $member_name, $member_id) {
+        $node = strtolower(join('/', [request()->module(), request()->controller(), request()->action()]));
+        $data = [
+            'ip' => request()->ip(),
+            'node' => $node,
+            'action' => $action,
+            'content' => $content,
+            'username' => $member_name . '',
+            'm_id' => $member_id,
+            'ageni' => $_SERVER['HTTP_USER_AGENT'],
+            'create_time' => time(),
+            'is_mobile' => request()->isMobile()
+        ];
+        $code = DbService::save('motion_login_log', $data);
         return $code;
     }
 

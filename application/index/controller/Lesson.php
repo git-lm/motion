@@ -14,7 +14,6 @@ use app\motion\model\Motion as motionModel;
 class Lesson extends Controller {
 
     public function initialize() {
-        session('motion_member.id', 6);
         // 登录状态检查
         if (!session('motion_member')) {
             $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('@login')];

@@ -11,10 +11,9 @@ use think\Controller;
 class Index extends Controller {
 
     public function initialize() {
-        session('motion_member.id', 6);
         // 登录状态检查
         if (!session('motion_member')) {
-            $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('@login')];
+            $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('/index/login')];
             return request()->isAjax() ? json($msg) : redirect($msg['url']);
         }
     }
