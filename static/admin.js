@@ -97,7 +97,7 @@ $(function () {
                 self.dialogIndexs = [];
             }) : self.error(data.msg, 3, function () {
                 !!data.url && (window.location.href = data.url);
-                
+
             });
         };
     };
@@ -178,7 +178,12 @@ $(function () {
         };
         // 打开一个iframe窗口
         this.iframe = function (url, title) {
-            return layer.open({title: title || '窗口', type: 2, area: ['800px', '530px'], fix: true, maxmin: false, content: url});
+            if ($(window).height() > 800) {
+                var area = ['800px', '530px'];
+            } else {
+                var area = ['90%', '90%'];
+            }
+            return layer.open({title: title || '窗口', type: 2, area: area, fix: true, maxmin: false, content: url});
         };
         // 加载HTML到弹出层
         this.modal = function (url, data, title, callback, loading, tips) {
@@ -504,9 +509,12 @@ $(function () {
     $.fn.uploadOneImage = function () {
         var name = $(this).attr('name') || 'image';
         var type = $(this).data('type') || 'png,jpg';
-        var $tpl = $('<a data-file="one" data-field="' + name + '" data-type="' + type + '" class="uploadimage"></a>');
+        var filetype = $(this).data('filetype') || 0;
+        var $tpl = $('<a data-file="one"  data-filetype="' + filetype + '" data-field="' + name + '" data-type="' + type + '" class="uploadimage"></a>');
         $(this).attr('name', name).after($tpl).on('change', function () {
+
             !!this.value && $tpl.css('backgroundImage', 'url(' + this.value + ')');
+            console.log(111111);
         }).trigger('change');
     };
 
@@ -514,7 +522,8 @@ $(function () {
     $.fn.uploadMultipleImage = function () {
         var type = $(this).data('type') || 'png,jpg';
         var name = $(this).attr('name') || 'umt-image';
-        var $tpl = $('<a data-file="mut" data-field="' + name + '" data-type="' + type + '" class="uploadimage"></a>');
+        var filetype = $(this).data('filetype') || 0;
+        var $tpl = $('<a data-file="mut" data-filetype="' + filetype + '" data-field="' + name + '" data-type="' + type + '" class="uploadimage"></a>');
         $(this).attr('name', name).after($tpl).on('change', function () {
             var input = this, values = [], srcs = this.value.split('|');
             $(this).prevAll('.uploadimage').map(function () {
@@ -624,7 +633,8 @@ $(function () {
         var method = $(this).attr('data-file') === 'one' ? 'one' : 'mtl';
         var type = $(this).attr('data-type') || 'jpg,png', field = $(this).attr('data-field') || 'file';
         var title = $(this).attr('data-title') || '文件上传', uptype = $(this).attr('data-uptype') || '';
-        var url = window.ROOT_URL + '/index.php/admin/plugs/upfile.html?mode=' + method + '&uptype=' + uptype + '&type=' + type + '&field=' + field;
+        var filetype = $(this).attr('data-filetype') || 0;
+        var url = window.ROOT_URL + '/index.php/admin/plugs/upfile.html?mode=' + method + '&uptype=' + uptype + '&type=' + type + '&field=' + field + '&filetype=' + filetype;
         $.form.iframe(url, title || '文件管理');
     });
 

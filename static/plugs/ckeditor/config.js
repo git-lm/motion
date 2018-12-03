@@ -24,8 +24,9 @@
             editor.ui.addButton("UploadImage", {label: "上传本地图片", command: 'uimage', icon: 'image', toolbar: 'insert,10'});
             editor.addCommand('uimage', {
                 exec: function (editor) {
+                    var filetype = $('[data-filetype]').attr('data-filetype') || 0;
                     var field = '_editor_upload_' + Math.floor(Math.random() * 100000);
-                    var url = window.ROOT_URL + '/index.php/admin/plugs/upfile.html?mode=one&type=png,jpg,gif,jpeg&field=' + field;
+                    var url = window.ROOT_URL + '/index.php/admin/plugs/upfile.html?mode=one&type=png,jpg,gif,jpeg&field=' + field + '&filetype=' + filetype;
                     $('<input type="hidden">').attr('name', field).appendTo(editor.element.$).on('change', function () {
                         var element = CKEDITOR.dom.element.createFromHtml('<img src="' + this.value + '" border="0" title="image" />');
                         editor.insertElement(element), $(this).remove();

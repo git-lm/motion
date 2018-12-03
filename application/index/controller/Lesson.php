@@ -78,9 +78,13 @@ class Lesson extends Controller {
             $this->error('无权查看');
         }
         $list['class_time_show'] = date('Y-m-d', $list['class_time']);
+        //获取小动作
         $list['course'] = $this->get_course($id);
+        //获取留言
         $list['message'] = $this->get_messages($id);
+        // 获取热身视频
         $list['warmup_motions'] = $this->get_motion($list['warmup_mids']);
+        //获取冷身视频
         $list['colldown_motions'] = $this->get_motion($list['colldown_mids']);
         $this->assign('list', $list);
         return $this->fetch();
@@ -172,7 +176,7 @@ class Lesson extends Controller {
      * 发送记录信息
      */
     public function message() {
-        $messageModel =new \app\motion\model\Message();
+        $messageModel = new \app\motion\model\Message();
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $messsage = request()->has('message', 'post') ? request()->post('message/s') : '';
         if (!$id) {
@@ -191,6 +195,27 @@ class Lesson extends Controller {
         } else {
             $this->error('发送失败');
         }
+    }
+
+    /**
+     * 上传课程文件记录
+     */
+    public function file_add() {
+        $file = request()->has('fileurl', 'post') ? request()->post('fileurl/s') : '';
+        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
+        $data['lc_id'] = $id;
+        $data['url'] = $file;
+        $code = $this->lessonModel->file_add($data);
+        if ($code) {
+            $pathinf = pathinfo($file, PATHINFO_EXTENSION);
+            echo json_encode(['code' => 1, 'pathinfo' => $pathinf, 'lcfid' => $code]);
+        } else {
+            echo json_encode(['code' => 0, 'msg' => '上传失败']);
+        }
+    }
+
+    public function test() {
+        
     }
 
     /**
@@ -214,8 +239,10 @@ class Lesson extends Controller {
         $corder['create_time'] = 'desc';
         $course = $this->lessonModel->get_little_courses($cwhere, $corder);
         foreach ($course as &$c) {
+            //获取小动作的视频
             $motions = $this->get_motion($c['m_ids']);
             $c['motions'] = $motions;
+            //获取课程记录
         }
         return $course;
     }

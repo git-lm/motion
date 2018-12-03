@@ -181,6 +181,18 @@ class Lesson extends Model {
     }
 
     /**
+     * 添加课程视频
+     */
+    public function file_add($data = []) {
+        if (empty($data['create_time'])) {
+            $data['create_time'] = time();
+        }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员课程记录文件');
+        $code = DbService::save('motion_lesson_course_file', $data);
+        return $code;
+    }
+
+    /**
      *  获取相同的课程
      */
     public function get_history($m_ids = 0, $order = [], $page = 0, $limit = 0) {
@@ -191,7 +203,7 @@ class Lesson extends Model {
                 ->leftJoin(['motion_lesson' => 'l'], 'l.id = lc.l_id')
                 ->field('lc.* ,l.id lid ,  l.name lname , l.class_time');
         $order ['class_time'] = 'desc';
-        $lists = DbService::queryALL($db, $where, $order, $page, $limit );
+        $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
         }

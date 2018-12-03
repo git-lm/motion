@@ -5,14 +5,14 @@
     <div class="contar-wrap" id="contar-wrap">
         <form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('add_info')}" data-auto="true" method="post">
             <div class="layui-form-item layui-form-text">
-                <textarea class="layui-textarea" name='content' id="LAY-msg-content"  placeholder="请输入回复，一千字以内" maxlength="1000" style="resize:none"></textarea>
+                <textarea class="layui-textarea" name='content' data-filetype="3" id="LAY-msg-content"  placeholder="请输入回复，一千字以内" maxlength="1000" style="resize:none"></textarea>
             </div>
 
 
             <div class="layui-form-item text-center">
                 {if isset($lid)}<input type='hidden' value='{$lid}' name='lid'>{/if}
                 <button class="layui-btn" type="submit">保存配置</button>
-                <button class="layui-btn layui-btn-danger" type='button' onclick="window.history.back()">取消编辑</button>
+                <button class="layui-btn layui-btn-danger"  type='button' onclick="window.history.back()">取消编辑</button>
             </div>
         </form>
         <div id="LAY-msg-box">

@@ -82,10 +82,12 @@
 
                         <!--textarea_over 开始-->
                         <div class="textarea_over clearfix">
-                            <i class="layui-icon">&#xe65d;</i>
+                            <input type="text" name="file{$c.id}" onchange="recordfile('{$c.id}', this)"   class="layui-input" />
+                            <i class="layui-icon" data-field="file{$c.id}" data-file="one" data-type="jpg,png,mp4" data-title="运动记录" data-filetype="4">&#xe65d;</i>
                             <textarea itemid="{$c.id|default=0}" placeholder="输入内容">{$c.message|default=''}</textarea>
                         </div>
                         <!--textarea_over 结束-->
+                        <div class="uploadshow"></div>
                     </div>
                     <!--main_list_l_r_top_b end-->
                 </div>
@@ -135,6 +137,7 @@
     </div>
     <!--chart 结束-->
 </div>
+
 <!--main 结束-->
 {/block}
 
@@ -143,110 +146,142 @@
 <script type="text/javascript">
 
 
-    $(function () {
-        layui.use('layer', function () {
-            var layer = layui.layer;
-        });
+                                $(function () {
+                                    layui.use('layer', function () {
+                                        var layer = layui.layer;
+                                    });
 
-        //导航点击相应的div显示 开始
-        $(".video_list_top").click(function () {
-            if ($(this).siblings('.video_show_div').is(":hidden")) {
-                $(this).siblings('.video_show_div').show();
-            } else {
-                $(this).siblings('.video_show_div').hide()
-            }
-        });
-        //导航点击相应的div显示 结束
-        //状态tips显示 开始
+                                    //导航点击相应的div显示 开始
+                                    $(".video_list_top").click(function () {
+                                        if ($(this).siblings('.video_show_div').is(":hidden")) {
+                                            $(this).siblings('.video_show_div').show();
+                                        } else {
+                                            $(this).siblings('.video_show_div').hide()
+                                        }
+                                    });
+                                    //导航点击相应的div显示 结束
+                                    //状态tips显示 开始
 
-        $('.green').mouseover(function () {
-            var _this = $(this)
-            index = layer.tips('完成的提示', _this);
-        })
-        $('.red').mouseover(function () {
-            var _this = $(this)
-            index = layer.tips('未完成的提示', _this);
-        })
+                                    $('.green').mouseover(function () {
+                                        var _this = $(this)
+                                        index = layer.tips('完成的提示', _this);
+                                    })
+                                    $('.red').mouseover(function () {
+                                        var _this = $(this)
+                                        index = layer.tips('未完成的提示', _this);
+                                    })
 
-        $('.main_list_l_r_top').on('click', '.green', function () {
-            var _this = $(this);
-            layer.confirm('确定未完成该项内容', function () {
-                var id = _this.attr('itemid');
-                $.post('{:url("handle")}', {'id': id, 'state': 0}, function (data) {
-                    if (data.code == 1) {
-                        _this.removeClass('green').addClass('red');
-                        _this.html('&#x1007;');
-                        layer.closeAll();
-                    } else {
-                        layer.msg(data.msg);
-                    }
-                }, 'json');
-            })
-        })
-        $('.main_list_l_r_top').on('click', '.red', function () {
-            var _this = $(this);
+                                    $('.main_list_l_r_top').on('click', '.green', function () {
+                                        var _this = $(this);
+                                        layer.confirm('确定未完成该项内容', function () {
+                                            var id = _this.attr('itemid');
+                                            $.post('{:url("handle")}', {'id': id, 'state': 0}, function (data) {
+                                                if (data.code == 1) {
+                                                    _this.removeClass('green').addClass('red');
+                                                    _this.html('&#x1007;');
+                                                    layer.closeAll();
+                                                } else {
+                                                    layer.msg(data.msg);
+                                                }
+                                            }, 'json');
+                                        })
+                                    })
+                                    $('.main_list_l_r_top').on('click', '.red', function () {
+                                        var _this = $(this);
 
-            layer.confirm('确定完成该项内容', function () {
-                var id = _this.attr('itemid');
-                $.post('{:url("handleCourse")}', {'id': id, 'state': 1}, function (data) {
-                    if (data.code == 1) {
-                        _this.removeClass('red').addClass('green');
-                        _this.html('&#x1005;');
-                        layer.closeAll();
-                    } else {
-                        layer.msg(data.msg);
-                    }
-                }, 'json');
-            })
-        })
+                                        layer.confirm('确定完成该项内容', function () {
+                                            var id = _this.attr('itemid');
+                                            $.post('{:url("handleCourse")}', {'id': id, 'state': 1}, function (data) {
+                                                if (data.code == 1) {
+                                                    _this.removeClass('red').addClass('green');
+                                                    _this.html('&#x1005;');
+                                                    layer.closeAll();
+                                                } else {
+                                                    layer.msg(data.msg);
+                                                }
+                                            }, 'json');
+                                        })
+                                    })
 
 
-        $('.complete').click(function () {
-            var _this = $(this);
-            layer.confirm('确定完成', function () {
-                var id = _this.attr('itemid');
-                $.post('{:url("handleMotion")}', {'id': id}, function (data) {
-                    if (data.code == 1) {
-                        _this.addClass('layui-btn-disabled').removeClass('complete');
-                        _this.html('已完成');
-                        layer.closeAll();
-                    } else {
-                        layer.msg(data.msg);
-                    }
-                })
-            })
-        })
+                                    $('.complete').click(function () {
+                                        var _this = $(this);
+                                        layer.confirm('确定完成', function () {
+                                            var id = _this.attr('itemid');
+                                            $.post('{:url("handleMotion")}', {'id': id}, function (data) {
+                                                if (data.code == 1) {
+                                                    _this.addClass('layui-btn-disabled').removeClass('complete');
+                                                    _this.html('已完成');
+                                                    layer.closeAll();
+                                                } else {
+                                                    layer.msg(data.msg);
+                                                }
+                                            })
+                                        })
+                                    })
 
-        //状态tips显示 结束
+                                    //状态tips显示 结束
 
-        //文本输入记录
-        $('.textarea_over').on('blur', 'textarea', function () {
-            var message = $(this).val();
-            var id = $(this).attr('itemid');
-            if ($.trim(message) != '') {
-                $.post("{:url('message_add')}", {'id': id, 'message': message}, function (data) {
-                    console.log(data);
-                    if (data.code == 0) {
-                        layui.use('layer', function () {
-                            var layer = layui.layer;
-                            layer.msg(data.msg);
-                        });
-                    }
-                }, 'json')
-            }
-        })
+                                    //文本输入记录
+                                    $('.textarea_over').on('blur', 'textarea', function () {
+                                        var message = $(this).val();
+                                        var id = $(this).attr('itemid');
+                                        if ($.trim(message) != '') {
+                                            $.post("{:url('message_add')}", {'id': id, 'message': message}, function (data) {
+                                                console.log(data);
+                                                if (data.code == 0) {
+                                                    layui.use('layer', function () {
+                                                        var layer = layui.layer;
+                                                        layer.msg(data.msg);
+                                                    });
+                                                }
+                                            }, 'json')
+                                        }
+                                    })
 
-        //发送留言
-        $('.send').click(function () {
-            var message = $('textarea[name="message"]').val();
-            var id = $(this).attr('itemid');
-            if ($.trim(message) != '') {
-                $.post('{:url("message")}', {'id': id, 'message': message}, function (data) {
-                    layer.msg(data.msg)
-                }, 'json')
-            }
+                                    //发送留言
+                                    $('.send').click(function () {
+                                        var message = $('textarea[name="message"]').val();
+                                        var id = $(this).attr('itemid');
+                                        if ($.trim(message) != '') {
+                                            $.post('{:url("message")}', {'id': id, 'message': message}, function (data) {
+                                                layer.msg(data.msg)
+                                            }, 'json')
+                                        }
 
-        })
-    })
+                                    })
+
+//                                    $('input').on('input propertychange', function () {
+//                                        alert();
+//                                    })
+                                })
+                                function recordfile(id, e) {
+                                    var _this = $(e)
+                                    var fileurl = _this.val();
+                                    $.post('{:url("file_add")}', {'fileurl': fileurl, 'id': id}, function (data) {
+                                        if (data.code == 0) {
+                                            layer.msg(data.msg);
+                                        } else {
+                                            var pathinfo = data.msg;
+                                            if (pathinfo == 'mp4') {
+                                                var html = '<div class="hasvideo">'
+                                                        + '<video src="' + fileurl + '" controls="controls"></video>'
+                                                        + '</div>'
+                                                        + '<button class="layui-btn backgroundred" itemid="' + data.lcfid + '">'
+                                                        + '<i class="layui-icon ">&#xe640;</i> Hold to Delete Video'
+                                                        + '</button>';
+                                            } else {
+                                                var html = '<div class="hasvideo">'
+                                                        + '<img src="' + fileurl + '">'
+                                                        + '</div>'
+                                                        + '<button class="layui-btn backgroundred" itemid="' + data.lcfid + '">'
+                                                        + '<i class="layui-icon ">&#xe640;</i> Hold to Delete Video'
+                                                        + '</button>';
+                                            }
+                                            _this.parent().siblings('.uploadshow').html(html);
+                                        }
+                                    }, 'json')
+                                }
+
 </script>
 {/block}
