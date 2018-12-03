@@ -212,7 +212,7 @@ class Member extends Model {
             $data['create_time'] = time();
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '新增会员绑定教练');
-        $code = DbService::save('member_coach', $data);
+        $code = DbService::save('motion_member_coach', $data);
         return $code;
     }
 
@@ -250,9 +250,11 @@ class Member extends Model {
                 $emcwhere['id'] = $member_coach['id'];
                 $this->edit_member_coach($emcdata, $emcwhere);
             }
+
             if ($c_id) {
                 $amcdata['c_id'] = $c_id;
                 $amcdata['m_id'] = $mid;
+               
                 $this->add_member_coach($amcdata);
             }
             $mdata['c_id'] = $c_id;
