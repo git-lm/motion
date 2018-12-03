@@ -36,19 +36,26 @@ class Member extends Controller {
      * 编辑或者新增会员信息
      */
     public function info() {
-        $data = request()->post();
-        $valiedate = $this->memberModel->validate_info($data);
-        if ($valiedate) {
-            $this->error($valiedate);
-        }
-        $data['age'] = request()->has('age', 'post') ? request()->post('age/d') : 20;
-        $data['is_email'] = request()->has('is_email', 'post') ? request()->post('is_email/d') : 0;
-        $data['is_wechat'] = request()->has('is_wechat', 'post') ? request()->post('is_wechat/d') : 0;
-        $code = $this->memberModel->info($data, $this->m_id);
-        if ($code) {
-            $this->success('保存成功', '');
+        if (empty(request()->post())) {
+            $where [] = ['m.id', '=', $this->m_id];
+            $list = $this->memberModel->get_member_info($where);
+            $this->assign('list', $list);
+            return $this->fetch();
         } else {
-            $this->error('保存失败');
+            $data = request()->post();
+            $valiedate = $this->memberModel->validate_info($data);
+            if ($valiedate) {
+                $this->error($valiedate);
+            }
+            $data['age'] = request()->has('age', 'post') ? request()->post('age/d') : 20;
+            $data['is_email'] = request()->has('is_email', 'post') ? request()->post('is_email/d') : 0;
+            $data['is_wechat'] = request()->has('is_wechat', 'post') ? request()->post('is_wechat/d') : 0;
+            $code = $this->memberModel->info($data, $this->m_id);
+            if ($code) {
+                $this->success('保存成功', '');
+            } else {
+                $this->error('保存失败');
+            }
         }
     }
 

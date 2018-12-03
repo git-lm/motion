@@ -1,0 +1,165 @@
+{extend  name="public:main"}
+{block name="main"}
+<!--main 开始-->
+<form class="layui-form" >
+    <div class='main infor '>
+        <div class="infor_in">
+            <!-- infor_l 开始 -->
+            <div class="infor_l">
+                <h3>编辑信息</h3>
+                <div class="header_tu"><img src="{$list.picture|default='sysconf("site_log")'}" alt=""></div>
+                <input type="hidden" name="picture" onchange="picturechange()"   class="layui-input" />
+                <a href="javascript:void(0)"  data-field="picture" data-file="one" data-type="jpg,png" data-title="上传头像" data-filetype="5" class="layui-btn layui-btn-primary">
+
+                    <i class="layui-icon">&#xe65d;</i> 修改头像
+                </a>
+                <br/>
+                <a href="pas.html" class="layui-btn layui-btn-primary">
+                    修改密码
+                </a>
+            </div>
+            <!-- infor_l 结束 -->
+
+            <!--infor_r 开始-->
+            <div class="infor_r">
+                <!-- infor_r_top 开始 -->
+                <div class="infor_r_top">
+                    <div class="infor_r_top_l">
+                        <div class="lablediv">
+                            <label>
+                                <span>姓名 <i class="red">*</i></span>
+                                <input type="text" maxlength="50" value="{$list.first_name|default=''}" name="first_name" placeholder="请输入姓名,不超过五十个字" autocomplete="off" class="layui-input" />
+                            </label>
+                        </div>
+
+                        <div class="lablediv">
+                            <label>
+                                <span>邮箱 <i class="red">*</i></span>
+                                <input type="text" maxlength="20" value="{$list.email|default=''}"  name="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input" />
+                            </label>
+                        </div>
+
+                        <div class="lablediv">
+                            <label>
+                                <span>地址  <i class="red">*</i></span>
+                                <input type="text" maxlength="50" value="{$list.location|default=''}"  name="location" placeholder="请输入地址" autocomplete="off" class="layui-input" />
+                            </label>
+                        </div>
+
+                        <div class="lablediv">
+                            <label>
+                                <span>生日 (2018/01/18)  <i class="red">*</i></span>
+                                <input type="text" maxlength="15" value="{$list.birthday|default=''}" name="birthday" placeholder="请输入生日" autocomplete="off" class="layui-input" />
+                            </label>
+                        </div>
+
+
+
+
+                    </div>
+
+                    <div class="infor_r_top_l">
+                        <div class="lablediv">
+                            <label>
+                                <span>曾用名 <i class="red">*</i></span>
+                                <input type="text" maxlength="50" value="{$list.last_name|default=''}" name="last_name" placeholder="请输入曾用名" autocomplete="off" class="layui-input" />
+                            </label>
+                        </div>
+
+                        <div class="lablediv">
+                            <label>
+                                <span>微信</span>
+                                <input type="text" maxlength="20" value="{$list.wechat|default=''}" name="wechat" placeholder="请输入微信" autocomplete="off" class="layui-input" />
+                            </label>
+                        </div>
+
+                        <div class="lablediv ">
+                            <label class='half_lab'>
+                                <span>身高 (cm.)   <i class="red">*</i></span>
+                                <input type="text" maxlength="10" value="{$list.height|default=''}" name="height" placeholder="请输入身高" autocomplete="off" class="layui-input" />
+                            </label>
+
+                            <label class='half_lab'>
+                                <span>体重 (kg.)    <i class="red">*</i></span>
+                                <input type="text" maxlength="10" value="{$list.weight|default=''}" name="weight" placeholder="请输入体重" autocomplete="off" class="layui-input" />
+                            </label>
+                        </div>
+                        <div class="lablediv ">
+                            <label class='half_lab'>
+                                <span>性别  <i class="red">*</i></span>
+                                <input type="radio"  name="sex_show"  {eq name="1" value="$list.sex|default='1'"}checked{/eq} value="1" title="男" />
+                                       <input type="radio"  name="sex_show" {eq name="2" value="$list.sex|default=''"}checked{/eq}   value="2" title="女" />
+                                       <input name="sex" type="hidden">
+                            </label>
+
+                            <label class='half_lab'>
+                                <span>年龄   <i class="red">*</i></span>
+                                <input type="number" maxlength="10" value="{$list.age|default='20'}" name="age" placeholder="请输入年龄" autocomplete="off" class="layui-input" />
+                            </label>
+                        </div>
+
+
+                    </div>
+                </div>
+                <!-- infor_r_top 结束 -->
+
+                <!-- infor_r_bot 开始 -->
+                <div class="infor_r_bot">
+                    <h4 class="border_b">消息通知</h4>
+                    <div class="switch_list">
+                        <div class="layui-form"><input type="checkbox" {eq name="1" value="$list.is_email"}checked{/eq} value="1" name="is_email" lay-skin="switch" lay-text="开启|关闭"><span class="fontspan">发送邮件</span></div>
+                        <div class="layui-form"><input type="checkbox" {eq name="1" value="$list.is_wechat"}checked{/eq} value="1"  name="is_wechat" lay-skin="switch" lay-text="开启|关闭"><span class="fontspan">发送微信</span></div>
+                    </div>
+
+                    <button class="layui-btn margin20 layui-btn-normal" lay-submit lay-filter="memberInfo">更新</button>
+                </div>
+                <!-- infor_r_bot 结束 -->
+            </div>
+            <!--infor_r 结束-->
+        </div>
+    </div>
+</form>
+<!--main 结束-->
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    $(function () {
+        layui.use(['form', 'layer'], function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //监听提交
+            form.on('submit(memberInfo)', function (data) {
+                $.ajax({
+                    type: "post",
+                    url: "{:url('info')}",
+                    data: $('form').serialize(),
+                    dataType: "json",
+                    success: function (data) {
+                        layer.msg(data.msg);
+                    }
+                });
+                return false;
+            });
+            //监听点选按钮
+            form.on('radio', function (data) {
+                var sex = data.value;
+                $('input[name="sex_show"]').removeAttr('checked');
+                $('input[name="sex_show"][value="' + sex + '"]').attr('checked', 'checked');
+                $('input[name="sex"]').val(sex);
+            })
+        });
+    })
+    function picturechange() {
+
+        var picture = $('input[name="picture"]').val()
+        $.post('{:url("picture_add")}', {'picture': picture}, function (data) {
+            if (data.code == 0) {
+                layer.msg(data.msg);
+            } else {
+                $('.header_tu img').attr('src', picture);
+            }
+        }, 'json')
+    }
+</script>
+{/block}
