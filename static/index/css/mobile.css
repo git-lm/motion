@@ -1,10 +1,10 @@
 .header_cell ul{
-	display: none;
+    display: none;
 }
 
 .header_nav{
-	height:auto;
-	padding: 0.2rem 0;
+    height:auto;
+    padding: 0.2rem 0;
 }
 
 .header_cell .logo_img {
@@ -22,25 +22,25 @@
 }
 
 .header_cell{
-	max-width: 90%;
-	height: 1rem;
+    max-width: 90%;
+    height: 1rem;
 }
 
 .width{
-	width: 95%;
+    width: 95%;
 }
 
 .choose_nav_c_span span{
-	font-size: 12px;
-	padding: 3px 4px;
+    font-size: 12px;
+    padding: 3px 4px;
 }
 
 .f12{
-	font-size: 12px;
+    font-size: 12px;
 }
 
 .choose_nav_c .R img{
-	margin-right:4px;
+    margin-right:4px;
 }
 
 .choose_nav_c {
@@ -51,113 +51,113 @@
 }
 
 .main ol li a .font_l{
-	display: none;
+    display: none;
 }
 
 .footer{
-	display: block;
-	width: 100%;
-	position: fixed;
-	height:auto;
-	background-color: #000;
-	left: 0;
-	bottom: 0;
+    display: block;
+    width: 100%;
+    position: fixed;
+    height:auto;
+    background-color: #000;
+    left: 0;
+    bottom: 0;
 }
 
 .footer ul {
-	overflow: hidden;
-	width: 100%;
-	padding: 0.15rem 0;
-	background: #3e4248;
+    overflow: hidden;
+    width: 100%;
+    padding: 0.15rem 0;
+    background: #3e4248;
 }
 
 .footer ul li{
-	float: left;
-	width: 25%;
-	text-align: center;
-	color: #fff;
+    float: left;
+    width: 49%;
+    text-align: center;
+    color: #fff;
 }
 
 .footer ul li a{
-	color: #fff;
-	font-size: 12px;
+    color: #fff;
+    font-size: 12px;
 }
 
 .footer ul li img{
-	width: 0.5rem;
-	height: 0.5rem;
-	display: block;
-	margin:0 auto 1%;
+    width: 0.5rem;
+    height: 0.5rem;
+    display: block;
+    margin:0 auto 1%;
 }
 
 .eg_link a{
-	font-size: 14px;
+    font-size: 14px;
 }
 
 .eg_link{
-	padding: 0.1rem 0;
+    padding: 0.1rem 0;
 }
 
 .profile ul li a{
-	padding: 0.25rem;
+    padding: 0.25rem;
 }
 
 .profile_infor_in{
-	padding: 0.25rem 0;
+    padding: 0.25rem 0;
 }
 
 .profile ul li a .a_header{
-	font-size: 0.28rem;
+    font-size: 0.28rem;
 }
 
 .profile ul li svg{
-	width: 14px;
+    width: 14px;
 }
 
 .header_back{
-	line-height: 1rem;
+    line-height: 1rem;
 }
 
 .Header-title{
-	font-size: 0.3rem;
+    font-size: 0.3rem;
 }
 
 .Header-title svg{
-	width: 0.3rem;
-	top: 1px;
+    width: 0.3rem;
+    top: 1px;
 }
 .textarea_over textarea{
-	padding-right: 0;
+    padding-right: 0;
 }
 
 .zhanwei{
-	height: 2rem;
-	display: block;
+    height: 2rem;
+    display: block;
 }
 
 .bgimg{
-	width: 77%;
+    width: 77%;
 }
 
 .infor_l,.infor_r
 {
-	width: 100%;
+    width: 100%;
     max-width: 100%;
 }
 
 .infor_r_top_l{
-	width: 100%;
+    width: 100%;
 }
 
 .header_tu.header_tu{
-	width: 1.8rem;
-	height: 1.8rem;
+    width: 1.8rem;
+    height: 1.8rem;
 }
 
 .infor_r{
-	margin-top:8%;
+    margin-top:8%;
 }
 
 .lablediv label span{
-	font-size: 0.3rem;
+    font-size: 0.3rem;
 }
