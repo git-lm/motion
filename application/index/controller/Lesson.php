@@ -243,6 +243,7 @@ class Lesson extends Controller {
             $motions = $this->get_motion($c['m_ids']);
             $c['motions'] = $motions;
             //获取课程记录
+            
         }
         return $course;
     }
