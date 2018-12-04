@@ -12,4 +12,13 @@ foreach (scandir(env('app_path')) as $dir) {
     }
 }
 //绑定admin 为后台
+Route::domain('admin', 'admin');
+//绑定前台index 模块  Login 控制器  别名
+Route::alias('login', 'index/login');
+//绑定前台index 模块  Member 控制器 别名
+Route::alias('member', 'index/member');
+//绑定前台index 模块  index 控制器 别名
+Route::alias('list', 'index/index');
+//绑定前台index 模块  Lesson 控制器 别名
+Route::alias('lesson', 'index/lesson');
 return [];

@@ -12,11 +12,6 @@ use app\motion\model\Member as memberModel;
 class Login extends Controller {
 
     public function initialize() {
-
-        if (session('member_info.id') && $this->request->action() !== 'out') {
-            $this->redirect('/index');
-        }
-
         $this->memberModel = new memberModel();
     }
 
@@ -45,7 +40,7 @@ class Login extends Controller {
         }
         session('motion_member', $member);
         $this->memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id']);
-        $this->success('登录成功，正在进入系统...', '/index');
+        $this->success('登录成功，正在进入系统...', '/list.html');
     }
 
     /**
@@ -55,7 +50,7 @@ class Login extends Controller {
         $member = session('motion_member');
         session('motion_member', NULL);
         $this->memberModel->write('退出系统', '用户退出系统成功', $member['name'], $member['id']);
-        $this->success('退出登录成功！', '/index/login');
+        $this->success('退出登录成功！', '/login.html');
     }
 
 }

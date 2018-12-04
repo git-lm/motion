@@ -4,8 +4,8 @@
 <div class="choose_nav">
     <div class="choose_nav_c width">
         <div class="choose_nav_c_span">
-            <span class=' {eq name='$type' value='upcomming'}span_cur{/eq}' ><a href="{:url('index')}">upcomming</a></span>
-             <span class=' {eq name='$type' value='past'}span_cur{/eq}'><a href="{:url('index')}?type=past">past</a></span>
+            <span class=' {eq name='$type' value='upcomming'}span_cur{/eq}' ><a href="{:url('/list')}">upcomming</a></span>
+             <span class=' {eq name='$type' value='past'}span_cur{/eq}'><a href="{:url('/list')}?type=past">past</a></span>
              </div>
 
              <!--        <div class="R"><img src="__STATIC__/index/images/icon_w.png" alt="">History</div>-->
@@ -25,7 +25,7 @@
         <script id="lessonstpl" type="text/html">
             {{#  layui.each(d.msg, function(index, item){ }}
             <li>
-                <a target='_blank' href="{:url('/index/lesson/detile')}?id={{item.id}}">
+                <a target='_blank' href="{:url('/lesson/detile')}?id={{item.id}}">
                     <div class="a_cover">
                         <!--文字部分 开始-->
                         <div class="font_l">

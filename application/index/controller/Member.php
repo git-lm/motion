@@ -14,7 +14,7 @@ class Member extends Controller {
     public function initialize() {
         // 登录状态检查
         if (!session('motion_member')) {
-            $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('@login')];
+            $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('/login.html')];
             return request()->isAjax() ? json($msg) : $this->redirect($msg['url']);
         }
         $this->m_id = session('motion_member.id');
