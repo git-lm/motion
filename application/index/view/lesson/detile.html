@@ -140,7 +140,29 @@
         </button>
         {/if}
     </div>
-
+    <div class="sole">
+        <!--sole_man  开始-->
+        {volist name="$list.message" id="vo_msg"}
+        {if !empty($vo_msg.c_id)}
+        <div class="sole_man">
+            <!--<img src="images/bg.png" alt=""  class="sole_man_l" />-->
+            <div class="sole_man_r">
+                <h4>{$vo_msg.cname} <span>{$vo_msg.time_trans}</span></h4>
+                <div class="font_sole_man">{$vo_msg.content|raw|default=""}</div>
+            </div>
+        </div>
+        {else /}
+        <div class="sole_man sole_man_rdiv">
+            <!--<img src="images/bg.png" alt=""  class="sole_man_l" />-->
+            <div class="sole_man_r">
+                <h4>{$vo_msg.mname} <span>{$vo_msg.time_trans}</span></h4>
+                <div class="font_sole_man">{$vo_msg.content|raw|default=""}</div>
+            </div>
+        </div>
+        {/if}
+        {/volist}
+    </div>
+    <!--sole_man  结束-->
     <!--chart 开始-->
     <div class="chart">
         <textarea class="layui-textarea" name='message' data-filetype-textarea="3" id="LAY-msg-content"  placeholder="请输入回复，一千字以内" maxlength="1000" style="resize:none"></textarea>

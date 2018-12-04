@@ -161,3 +161,14 @@
 .lablediv label span{
     font-size: 0.3rem;
 }
+
+
+.sole_man .sole_man_l{
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  float: left;
+  position: relative;
+  top: 2px;
+  margin-right: 3%;
+}

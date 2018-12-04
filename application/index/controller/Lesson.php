@@ -65,7 +65,7 @@ class Lesson extends Controller {
      * 记录详情
      */
     public function detile() {
-        $id = request()->has('id', 'get') ? request()->get('id/d') : 1;
+        $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         if (!$id) {
             $this->error('请正确选择');
         }
@@ -232,11 +232,11 @@ class Lesson extends Controller {
      * 获取留言
      */
     public function get_messages($lid = 0) {
-        $mwhere[] = ['p_id', '=', $lid];
-        $mwhere[] = ['type', '=', 1];
-        $mwhere[] = ['m_id', '=', 'null'];
+        $mwhere[] = ['m.p_id', '=', $lid];
+        $mwhere[] = ['m.type', '=', 1];
         $morder['create_time'] = 'desc';
         $messages = $this->messageModel->get_messages($mwhere, $morder);
+        
         return $messages;
     }
 

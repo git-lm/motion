@@ -101,3 +101,25 @@ function ajax_list_return($msg = '', $pages = 0, $code = 1) {
     echo json_encode($json);
     return;
 }
+
+/**
+ *  时间比较 
+ * @param type $the_time 时间戳
+ * @return type
+ */
+function time_trans($the_time) {
+    $now_time = time();
+
+
+    $dur = $now_time - $the_time;
+
+    if ($dur < 60) {
+        return $dur . '秒前';
+    } else if ($dur < 3600) {
+        return floor($dur / 60) . '分钟前';
+    } else if ($dur < 86400) {
+        return floor($dur / 3600) . '小时前';
+    } else {
+        return floor($dur / 86400) . '天前';
+    }
+}

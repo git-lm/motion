@@ -61,7 +61,6 @@ class Message extends Model {
                 ->field('m.* , c.name cname , mm.name mname')
                 ->leftJoin(['motion_coach' => 'c'], 'c.id = m.c_id')
                 ->leftJoin(['motion_member' => 'mm'], 'mm.id = m.m_id');
-
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
@@ -70,6 +69,7 @@ class Message extends Model {
             } else {
                 $list['sendname'] = $list['mname'];
             }
+            $list['time_trans'] = time_trans($list['create_time']);
         }
         return $lists;
     }

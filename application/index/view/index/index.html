@@ -69,11 +69,12 @@
                             <div class="people_li">
                                 {{#  layui.each(item.message, function(index2, item2){ }}
                                 <!--                        <img src="images/icon3.png"  class="head_img" alt="">-->
-
+                                {{# if(item2.c_id !=null){}}
                                 <div class="people_r">
-                                    <h4 class="comments-name">{{item.coach_name}} <!--<span class="day_h4">6 days ago</span> --></h4>
-                                    <p class="font_div">{{=item.content}}</p>
+                                    <h4 class="comments-name">{{item2.cname}} <span class="day_h4">{{item2.time_trans}}</span> </h4>
+                                    <p class="font_div">{{item2.content}}</p>
                                 </div>
+                                {{# }}}
                                 {{# }) }}
                             </div>
                         </div>
