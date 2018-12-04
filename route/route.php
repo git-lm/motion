@@ -11,5 +11,5 @@ foreach (scandir(env('app_path')) as $dir) {
         $filename && file_exists($filename) && include($filename);
     }
 }
-
+//绑定admin 为后台
 return [];
