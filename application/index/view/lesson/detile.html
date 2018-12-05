@@ -186,7 +186,6 @@
 
     $(function () {
         var me = window.createEditor('[name="message"]', {height: 200});
-        console.log(me)
         //导航点击相应的div显示 开始
         $(".video_list_top").click(function () {
             if ($(this).siblings('.video_show_div').is(":hidden")) {
@@ -282,7 +281,11 @@
             var id = $(this).attr('itemid');
             if ($.trim(message) != '') {
                 $.post('{:url("message")}', {'id': id, 'message': message}, function (data) {
-                    layer.msg(data.msg)
+                    if (data.code == 1) {
+                        location.reload();
+                    } else {
+                        layer.msg(data.msg)
+                    }
                 }, 'json')
             }
         })
