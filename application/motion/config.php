@@ -1,7 +1,7 @@
 <?php
 
 use think\Db;
-$config = Db::table();
+$config = Db::table(); 
 return [
     // 应用调试模式
     'app_debug' => true,
