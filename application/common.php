@@ -123,3 +123,7 @@ function time_trans($the_time) {
         return floor($dur / 86400) . '天前';
     }
 }
+
+/**
+ * 获取微信配置
+ */
