@@ -1,4 +1,5 @@
 <?php
+
 namespace service;
 
 use app\wechat\service\FansService;
@@ -62,8 +63,7 @@ use think\Exception;
  * @method mixed wechat() static 第三方微信工具
  * @method mixed config() static 第三方配置工具
  */
-class WechatService
-{
+class WechatService {
 
     /**
      * 接口类型模式
@@ -79,23 +79,22 @@ class WechatService
      * @throws Exception
      * @throws \think\exception\PDOException
      */
-    public static function instance($name, $type = null)
-    {
+    public static function instance($name, $type = null) {
         if (!in_array($type, ['WeChat', 'WeMini'])) {
             $type = self::$type;
         }
         switch (strtolower(sysconf('wechat_type'))) {
             case 'api':
                 $config = [
-                    'token'          => sysconf('wechat_token'),
-                    'appid'          => sysconf('wechat_appid'),
-                    'appsecret'      => sysconf('wechat_appsecret'),
+                    'token' => sysconf('wechat_token'),
+                    'appid' => sysconf('wechat_appid'),
+                    'appsecret' => sysconf('wechat_appsecret'),
                     'encodingaeskey' => sysconf('wechat_encodingaeskey'),
-                    'mch_id'         => sysconf('wechat_mch_id'),
-                    'mch_key'        => sysconf('wechat_partnerkey'),
-                    'ssl_cer'        => sysconf('wechat_cert_cert'),
-                    'ssl_key'        => sysconf('wechat_cert_key'),
-                    'cachepath'      => env('cache_path') . 'wechat' . DIRECTORY_SEPARATOR,
+                    'mch_id' => sysconf('wechat_mch_id'),
+                    'mch_key' => sysconf('wechat_partnerkey'),
+                    'ssl_cer' => sysconf('wechat_cert_cert'),
+                    'ssl_key' => sysconf('wechat_cert_key'),
+                    'cachepath' => env('cache_path') . 'wechat' . DIRECTORY_SEPARATOR,
                 ];
                 $class = "\\{$type}\\" . ucfirst(strtolower($name));
                 if (class_exists($class)) {
@@ -122,8 +121,7 @@ class WechatService
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public static function webJsSDK($url = null)
-    {
+    public static function webJsSDK($url = null) {
         $signUrl = is_null($url) ? app('request')->url(true) : $url;
         switch (strtolower(sysconf('wechat_type'))) {
             case 'api':
@@ -145,8 +143,7 @@ class WechatService
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public static function webOauth($url, $fullMode = 0, $isRedirect = true)
-    {
+    public static function webOauth($url, $fullMode = 0, $isRedirect = true) {
         $appid = self::getAppid();
         list($openid, $fansinfo) = [session("{$appid}_openid"), session("{$appid}_fansinfo")];
         if ((empty($fullMode) && !empty($openid)) || (!empty($fullMode) && !empty($fansinfo))) {
@@ -189,7 +186,6 @@ class WechatService
                 exit("window.location.href='{$result['url']}'");
             default:
                 throw new Exception('请在后台配置微信对接授权模式！');
-
         }
     }
 
@@ -199,8 +195,7 @@ class WechatService
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public static function getAppid()
-    {
+    public static function getAppid() {
         switch (strtolower(sysconf('wechat_type'))) {
             case 'api':
                 return sysconf('wechat_appid');
@@ -219,8 +214,7 @@ class WechatService
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public static function __callStatic($name, $arguments)
-    {
+    public static function __callStatic($name, $arguments) {
         if (substr($name, 0, 6) === 'WeMini') {
             self::$type = 'WeMini';
             $name = substr($name, 6);
