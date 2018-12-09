@@ -64,7 +64,7 @@ class Message extends BasicAdmin {
             $this->error($validate);
         }
         //获取教练信息
-        $list = $this->get_lession_data($lid);
+        $list = $this->get_lesson_data($lid);
         if (empty($list)) {
             $this->error('无此记录');
         }
@@ -96,7 +96,7 @@ class Message extends BasicAdmin {
     /**
      * 获取记录信息
      */
-    public function get_lession_data($id = 0) {
+    public function get_lesson_data($id = 0) {
 
         $lessonModel = new \app\motion\model\Lesson();
         $where['id'] = $id;
