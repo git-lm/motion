@@ -384,7 +384,6 @@ class Member extends BasicAdmin {
         $this->check_data($mid);
         //分配给教练
         $code = $this->memberModel->dis($mid, $c_id);
-        $this->error($code);
         if ($code) {
             $this->success('修改成功', '');
         } else {
