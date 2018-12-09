@@ -11,6 +11,7 @@ use WeChat\Contracts\BasicWeChat;
  */
 class Template extends BasicWeChat
 {
+
     /**
      * 设置所属行业
      * @param string $industry_id1 公众号模板消息所属行业编号
@@ -93,6 +94,5 @@ class Template extends BasicWeChat
         $this->registerApi($url, __FUNCTION__, func_get_args());
         return $this->httpPostForJson($url, $data);
     }
-
 
 }

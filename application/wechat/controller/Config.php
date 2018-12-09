@@ -32,28 +32,33 @@ class Config extends BasicAdmin
     public function index()
     {
         $thrNotifyUrl = url('@wechat/api.push', '', true, true);
-        if ($this->request->isGet()) {
+        if ($this->request->isGet())
+        {
             $code = encode(url('@admin', '', true, true) . '#' . $this->request->url());
             $data = [
-                'title'   => '微信接口配置',
-                'appid'   => $this->request->get('appid', sysconf('wechat_thr_appid')),
-                'appkey'  => $this->request->get('appkey', sysconf('wechat_thr_appkey')),
+                'title' => '微信接口配置',
+                'appid' => $this->request->get('appid', sysconf('wechat_thr_appid')),
+                'appkey' => $this->request->get('appkey', sysconf('wechat_thr_appkey')),
                 'authurl' => config('wechat.service_url') . "/wechat/api.push/auth/{$code}.html",
             ];
-            if ($this->request->get('appid', false)) {
+            if ($this->request->get('appid', false))
+            {
                 sysconf('wechat_thr_appid', $data['appid']);
                 sysconf('wechat_thr_appkey', $data['appkey']);
                 sysconf('wechat_type', 'thr');
                 WechatService::config()->setApiNotifyUri($thrNotifyUrl);
             }
-            try {
+            try
+            {
                 $data['wechat'] = WechatService::config()->getConfig();
-            } catch (Exception $e) {
+            } catch (Exception $e)
+            {
                 $data['wechat'] = [];
             }
             return $this->fetch('', $data);
         }
-        try {
+        try
+        {
             // 接口对接类型
             sysconf('wechat_type', $this->request->post('wechat_type'));
             // 直接参数对应
@@ -61,17 +66,21 @@ class Config extends BasicAdmin
             sysconf('wechat_appid', $this->request->post('wechat_appid'));
             sysconf('wechat_appsecret', $this->request->post('wechat_appsecret'));
             sysconf('wechat_encodingaeskey', $this->request->post('wechat_encodingaeskey'));
+            sysconf('wechat_lesson_id', $this->request->post('wechat_lesson_id'));
             // 第三方平台配置
             sysconf('wechat_thr_appid', $this->request->post('wechat_thr_appid'));
             sysconf('wechat_thr_appkey', $this->request->post('wechat_thr_appkey'));
             // 第三方平台时设置远程平台通知接口
-            if ($this->request->post('wechat_type') === 'thr') {
-                if (!WechatService::config()->setApiNotifyUri($thrNotifyUrl)) {
+            if ($this->request->post('wechat_type') === 'thr')
+            {
+                if (!WechatService::config()->setApiNotifyUri($thrNotifyUrl))
+                {
                     $this->error('远程服务端接口更新失败，请稍候再试！');
                 }
             }
             LogService::write('微信管理', '修改微信接口参数成功');
-        } catch (\Exception $e) {
+        } catch (\Exception $e)
+        {
             $this->error('微信授权保存成功, 但授权验证失败 ! <br>' . $e->getMessage());
         }
         $this->success('微信授权数据修改成功！', url('@admin') . "#" . url('@wechat/config/index'));

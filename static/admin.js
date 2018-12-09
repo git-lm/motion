@@ -477,7 +477,7 @@ $(function () {
                 var title = $(this).attr('data-title');
                 url = url + '?' + filed + '=' + data.id;
                 return $.form.modal(url, 'open_type=modal', title || '编辑');
-            } else if (layEvent === 'href') { //删除
+            } else if (layEvent === 'href') { //跳转
                 var href = $(this).attr('data-action');
                 var field = $(this).attr('data-field') || 'id';
                 var url = href + '?' + [field] + '=' + data.id;
@@ -488,7 +488,7 @@ $(function () {
                 var url = $(this).attr('data-action');
                 var value = $(this).attr('data-value');
                 $.msg.confirm('确定要操作这些数据吗？', function () {
-                    $.form.load(action, {value: value, [field]: data.id}, 'post');
+                    $.form.load(url, {value: value, [field]: data.id}, 'post');
                 });
             } else if (layEvent === 'del') { //编辑
                 var field = $(this).attr('data-field') || 'id';

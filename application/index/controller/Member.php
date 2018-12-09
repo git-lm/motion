@@ -9,11 +9,14 @@ use app\motion\model\Member as memberModel;
  * 应用入口控制器
  * @author Anyon 
  */
-class Member extends Controller {
+class Member extends Controller
+{
 
-    public function initialize() {
+    public function initialize()
+    {
         // 登录状态检查
-        if (!session('motion_member')) {
+        if (!session('motion_member'))
+        {
             $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('/login.html')];
             return request()->isAjax() ? json($msg) : $this->redirect($msg['url']);
         }
@@ -24,11 +27,19 @@ class Member extends Controller {
     /**
      *  首页
      */
-    public function index() {
+    public function index()
+    {
         $where [] = ['m.id', '=', $this->m_id];
         $list = $this->memberModel->get_member_info($where);
-        if (empty($list['picture'])) {
-            $list['picture'] = sysconf('site_logo');
+        if (empty($list['picture']))
+        {
+            if (empty($list['headimgurl']))
+            {
+                $list['picture'] = sysconf('site_logo');
+            } else
+            {
+                $list['picture'] = $list['headimgurl'];
+            }
         }
         $this->assign('list', $list);
 
@@ -38,28 +49,41 @@ class Member extends Controller {
     /**
      * 编辑或者新增会员信息
      */
-    public function info() {
-        if (empty(request()->post())) {
+    public function info()
+    {
+        if (empty(request()->post()))
+        {
             $where [] = ['m.id', '=', $this->m_id];
             $list = $this->memberModel->get_member_info($where);
-            if (empty($list['picture'])) {
-                $list['picture'] = sysconf('site_logo');
+            if (empty($list['picture']))
+            {
+                if (empty($list['headimgurl']))
+                {
+                    $list['picture'] = sysconf('site_logo');
+                } else
+                {
+                    $list['picture'] = $list['headimgurl'];
+                }
             }
             $this->assign('list', $list);
             return $this->fetch();
-        } else {
+        } else
+        {
             $data = request()->post();
             $valiedate = $this->memberModel->validate_info($data);
-            if ($valiedate) {
+            if ($valiedate)
+            {
                 $this->error($valiedate);
             }
             $data['age'] = request()->has('age', 'post') ? request()->post('age/d') : 20;
             $data['is_email'] = request()->has('is_email', 'post') ? request()->post('is_email/d') : 0;
             $data['is_wechat'] = request()->has('is_wechat', 'post') ? request()->post('is_wechat/d') : 0;
             $code = $this->memberModel->info($data, $this->m_id);
-            if ($code) {
+            if ($code)
+            {
                 $this->success('保存成功', '');
-            } else {
+            } else
+            {
                 $this->error('保存失败');
             }
         }
@@ -69,27 +93,34 @@ class Member extends Controller {
      * 渲染修改密码页面
      * @return type
      */
-    public function pas() {
-        if (!request()->post()) {
+    public function pas()
+    {
+        if (!request()->post())
+        {
             return $this->fetch();
-        } else {
+        } else
+        {
             $pwd = request()->has('password', 'post') ? request()->post('password/s') : '';
             $oldPwd = request()->has('oldPwd', 'post') ? request()->post('oldPwd/s') : '';
-            if (!$pwd) {
+            if (!$pwd)
+            {
                 $this->error('请正确填写');
             }
             $where [] = ['id', '=', $this->m_id];
             $where [] = ['password', '=', md5($oldPwd)];
             $list = $this->memberModel->get_member($where);
-            if (empty($list)) {
+            if (empty($list))
+            {
                 $this->error('原密码错误');
             }
             $ewhere['id'] = $this->m_id;
             $data['password'] = md5($pwd);
             $code = $this->memberModel->edit($data, $ewhere);
-            if ($code) {
+            if ($code)
+            {
                 $this->success('修改成功，请重新登录', '');
-            } else {
+            } else
+            {
                 $this->error('修改失败');
             }
         }
@@ -98,13 +129,16 @@ class Member extends Controller {
     /**
      * 更换头像
      */
-    public function picture_add() {
+    public function picture_add()
+    {
         $picture = request()->has('picture', 'post') ? request()->post('picture/s') : '';
         $data['picture'] = $picture;
         $code = $this->memberModel->info($data, $this->m_id);
-        if ($code) {
+        if ($code)
+        {
             $this->success('修改成功');
-        } else {
+        } else
+        {
             $this->error('修改失败');
         }
     }
@@ -112,17 +146,21 @@ class Member extends Controller {
     /**
      * 验证密码
      */
-    public function check_pwd() {
+    public function check_pwd()
+    {
         $pwd = request()->has('oldPwd', 'post') ? request()->post('oldPwd/s') : '';
-        if (!$pwd) {
+        if (!$pwd)
+        {
             $this->error('请填写原密码');
         }
         $where [] = ['id', '=', $this->m_id];
         $where [] = ['password', '=', md5($pwd)];
         $list = $this->memberModel->get_member($where);
-        if (!empty($list)) {
+        if (!empty($list))
+        {
             $this->success('验证成功');
-        } else {
+        } else
+        {
             $this->error('原密码不正确');
         }
     }

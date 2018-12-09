@@ -73,6 +73,13 @@
 <script type="text/html" id="arrangehandle">
     <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-title="编辑动作" lay-event="open">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}"  lay-event="del">删除</a>
+    {{# if(d.is_send == 0){ }}
+    {if(!empty($memberinfo.is_email) || !empty($memberinfo.is_wechat))}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('send')}"  lay-event="update">发送消息</a>
+    {/if}
+    {{#}else{}}
+    <a class="layui-btn  layui-btn-disabled layui-btn-xs">已发送</a>
+    {{# }}}
     <a class="layui-btn layui-btn-xs" data-action="{:url('little')}"  lay-event="href">查看动作</a>
     <a class="layui-btn layui-btn-xs" data-action="{:url('/motion/message/index')}" data-field="lid"  lay-event="href">查看留言<span class="layui-badge">{{d.count}}</span></a>
 

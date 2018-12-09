@@ -9,9 +9,11 @@ use app\motion\model\Course as courseModel;
 use app\motion\model\Coach as coachModel;
 use app\motion\model\Motion as motionModel;
 
-class Lesson extends BasicAdmin {
+class Lesson extends BasicAdmin
+{
 
-    public function initialize() {
+    public function initialize()
+    {
         $this->lessonModel = new lessonModel();
         $this->memberModel = new memberModel();
         $this->courseModel = new courseModel();
@@ -22,7 +24,8 @@ class Lesson extends BasicAdmin {
     /**
      * 渲染会员首页
      */
-    public function index() {
+    public function index()
+    {
         $this->assign('title', '会员列表');
         return $this->fetch();
     }
@@ -30,7 +33,8 @@ class Lesson extends BasicAdmin {
     /**
      * 我的会员
      */
-    public function my() {
+    public function my()
+    {
         $this->assign('title', '会员列表');
         return $this->fetch();
     }
@@ -38,20 +42,23 @@ class Lesson extends BasicAdmin {
     /**
      * 获取所有会员信息
      */
-    public function get_all_lists() {
+    public function get_all_lists()
+    {
         echo $this->get_member_lists();
     }
 
     /**
      * 获取我的会员信息
      */
-    public function get_my_lists() {
+    public function get_my_lists()
+    {
         $uid = session('user.id');
         //获取所属uid 的教练
         $where['u_id'] = $uid;
         $where['status'] = 1;
         $coach = $this->coachModel->get_coach($where);
-        if (empty($coach)) {
+        if (empty($coach))
+        {
             $this->error('该账号未绑定教练');
         }
         $lwhere[] = ['c_id', '=', $coach['id']];
@@ -61,25 +68,31 @@ class Lesson extends BasicAdmin {
     /**
      * 获取会员列表信息
      */
-    public function get_member_lists($where = []) {
+    public function get_member_lists($where = [])
+    {
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $cname = request()->has('cname', 'get') ? request()->get('cname/s') : '';
         $expire_time = request()->has('expire_time', 'get') ? request()->get('expire_time/s') : '';
-        if ($name) {
+        if ($name)
+        {
             $where[] = ['name', 'like', '%' . $name . '%'];
         }
-        if ($cname) {
+        if ($cname)
+        {
             $where[] = ['t.cname', 'like', '%' . $cname . '%'];
         }
-        if ($expire_time) {
+        if ($expire_time)
+        {
             $et = explode(' - ', $expire_time);
-            if (!empty($et[0]) && validate()->isDate($et[0])) {
+            if (!empty($et[0]) && validate()->isDate($et[0]))
+            {
                 $begin_time = strtotime($et[0] . ' 00:00:00');
                 $where[] = ['expire_time', '>=', $begin_time];
             }
-            if (!empty($et[1]) && validate()->isDate($et[1])) {
+            if (!empty($et[1]) && validate()->isDate($et[1]))
+            {
                 $end_time = strtotime($et[1] . ' 23:59:59');
                 $where[] = ['expire_time', '<=', $end_time];
             }
@@ -95,14 +108,20 @@ class Lesson extends BasicAdmin {
     /**
      * 查看排课信息
      */
-    public function arrange() {
+    public function arrange()
+    {
         $this->assign('title', '计划列表');
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请选择会员');
         }
         //验证会员是否存在
         $this->check_member_data($id);
+        //获取会员信息
+        $where['m_id'] = $id;
+        $memberinfo = $this->memberModel->get_member_info($where);
+        $this->assign('memberinfo', $memberinfo);
         $this->assign('mid', $id);
         return $this->fetch();
     }
@@ -110,25 +129,31 @@ class Lesson extends BasicAdmin {
     /**
      * 获取排课信息
      */
-    public function get_arrange_lists() {
+    public function get_arrange_lists()
+    {
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $class_time = request()->has('class_time', 'get') ? request()->get('class_time/s') : '';
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请选择会员');
         }
-        if ($name) {
+        if ($name)
+        {
             $where[] = ['l.name', 'like', '%' . $name . '%'];
         }
-        if ($class_time) {
+        if ($class_time)
+        {
             $ct = explode(' - ', $class_time);
-            if (!empty($ct[0]) && validate()->isDate($ct[0])) {
+            if (!empty($ct[0]) && validate()->isDate($ct[0]))
+            {
                 $begin_time = strtotime($ct[0] . ' 00:00:00');
                 $where[] = ['class_time', '>=', $begin_time];
             }
-            if (!empty($ct[1]) && validate()->isDate($ct[1])) {
+            if (!empty($ct[1]) && validate()->isDate($ct[1]))
+            {
                 $end_time = strtotime($ct[1] . ' 23:59:59');
                 $where[] = ['class_time', '<=', $end_time];
             }
@@ -148,10 +173,12 @@ class Lesson extends BasicAdmin {
     /**
      * 渲染新增窗口
      */
-    public function add() {
+    public function add()
+    {
         //获取获取ID
         $mid = request()->has('mid', 'get') ? request()->get('mid/d') : 0;
-        if (!$mid) {
+        if (!$mid)
+        {
             $this->error('请正确选择会员');
         }
         //获取该会员的信息
@@ -166,7 +193,8 @@ class Lesson extends BasicAdmin {
     /**
      * 新增会员动作信息
      */
-    public function add_info() {
+    public function add_info()
+    {
 
         $colldown_mids = request()->has('colldown_mids', 'post') ? request()->post('colldown_mids/s') : null;
         $colldown = request()->has('colldown', 'post') ? request()->post('colldown/s') : null;
@@ -175,13 +203,16 @@ class Lesson extends BasicAdmin {
         $name = request()->has('name', 'post') ? request()->post('name/s') : null;
         $class_time = request()->has('class_time', 'post') ? request()->post('class_time/s') : null;
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
-        if (!$mid) {
+        if (!$mid)
+        {
             $this->error('请正确选择会员');
         }
-        if (!$name) {
+        if (!$name)
+        {
             $this->error('请正确填写名称');
         }
-        if (!$class_time) {
+        if (!$class_time)
+        {
             $this->error('请正确选择上课时间');
         }
         $member = $this->check_member_data($mid);
@@ -199,14 +230,17 @@ class Lesson extends BasicAdmin {
         $data['coach_id'] = $member['c_id'];
         $data['m_id'] = $mid;
         $validate = $this->lessonModel->validate($data);
-        if ($validate) {
+        if ($validate)
+        {
             $this->error($validate);
         }
         $data['class_time'] = strtotime($class_time . ' 23:59:59');
         $code = $this->lessonModel->add($data);
-        if ($code) {
+        if ($code)
+        {
             $this->success('保存成功', '');
-        } else {
+        } else
+        {
             $this->error('保存失败');
         }
     }
@@ -214,9 +248,11 @@ class Lesson extends BasicAdmin {
     /**
      * 渲染编辑窗口
      */
-    public function edit() {
+    public function edit()
+    {
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请正确选择');
         }
         $list = $this->check_arrange_data($id);
@@ -230,7 +266,8 @@ class Lesson extends BasicAdmin {
     /**
      * 编辑会员动作信息
      */
-    public function edit_info() {
+    public function edit_info()
+    {
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $colldown_mids = request()->has('colldown_mids', 'post') ? request()->post('colldown_mids/s') : null;
         $colldown = request()->has('colldown', 'post') ? request()->post('colldown/s') : null;
@@ -238,14 +275,17 @@ class Lesson extends BasicAdmin {
         $warmup = request()->has('warmup', 'post') ? request()->post('warmup/s') : null;
         $name = request()->has('name', 'post') ? request()->post('name/s') : null;
         $class_time = request()->has('class_time', 'post') ? request()->post('class_time/s') : null;
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请选择要编辑的动作');
         }
 
-        if (!$name) {
+        if (!$name)
+        {
             $this->error('请正确选择动作');
         }
-        if (!$class_time) {
+        if (!$class_time)
+        {
             $this->error('请正确选择上课时间');
         }
         //判断排课信息
@@ -259,15 +299,18 @@ class Lesson extends BasicAdmin {
         $data['colldown_mids'] = $colldown_mids;    //冷身视频
         $data['class_time'] = $class_time;
         $validate = $this->lessonModel->validate($data);
-        if ($validate) {
+        if ($validate)
+        {
             $this->error($validate);
         }
         $data['class_time'] = strtotime($class_time);
         $where['id'] = $id;
         $code = $this->lessonModel->edit($data, $where);
-        if ($code) {
+        if ($code)
+        {
             $this->success('编辑成功', '');
-        } else {
+        } else
+        {
             $this->error('编辑失败');
         }
     }
@@ -275,19 +318,23 @@ class Lesson extends BasicAdmin {
     /**
      * 删除课程
      */
-    public function del() {
+    public function del()
+    {
         //获取数据
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请正确选择会员动作');
         }
         $this->check_arrange_data($id);
         $where['id'] = $id;
         $data['status'] = 0;
         $code = $this->lessonModel->edit($data, $where);
-        if ($code) {
+        if ($code)
+        {
             $this->success('删除成功', '');
-        } else {
+        } else
+        {
             $this->error('删除失败');
         }
     }
@@ -295,11 +342,13 @@ class Lesson extends BasicAdmin {
     /**
      * 查看小动作
      */
-    public function little() {
+    public function little()
+    {
         $this->assign('title', '小动作');
         //排课ID
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请正确选择');
         }
         //判断排课是否存在
@@ -311,7 +360,8 @@ class Lesson extends BasicAdmin {
     /**
      * 获取小动作列表信息
      */
-    public function get_little_courses() {
+    public function get_little_courses()
+    {
         //排课ID
         $lid = request()->has('lid', 'get') ? request()->get('lid/d') : 0;
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
@@ -327,10 +377,12 @@ class Lesson extends BasicAdmin {
     /**
      * 添加小动作
      */
-    public function little_add() {
+    public function little_add()
+    {
         //排课ID
         $lid = request()->has('lid', 'get') ? request()->get('lid/d') : 0;
-        if (!$lid) {
+        if (!$lid)
+        {
             $this->error('请正确选择');
         }
 
@@ -347,16 +399,19 @@ class Lesson extends BasicAdmin {
     /**
      * 添加小动作信息
      */
-    public function little_add_info() {
+    public function little_add_info()
+    {
         $lid = request()->has('lid', 'post') ? request()->post('lid/d') : 0;
         $m_ids = request()->has('m_ids', 'post') ? request()->post('m_ids/s') : null;
         $name = request()->has('name', 'post') ? request()->post('name/s') : null;
         $remark = request()->has('remark', 'post') ? request()->post('remark/s') : '';
         $num = request()->has('num', 'post') ? request()->post('num/s') : '';
-        if (!$lid) {
+        if (!$lid)
+        {
             $this->error('请正确选择');
         }
-        if (!$name) {
+        if (!$name)
+        {
             $this->error('请填写动作名称');
         }
         //判断排课是否存在
@@ -367,21 +422,30 @@ class Lesson extends BasicAdmin {
         $data['remark'] = $remark;
         $data['num'] = $num;
         $validate = $this->lessonModel->course_validate($data);
-        if ($validate) {
+        if ($validate)
+        {
             $this->error($validate);
         }
         $code = $this->lessonModel->little_add($data);
-        if ($code) {
+        if ($code)
+        {
             $this->success('保存成功', '');
-        } else {
+        } else
+        {
             $this->error('保存失败');
         }
     }
 
-    public function little_edit() {
+    /**
+     * 编辑小动作
+     * @return type
+     */
+    public function little_edit()
+    {
         //小动作ID
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请正确选择');
         }
         //验证小动作是否存在
@@ -398,16 +462,19 @@ class Lesson extends BasicAdmin {
     /**
      * 添加小动作信息
      */
-    public function little_edit_info() {
+    public function little_edit_info()
+    {
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $m_ids = request()->has('m_ids', 'post') ? request()->post('m_ids/s') : null;
         $name = request()->has('name', 'post') ? request()->post('name/s') : null;
         $remark = request()->has('remark', 'post') ? request()->post('remark/s') : '';
         $num = request()->has('num', 'post') ? request()->post('num/s') : '';
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请正确选择');
         }
-        if (!$name) {
+        if (!$name)
+        {
             $this->error('请填写动作名称');
         }
         //验证小动作是否存在
@@ -419,14 +486,17 @@ class Lesson extends BasicAdmin {
         $data['remark'] = $remark;
         $data['num'] = $num;
         $validate = $this->lessonModel->course_validate($data);
-        if ($validate) {
+        if ($validate)
+        {
             $this->error($validate);
         }
         $lwhere['id'] = $id;
         $code = $this->lessonModel->little_edit($data, $lwhere);
-        if ($code) {
+        if ($code)
+        {
             $this->success('编辑成功', '');
-        } else {
+        } else
+        {
             $this->error('编辑失败');
         }
     }
@@ -434,10 +504,12 @@ class Lesson extends BasicAdmin {
     /**
      * 删除小动作
      */
-    public function little_del() {
+    public function little_del()
+    {
         //获取数据
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请正确选择');
         }
         $list = $this->check_little_data($id);
@@ -446,20 +518,72 @@ class Lesson extends BasicAdmin {
         $where['id'] = $id;
         $data['status'] = 0;
         $code = $this->lessonModel->little_edit($data, $where);
-        if ($code) {
+        if ($code)
+        {
             $this->success('删除成功', '');
-        } else {
+        } else
+        {
             $this->error('删除失败');
+        }
+    }
+
+    /**
+     * 发送消息
+     */
+    public function send()
+    {
+        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
+        if (!$id)
+        {
+            $this->error('请正确选择');
+        }
+        $array = $this->check_arrange_data($id);
+        $member = $this->check_member_data($array['m_id']);
+        $where['m_id'] = $member['id'];
+        $memberinfo = $this->memberModel->get_member_info($where);
+        if (empty($memberinfo))
+        {
+            $this->error('无该会员信息，不能发送，请先完善');
+        }
+        if (!$memberinfo['is_email'] && !$memberinfo['is_wechat'])
+        {
+            $this->error('该会员不接收任何信息通知');
+        }
+        //发送邮件消息
+        if ($memberinfo['is_email'])
+        {
+            //暂不处理
+        }
+        //发送微信消息
+        if ($memberinfo['is_wechat'])
+        {
+            $res = $this->lessonModel->send_lesson($id);
+            if ($res['errcode'] == 0)
+            {
+                //更新记录信息
+                $data['is_send'] = 1;
+                $where['id'] = $id;
+                $this->lessonModel->edit($data, $where);
+                $this->success('发送成功', '');
+            } else if ($res['errcode'] = -1)
+            {
+                $this->error($res['msg']);
+            } else
+            {
+                $this->error('发送失败');
+            }
         }
     }
 
     /**
      * 获取视频地址
      */
-    public function get_motion_url() {
+    public function get_motion_url()
+    {
         //获取数据
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
-        if (!$mid) {
+        if (!$mid)
+        {
             $this->error('请正确选择');
         }
         $where['id'] = $mid;
@@ -471,7 +595,8 @@ class Lesson extends BasicAdmin {
      * 获取课程
      * @return type
      */
-    public function get_courses($pid = 0) {
+    public function get_courses($pid = 0)
+    {
 
         $where['pid'] = $pid;
         $where['status'] = 1;
@@ -483,11 +608,13 @@ class Lesson extends BasicAdmin {
     /**
      * 判断会员是否存在
      */
-    public function check_member_data($id = 0) {
+    public function check_member_data($id = 0)
+    {
         //判断类型是否存在
         $where['id'] = $id;
         $list = $this->memberModel->get_member($where);
-        if (empty($list)) {
+        if (empty($list))
+        {
             $this->error('无此会员');
         }
         return $list;
@@ -497,10 +624,12 @@ class Lesson extends BasicAdmin {
      * 验证会员是否在时间内
      * @param type $id
      */
-    public function check_member_time($id = 0) {
+    public function check_member_time($id = 0)
+    {
         $where[] = ['id', '=', $id];
         $member = $this->memberModel->get_member($where);
-        if (empty($member) || empty($member['c_id'])) {
+        if (empty($member) || empty($member['c_id']))
+        {
             $this->error('无此会员或者该会员无教练');
         }
 
@@ -508,7 +637,8 @@ class Lesson extends BasicAdmin {
         $twhere[] = ['mt.status', '=', 1];
         $twhere[] = ['end_time|begin_time', '>', time()];
         $time = $this->memberModel->get_member_time($twhere);
-        if (empty($time)) {
+        if (empty($time))
+        {
             $this->error('该会员未开通或未到时间');
         }
     }
@@ -516,11 +646,13 @@ class Lesson extends BasicAdmin {
     /**
      * 判断排课是否存在
      */
-    public function check_arrange_data($id = 0) {
+    public function check_arrange_data($id = 0)
+    {
         //判断排课是否存在
         $where['id'] = $id;
         $list = $this->lessonModel->get_arrange_list($where);
-        if (empty($list)) {
+        if (empty($list))
+        {
             $this->error('无此排课');
         }
 
@@ -531,10 +663,12 @@ class Lesson extends BasicAdmin {
     /**
      * 验证小动作是否存在
      */
-    public function check_little_data($id = 0) {
+    public function check_little_data($id = 0)
+    {
         $where['id'] = $id;
         $list = $this->lessonModel->get_little_course($where);
-        if (empty($list)) {
+        if (empty($list))
+        {
             $this->error('无此小动作');
         }
         return $list;

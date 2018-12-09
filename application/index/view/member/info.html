@@ -97,8 +97,6 @@
                                 <input type="number" maxlength="10" value="{$list.age|default='20'}" name="age" placeholder="请输入年龄" autocomplete="off" class="layui-input" />
                             </label>
                         </div>
-
-
                     </div>
                 </div>
                 <!-- infor_r_top 结束 -->
@@ -108,7 +106,9 @@
                     <h4 class="border_b">消息通知</h4>
                     <div class="switch_list">
                         <div class="layui-form"><input type="checkbox" {eq name="1" value="$list.is_email|default=0"}checked{/eq} value="1" name="is_email" lay-skin="switch" lay-text="开启|关闭"><span class="fontspan">发送邮件</span></div>
+                        {notempty name="$list.openid"}
                         <div class="layui-form"><input type="checkbox" {eq name="1" value="$list.is_wechat|default=0"}checked{/eq} value="1"  name="is_wechat" lay-skin="switch" lay-text="开启|关闭"><span class="fontspan">发送微信</span></div>
+                        {/notempty}
                     </div>
 
                     <button class="layui-btn margin20 layui-btn-normal" lay-submit lay-filter="memberInfo">更新</button>
