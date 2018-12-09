@@ -60,8 +60,33 @@ class Login extends Controller
 
     public function wxinfo()
     {
-        $info = WechatService::WeChatOauth()->getOauthAccessToken();
-        dump($info);
+
+        if (request()->has('code', 'get'))
+        {
+            $info = WechatService::WeChatOauth()->getOauthAccessToken();
+            if (!empty($info) && !empty($info['openid']))
+            {
+                //更新用户绑定信息
+                //获取关注用户信息
+                $fwhere['openid'] = $info['openid'];
+                $fans = Db('wechat_fans')->where($fwhere);
+                if (!empty($fans))
+                {
+                    //更新用户信息
+                    $data['f_id'] = $fans['id'];
+                    $where['id'] = session('motion_member.id');
+                    $this->memberModel->edit($data, $where);
+                }
+            }
+        }
+
+        if (!session('motion_member'))
+        {
+            $this->redirect('/login');
+        } else
+        {
+            $this->redirect('/list');
+        }
     }
 
     /**
