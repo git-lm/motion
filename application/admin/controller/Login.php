@@ -24,9 +24,9 @@ class Login extends BasicAdmin
      */
     public function initialize()
     {
-        if (session('user.id') && $this->request->action() !== 'out') {
-            $this->redirect('@admin');
-        }
+//        if (session('user.id') && $this->request->action() !== 'out') {
+//            $this->redirect('@admin');
+//        }
     }
 
     /**

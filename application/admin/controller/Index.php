@@ -27,12 +27,15 @@ class Index extends BasicAdmin
      */
     public function index()
     {
+
         NodeService::applyAuthNode();
-        $list = (array)Db::name('SystemMenu')->where(['status' => '1'])->order('sort asc,id asc')->select();
+        $list = (array) Db::name('SystemMenu')->where(['status' => '1'])->order('sort asc,id asc')->select();
         $menus = $this->buildMenuData(ToolsService::arr2tree($list), NodeService::get(), !!session('user'));
-       
-        if (empty($menus) && !session('user.id')) {
-            $this->redirect('@admin/login');
+
+
+        if (empty($menus) || !session('user.id'))
+        {
+            $this->redirect('/admin/login.html');
         }
         return $this->fetch('', ['title' => '系统管理', 'menus' => $menus]);
     }
@@ -46,21 +49,28 @@ class Index extends BasicAdmin
      */
     private function buildMenuData($menus, $nodes, $isLogin)
     {
-        foreach ($menus as $key => &$menu) {
+        foreach ($menus as $key => &$menu)
+        {
             !empty($menu['sub']) && $menu['sub'] = $this->buildMenuData($menu['sub'], $nodes, $isLogin);
-            if (!empty($menu['sub'])) {
+            if (!empty($menu['sub']))
+            {
                 $menu['url'] = '#';
-            } elseif (preg_match('/^https?\:/i', $menu['url'])) {
+            } elseif (preg_match('/^https?\:/i', $menu['url']))
+            {
                 continue;
-            } elseif ($menu['url'] !== '#') {
+            } elseif ($menu['url'] !== '#')
+            {
                 $node = join('/', array_slice(explode('/', preg_replace('/[\W]/', '/', $menu['url'])), 0, 3));
                 $menu['url'] = url($menu['url']) . (empty($menu['params']) ? '' : "?{$menu['params']}");
-                if (isset($nodes[$node]) && $nodes[$node]['is_login'] && empty($isLogin)) {
+                if (isset($nodes[$node]) && $nodes[$node]['is_login'] && empty($isLogin))
+                {
                     unset($menus[$key]);
-                } elseif (isset($nodes[$node]) && $nodes[$node]['is_auth'] && $isLogin && !auth($node)) {
+                } elseif (isset($nodes[$node]) && $nodes[$node]['is_auth'] && $isLogin && !auth($node))
+                {
                     unset($menus[$key]);
                 }
-            } else {
+            } else
+            {
                 unset($menus[$key]);
             }
         }
@@ -75,9 +85,9 @@ class Index extends BasicAdmin
     {
         $_version = Db::query('select version() as ver');
         return $this->fetch('', [
-            'title'     => '后台首页',
-            'think_ver' => App::VERSION,
-            'mysql_ver' => array_pop($_version)['ver'],
+                    'title' => '后台首页',
+                    'think_ver' => App::VERSION,
+                    'mysql_ver' => array_pop($_version)['ver'],
         ]);
     }
 
@@ -92,22 +102,27 @@ class Index extends BasicAdmin
      */
     public function pass()
     {
-        if (intval($this->request->request('id')) !== intval(session('user.id'))) {
+        if (intval($this->request->request('id')) !== intval(session('user.id')))
+        {
             $this->error('只能修改当前用户的密码！');
         }
-        if ($this->request->isGet()) {
+        if ($this->request->isGet())
+        {
             $this->assign('verify', true);
             return $this->_form('SystemUser', 'user/pass');
         }
         $data = $this->request->post();
-        if ($data['password'] !== $data['repassword']) {
+        if ($data['password'] !== $data['repassword'])
+        {
             $this->error('两次输入的密码不一致，请重新输入！');
         }
         $user = Db::name('SystemUser')->where('id', session('user.id'))->find();
-        if (md5($data['oldpassword']) !== $user['password']) {
+        if (md5($data['oldpassword']) !== $user['password'])
+        {
             $this->error('旧密码验证失败，请重新输入！');
         }
-        if (DataService::save('SystemUser', ['id' => session('user.id'), 'password' => md5($data['password'])])) {
+        if (DataService::save('SystemUser', ['id' => session('user.id'), 'password' => md5($data['password'])]))
+        {
             $this->success('密码修改成功，下次请使用新密码登录！', '');
         }
         $this->error('密码修改失败，请稍候再试！');
@@ -123,7 +138,8 @@ class Index extends BasicAdmin
      */
     public function info()
     {
-        if (intval($this->request->request('id')) === intval(session('user.id'))) {
+        if (intval($this->request->request('id')) === intval(session('user.id')))
+        {
             return $this->_form('SystemUser', 'user/form');
         }
         $this->error('只能修改当前用户的资料！');
