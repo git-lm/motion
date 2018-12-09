@@ -63,23 +63,38 @@ class Login extends Controller
 
         if (request()->has('code', 'get'))
         {
-            $info = WechatService::WeChatOauth()->getOauthAccessToken();
-            if (!empty($info) && !empty($info['openid']))
+            $this->redirect('/list');
+            return;
+        }
+        $info = WechatService::WeChatOauth()->getOauthAccessToken();
+        if (!empty($info) && !empty($info['openid']))
+        {
+            //更新用户绑定信息
+            //获取关注用户信息
+            $fwhere['openid'] = $info['openid'];
+            $fans = Db('wechat_fans')->where($fwhere)->find();
+            if (empty($fans))
             {
-                //更新用户绑定信息
-                //获取关注用户信息
-                $fwhere['openid'] = $info['openid'];
-                $fans = Db('wechat_fans')->where($fwhere)->find();
-                if (!empty($fans))
-                {
-                    //更新用户信息
-                    $data['f_id'] = $fans['id'];
-                    $where['m_id'] = session('motion_member.id');
-                    $this->memberModel->edit_info($data, $where);
-                }
+                $this->redirect('/list');
+                return;
+            }
+            //获取用户信息
+            $where['m_id'] = session('motion_member.id');
+            $memberinfo = $this->memberModel->get_member_info($where);
+            if (empty($memberinfo))
+            {
+                //新增用户信息
+                $idata['m_id'] = session('motion_member.id');
+                $idata['f_id'] = $fans['id'];
+                $this->memberModel->add_info($idata);
+            } else
+            {
+                //更新用户信息
+                $data['f_id'] = $fans['id'];
+                $where['m_id'] = session('motion_member.id');
+                $this->memberModel->edit_info($data, $where);
             }
         }
-
         if (!session('motion_member'))
         {
             $this->redirect('/login');
