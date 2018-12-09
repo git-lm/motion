@@ -61,7 +61,7 @@ class Login extends Controller
     public function wxinfo()
     {
 
-        if (request()->has('code', 'get'))
+        if (!request()->has('code', 'get'))
         {
             $this->redirect('/list');
             return;
