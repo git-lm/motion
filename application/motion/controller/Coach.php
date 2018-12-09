@@ -162,9 +162,11 @@ class Coach extends BasicAdmin {
         }
         $list = $this->check_data($id);
         //获取未授权的账号
-        $users = $this->coachModel->get_user($list['u_id']);
+        $uid = empty($list['u_id']) ? 0 : $list['u_id'];
+        $users = $this->coachModel->get_user($uid);
+
         //教练所属账户
-        $this->assign('u_id', $list['u_id']);
+        $this->assign('u_id', $uid);
         $this->assign('id', $id);
         $this->assign('users', $users);
         return $this->fetch();

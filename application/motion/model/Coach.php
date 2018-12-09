@@ -115,12 +115,15 @@ class Coach extends Model {
      * 
      */
     public function get_user($uid = 0) {
+        
         $db = Db::table('system_user');
         $db->alias('u');
         $db->leftJoin(['motion_coach' => 'c'], 'c.u_id = u.id');
         $db->field('u.id uid ,u.username');
-        $db->whereNull('c.id', ' is null');
-        $db->whereOr('u.id', '=', $uid);
+//        $db->whereNull('c.id', ' is null');
+//        $db->whereOr('u.id', '=', $uid);
+//        $db->where('is_admin', '<>', 1);
+        $db->where("(c.id is null or u.id = {$uid}) and u.is_admin <> 1");
         $lists = DbService::queryALL($db);
         return $lists;
     }
