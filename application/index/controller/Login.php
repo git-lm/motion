@@ -69,7 +69,7 @@ class Login extends Controller
                 //更新用户绑定信息
                 //获取关注用户信息
                 $fwhere['openid'] = $info['openid'];
-                $fans = Db('wechat_fans')->where($fwhere);
+                $fans = Db('wechat_fans')->where($fwhere)->find();
                 if (!empty($fans))
                 {
                     //更新用户信息
