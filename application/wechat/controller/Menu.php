@@ -87,6 +87,7 @@ class Menu extends BasicAdmin
             }
             // 数据过滤处理
             try {
+                
                 foreach ($post['data'] as &$vo) {
                     isset($vo['content']) && ($vo['content'] = str_replace('"', "'", $vo['content']));
                 }

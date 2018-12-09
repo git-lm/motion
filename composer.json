@@ -17,8 +17,7 @@
     "zoujingli/ip2region": "^1.0",
     "aliyuncs/oss-sdk-php": "^2.2",
     "topthink/think-captcha": "^2.0",
-    "zoujingli/weopen-developer": "^1.1",
-    "overtrue/wechat": "~4.0"
+    "zoujingli/weopen-developer": "^1.1"
   },
   "repositories": {
     "packagist": {
