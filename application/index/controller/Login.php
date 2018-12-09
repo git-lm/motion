@@ -74,8 +74,8 @@ class Login extends Controller
                 {
                     //更新用户信息
                     $data['f_id'] = $fans['id'];
-                    $where['id'] = session('motion_member.id');
-                    $this->memberModel->edit($data, $where);
+                    $where['m_id'] = session('motion_member.id');
+                    $this->memberModel->edit_info($data, $where);
                 }
             }
         }
