@@ -10,7 +10,8 @@ use think\Db;
  * @param bool $force 强制替换
  * @param string|null $file
  */
-function p($data, $force = false, $file = null) {
+function p($data, $force = false, $file = null)
+{
     is_null($file) && $file = env('runtime_path') . date('Ymd') . '.txt';
     $str = (is_string($data) ? $data : (is_array($data) || is_object($data)) ? print_r($data, true) : var_export($data, true)) . PHP_EOL;
     $force ? file_put_contents($file, $str) : file_put_contents($file, $str, FILE_APPEND);
@@ -21,7 +22,8 @@ function p($data, $force = false, $file = null) {
  * @param string $node
  * @return bool
  */
-function auth($node) {
+function auth($node)
+{
     return NodeService::checkAuthNode($node);
 }
 
@@ -33,13 +35,16 @@ function auth($node) {
  * @throws \think\Exception
  * @throws \think\exception\PDOException
  */
-function sysconf($name, $value = null) {
+function sysconf($name, $value = null)
+{
     static $config = [];
-    if ($value !== null) {
+    if ($value !== null)
+    {
         list($config, $data) = [[], ['name' => $name, 'value' => $value]];
         return DataService::save('SystemConfig', $data, 'name');
     }
-    if (empty($config)) {
+    if (empty($config))
+    {
         $config = Db::name('SystemConfig')->column('name,value');
     }
     return isset($config[$name]) ? $config[$name] : '';
@@ -51,7 +56,8 @@ function sysconf($name, $value = null) {
  * @param string $format 输出格式
  * @return false|string
  */
-function format_datetime($datetime, $format = 'Y年m月d日 H:i:s') {
+function format_datetime($datetime, $format = 'Y年m月d日 H:i:s')
+{
     return date($format, strtotime($datetime));
 }
 
@@ -60,9 +66,11 @@ function format_datetime($datetime, $format = 'Y年m月d日 H:i:s') {
  * @param string $string
  * @return string
  */
-function encode($string) {
+function encode($string)
+{
     list($chars, $length) = ['', strlen($string = iconv('utf-8', 'gbk', $string))];
-    for ($i = 0; $i < $length; $i++) {
+    for ($i = 0; $i < $length; $i++)
+    {
         $chars .= str_pad(base_convert(ord($string[$i]), 10, 36), 2, 0, 0);
     }
     return $chars;
@@ -73,9 +81,11 @@ function encode($string) {
  * @param string $string
  * @return string
  */
-function decode($string) {
+function decode($string)
+{
     $chars = '';
-    foreach (str_split($string, 2) as $char) {
+    foreach (str_split($string, 2) as $char)
+    {
         $chars .= chr(intval(base_convert($char, 36, 10)));
     }
     return iconv('gbk', 'utf-8', $chars);
@@ -86,7 +96,8 @@ function decode($string) {
  * @param string $url 远程图片地址
  * @return string
  */
-function local_image($url) {
+function local_image($url)
+{
     return \service\FileService::download($url)['url'];
 }
 
@@ -96,7 +107,8 @@ function local_image($url) {
  * @param int   $code    状态码   1正常 0错误
  * @return type
  */
-function ajax_list_return($msg = '', $pages = 0, $code = 1) {
+function ajax_list_return($msg = '', $pages = 0, $code = 1)
+{
     $json = ['code' => $code, 'msg' => $msg, 'pages' => $pages];
     echo json_encode($json);
     return;
@@ -107,23 +119,56 @@ function ajax_list_return($msg = '', $pages = 0, $code = 1) {
  * @param type $the_time 时间戳
  * @return type
  */
-function time_trans($the_time) {
+function time_trans($the_time)
+{
     $now_time = time();
 
 
     $dur = $now_time - $the_time;
 
-    if ($dur < 60) {
+    if ($dur < 60)
+    {
         return $dur . '秒前';
-    } else if ($dur < 3600) {
+    } else if ($dur < 3600)
+    {
         return floor($dur / 60) . '分钟前';
-    } else if ($dur < 86400) {
+    } else if ($dur < 86400)
+    {
         return floor($dur / 3600) . '小时前';
-    } else {
+    } else
+    {
         return floor($dur / 86400) . '天前';
     }
 }
 
 /**
- * 获取微信配置
+ * 查找某个值是否存在于多维数组中
+ * @param type $value 要查找的值
+ * @param type $array 查找的数组
+ * @return boolean
  */
+function deep_in_array($value, $array)
+{
+    foreach ($array as $item)
+    {
+        if (!is_array($item))
+        {
+            if ($item == $value)
+            {
+                return $item;
+            } else
+            {
+                continue;
+            }
+        }
+
+        if (in_array($value, $item))
+        {
+            return $item;
+        } else if (deep_in_array($value, $item))
+        {
+            return $item;
+        }
+    }
+    return false;
+}

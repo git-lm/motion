@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use controller\BasicAdmin;
+use app\wechat\service\FansService;
 use service\DataService;
 use service\NodeService;
 use service\ToolsService;
@@ -83,12 +84,16 @@ class Index extends BasicAdmin
      */
     public function main()
     {
-        $_version = Db::query('select version() as ver');
-        return $this->fetch('', [
-                    'title' => '后台首页',
-                    'think_ver' => App::VERSION,
-                    'mysql_ver' => array_pop($_version)['ver'],
-        ]);
+
+        $this->assign('后台首页');
+        $fans = FansService::getFansJson(30);
+        return $this->fetch();
+//        $_version = Db::query('select version() as ver');
+//        return $this->fetch('', [
+//                    'title' => '后台首页',
+//                    'think_ver' => App::VERSION,
+//                    'mysql_ver' => array_pop($_version)['ver'],
+//        ]);
     }
 
     /**

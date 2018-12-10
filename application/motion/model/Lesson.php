@@ -356,7 +356,7 @@ class Lesson extends Model
         $openid = $memberinfo['openid'];
         $tem = new \app\wechat\controller\api\Template;
         $data = array(
-            'frist' => array('value' => '消息通知', 'color' => '#0A0A0A'),
+            'first' => array('value' => '消息通知', 'color' => '#0A0A0A'),
             'keyword1' => array('value' => $title, 'color' => '#CCCCCC'),
             'keyword2' => array('value' => $cname, 'color' => '#CCCCCC'),
             'keyword3' => array('value' => $class_time_show, 'color' => '#CCCCCC'),
