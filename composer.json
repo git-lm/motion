@@ -17,7 +17,8 @@
     "zoujingli/ip2region": "^1.0",
     "aliyuncs/oss-sdk-php": "^2.2",
     "topthink/think-captcha": "^2.0",
-    "zoujingli/weopen-developer": "^1.1"
+    "zoujingli/weopen-developer": "^1.1",
+    "topthink/think-image": "^1.0"
   },
   "repositories": {
     "packagist": {
