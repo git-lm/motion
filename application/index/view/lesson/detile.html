@@ -313,15 +313,15 @@
                     var html = '<div class="hasvideo">'
                             + '<video src="' + fileurl + '" controls="controls"></video>'
                             + '</div>'
-                            + '<button class="layui-btn backgroundred" itemid="' + data.lcfid + '">'
-                            + '<i class="layui-icon ">&#xe640;</i> Hold to Delete Video'
+                            + '<button class="layui-btn backgroundred filedel" itemid="' + data.lcfid + '">'
+                            + '<i class="layui-icon ">&#xe640;</i> 删除'
                             + '</button>';
                 } else {
                     var html = '<div class="hasvideo">'
                             + '<img src="' + fileurl + '">'
                             + '</div>'
-                            + '<button class="layui-btn backgroundred" itemid="' + data.lcfid + '">'
-                            + '<i class="layui-icon ">&#xe640;</i> Hold to Delete Video'
+                            + '<button class="layui-btn backgroundred filedel" itemid="' + data.lcfid + '">'
+                            + '<i class="layui-icon ">&#xe640;</i> 删除'
                             + '</button>';
                 }
                 _this.parent().siblings('.uploadshow').html(html);

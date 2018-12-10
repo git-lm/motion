@@ -27,6 +27,7 @@ class Plugs extends BasicAdmin {
         }
         $mode = $this->request->get('mode', 'one');
         $filetype = $this->request->get('filetype', '0');
+        
         $types = $this->request->get('type', 'jpg,png');
         $this->assign('mimes', FileService::getFileMine($types));
         $this->assign('field', $this->request->get('field', 'file'));

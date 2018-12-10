@@ -613,7 +613,7 @@ body{
     margin-top: 3%;
 }
 
-.hasvideo video{
+.hasvideo video, img{
     width: 100%;
     height: 100%;
 }
