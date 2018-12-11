@@ -36,10 +36,10 @@ class Expire extends BasicAdmin
         foreach ($times as $time)
         {
             $data = array(
-                'first' => array('value' => '时间到期提醒', 'color' => '#0A0A0A'),
-                'name' => array('value' => '私教时间', 'color' => '#CCCCCC'),
-                'expDate' => array('value' => date('Y-m-d', $time['end_time']), 'color' => '#CCCCCC'),
-                'remark' => array('value' => '请注意时间，防止过期失效。', 'color' => '#CCCCCC'),
+                'first' => array('value' => '时间到期提醒', 'color' => '#0000ff'),
+                'name' => array('value' => '私教时间', 'color' => '#cc0000'),
+                'expDate' => array('value' => date('Y-m-d', $time['end_time']), 'color' => '#cc0000'),
+                'remark' => array('value' => '请注意时间，防止过期失效。', 'color' => '#cc0000'),
             );
             try
             {
