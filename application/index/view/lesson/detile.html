@@ -185,7 +185,7 @@
 
 
     $(function () {
-        var me = window.createEditor('[name="message"]', {height: 200});
+//        var me = window.createEditor('[name="message"]', {height: 200});
         //导航点击相应的div显示 开始
         $(".video_list_top").click(function () {
             if ($(this).siblings('.video_show_div').is(":hidden")) {
@@ -276,8 +276,9 @@
 
         //发送留言
         $('.send').click(function () {
-            var message = me.getData();
+//            var message = me.getData();
 //            var message = CKEDITOR.instances.WORK_INTRODUCTION.getData();
+            var message = $('textaret[name="message"]').val();
             var id = $(this).attr('itemid');
             if ($.trim(message) != '') {
                 $.post('{:url("message")}', {'id': id, 'message': message}, function (data) {
