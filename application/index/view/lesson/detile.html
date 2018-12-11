@@ -278,7 +278,7 @@
         $('.send').click(function () {
 //            var message = me.getData();
 //            var message = CKEDITOR.instances.WORK_INTRODUCTION.getData();
-            var message = $('textaret[name="message"]').val();
+            var message = $('textarea[name="message"]').val();
             var id = $(this).attr('itemid');
             if ($.trim(message) != '') {
                 $.post('{:url("message")}', {'id': id, 'message': message}, function (data) {
