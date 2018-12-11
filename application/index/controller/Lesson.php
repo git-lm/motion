@@ -236,7 +236,7 @@ class Lesson extends Controller {
         $mwhere[] = ['m.type', '=', 1];
         $morder['create_time'] = 'desc';
         $messages = $this->messageModel->get_messages($mwhere, $morder);
-        
+
         return $messages;
     }
 
@@ -254,6 +254,7 @@ class Lesson extends Controller {
             $c['motions'] = $motions;
             //获取课程记录
             $fwhere ['lc_id'] = $c['id'];
+            $fwhere ['status'] = 1;
             $forder ['create_time'] = 'desc';
             $file = $this->lessonModel->get_course_file($fwhere, $forder);
             if (!empty($file)) {
