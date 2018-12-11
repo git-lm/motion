@@ -207,7 +207,7 @@ class Lesson extends Controller {
         $code = $this->lessonModel->file_add($data);
         if ($code) {
             $pathinf = pathinfo($file, PATHINFO_EXTENSION);
-            echo json_encode(['code' => 1, 'pathinfo' => $pathinf, 'lcfid' => $code]);
+            echo json_encode(['code' => 1, 'msg' => $pathinf, 'lcfid' => $code]);
         } else {
             echo json_encode(['code' => 0, 'msg' => '上传失败']);
         }
