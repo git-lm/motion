@@ -137,15 +137,15 @@ class Motion extends Model {
         $rule = [
             'tid' => 'require',
             'name' => 'require|max:50|min:2',
-            'url' => 'require|url',
+            'src' => 'require|url',
         ];
         $message = [
             'tid.require' => '所属类型必选',
             'name.require' => '类型名称必填',
             'name.max' => '类型名称最多不超过五十个字',
             'name.min' => '类型名称最少不小于两个字',
-            'url.require' => '视频地址必填',
-            'url.url' => '请正确填写视频地址',
+            'src.require' => '视频地址必填',
+            'src.url' => '请正确填写视频地址',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

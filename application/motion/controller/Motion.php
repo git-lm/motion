@@ -12,16 +12,19 @@ use app\motion\model\Motion as motionModel;
  * @author Anyon 
  * @date 2017/02/15 18:12
  */
-class Motion extends BasicAdmin {
+class Motion extends BasicAdmin
+{
 
-    public function initialize() {
+    public function initialize()
+    {
         $this->motionModel = new motionModel();
     }
 
     /**
      * 渲染类型页面
      */
-    public function index() {
+    public function index()
+    {
         $this->assign('title', '动作库列表');
         return $this->fetch();
     }
@@ -29,15 +32,18 @@ class Motion extends BasicAdmin {
     /**
      * 类型页面获取所有数据
      */
-    public function get_lists() {
+    public function get_lists()
+    {
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $mtname = request()->has('mtname', 'get') ? request()->get('mtname/s') : '';
-        if ($name) {
+        if ($name)
+        {
             $where[] = ['mb.name', 'like', '%' . $name . '%'];
         }
-        if ($mtname) {
+        if ($mtname)
+        {
             $where[] = ['mt.mtname', 'like', '%' . $mtname . '%'];
         }
         $where[] = ['mb.status', '<>', 0];
@@ -50,7 +56,8 @@ class Motion extends BasicAdmin {
     /**
      * 渲染新增窗口
      */
-    public function add() {
+    public function add()
+    {
         $where[] = ['status', '<>', 0];
         $order['create_time'] = 'desc';
         //获取所有类型
@@ -63,26 +70,35 @@ class Motion extends BasicAdmin {
     /**
      * 新增类型数据
      */
-    public function add_info() {
+    public function add_info()
+    {
         //获取数据
         $tid = request()->has('tid', 'post') ? request()->post('tid/d') : 0;
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
         $url = request()->has('url', 'post') ? request()->post('url/s') : '';
-        if (!$tid) {
+        if (!$tid)
+        {
             $this->error('请选择类型');
         }
+        preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $url, $matched);
+        $src = $matched[1];
         //验证数据
         $data['tid'] = $tid;
         $data['name'] = $name;
-        $data['url'] = $url;
+        $data['src'] = $src;
         $validate = $this->motionModel->validate($data);
-        if ($validate) {
+        if ($validate)
+        {
             $this->error($validate);
         }
+        unset($data['src']);
+        $data['url'] = $url;
         $code = $this->motionModel->add($data);
-        if ($code) {
+        if ($code)
+        {
             $this->success('保存成功', '');
-        } else {
+        } else
+        {
             $this->error('保存失败');
         }
     }
@@ -90,9 +106,11 @@ class Motion extends BasicAdmin {
     /**
      * 渲染编辑窗口
      */
-    public function edit() {
+    public function edit()
+    {
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请正确选择类型');
         }
         //判断类型是否存在
@@ -110,16 +128,19 @@ class Motion extends BasicAdmin {
     /**
      * 编辑类型数据
      */
-    public function edit_info() {
+    public function edit_info()
+    {
         //获取数据
         $tid = request()->has('tid', 'post') ? request()->post('tid/d') : 0;
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
         $url = request()->has('url', 'post') ? request()->post('url/s') : '';
-        if (!$tid) {
+        if (!$tid)
+        {
             $this->error('请选择类型');
         }
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请正确选择动作库');
         }
         //判断类型是否存在
@@ -129,31 +150,38 @@ class Motion extends BasicAdmin {
         $data['name'] = $name;
         $data['url'] = $url;
         $validate = $this->motionModel->validate($data);
-        if ($validate) {
+        if ($validate)
+        {
             $this->error($validate);
         }
         $where['id'] = $id;
         $code = $this->motionModel->edit($data, $where);
-        if ($code) {
+        if ($code)
+        {
             $this->success('编辑成功', '');
-        } else {
+        } else
+        {
             $this->error('编辑失败');
         }
     }
 
-    public function del() {
+    public function del()
+    {
         //获取数据
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
-        if (!$id) {
+        if (!$id)
+        {
             $this->error('请正确选择类型');
         }
         $list = $this->check_data($id);
         $where['id'] = $id;
         $data['status'] = 0;
         $code = $this->motionModel->edit($data, $where);
-        if ($code) {
+        if ($code)
+        {
             $this->success('删除成功', '');
-        } else {
+        } else
+        {
             $this->error('删除失败');
         }
     }
@@ -161,10 +189,12 @@ class Motion extends BasicAdmin {
     /**
      * 判断动作库是否存在
      */
-    public function check_data($tid = 0) {
+    public function check_data($tid = 0)
+    {
         $where['id'] = $tid;
         $list = $this->motionModel->get_motion($where);
-        if (empty($list)) {
+        if (empty($list))
+        {
             $this->error('无此动作库');
         }
         return $list;
