@@ -10,9 +10,9 @@ return [
     // 数据库名
     'database' => 'motion',
     // 用户名
-    'username' => 'motion',
+    'username' => 'root',
     // 密码
-    'password' => '0BtTUAXZFXgwpKJb',
+    'password' => 'sen2Cnxx4LyEXHWw',
     // 端口
     'hostport' => '3306',
 ];
