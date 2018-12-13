@@ -588,6 +588,11 @@ class Lesson extends BasicAdmin
         }
         $where['id'] = $mid;
         $list = $this->motionModel->get_motion($where);
+        if (empty($list))
+        {
+            preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $list['url'], $matched);
+            $list['url'] = $matched[1];
+        }
         echo $this->success($list);
     }
 
