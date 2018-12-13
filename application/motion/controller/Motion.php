@@ -49,6 +49,11 @@ class Motion extends BasicAdmin
         $where[] = ['mb.status', '<>', 0];
         $order['mb.create_time'] = 'desc';
         $lists = $this->motionModel->get_motions($where, $order, $page, $limit);
+        foreach ($lists as &$list)
+        {
+            preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $list['url'], $matched);
+            $list['url_show'] = $matched[1];
+        }
         $count = count($this->motionModel->get_motions($where));
         echo $this->tableReturn($lists, $count);
     }
