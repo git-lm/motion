@@ -30,7 +30,7 @@
     })
     table.render({
         elem: '#motionTable',
-       
+
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
         toolbar: '<div>动作库列表</div>',
@@ -39,7 +39,7 @@
         cols: [[//表头
                 {title: '序号', fixed: 'left', type: 'numbers'},
                 {field: 'name', title: '名称'},
-                {field: 'url', title: '地址', templet: '<div><a target="_blank" href="{{d.url}}" class="layui-table-link">点击查看</a></div>'},
+                {field: 'url', title: '地址', templet: '<div><a target="_blank" href="{{d.url_show}}" class="layui-table-link">点击查看</a></div>'},
                 {field: 'create_time_show', title: '添加时间'},
                 {field: 'mtname', title: '所属类型'},
                 {field: 'status_show', title: '状态'},
