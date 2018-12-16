@@ -172,3 +172,20 @@ function deep_in_array($value, $array)
     }
     return false;
 }
+
+/**
+ * 获取图片的缩略图
+ * @param  string $str 内容
+ */
+function get_thumb($str = '')
+{
+    $data = [];
+    $reg = '/((http|https):\/\/)+(\w+\.)+(\w+)[\w\/\.\-]*(jpg|gif|png)/';
+    $matches = array();
+    preg_match_all($reg, $str, $matches);
+    foreach ($matches[0] as $value)
+    {
+        $data[] = $value;
+    }
+    return $data;
+}
