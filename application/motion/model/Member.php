@@ -415,9 +415,9 @@ class Member extends Model
      * @param type $order
      * @return type
      */
-    public function get_member_photos($where = [], $order = [])
+    public function get_member_photos($where = [], $order = [], $page = 0, $limit = 0)
     {
-        $lists = DbService::queryALL('motion_member_photo', $where, $order);
+        $lists = DbService::queryALL('motion_member_photo', $where, $order, $page, $limit);
         foreach ($lists as &$list)
         {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);

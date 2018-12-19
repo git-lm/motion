@@ -27,25 +27,10 @@
             </a>
         </li>
         <div id="photo_show">
-            {volist name="allphotos" id="ap"}
-            <li>
-                <a href="javascript:;">
-                    <p>{$ap.create_time_show}</p>
-                    <div class="photo show" >
-                        <div class="front" >
-                            <img alt="{$ap.create_time_show}-----正面照" layer-src="{$ap.front_photo}" src="{$ap.front_photo}">
-                        </div>
-                        <div class="back" >
-                            <img alt="{$ap.create_time_show}-----背面照"  layer-src="{$ap.back_photo}" src="{$ap.back_photo}">
-                        </div>
-                        <div class="side" >
-                            <img alt="{$ap.create_time_show}-----侧面照"  layer-src="{$ap.side_photo}" src="{$ap.side_photo}">
-                        </div>
-                    </div>
-                </a>
-            </li>
-            {/volist}
         </div>
+
+
+
     </ul>
 </div>
 <!--main 结束-->
@@ -55,13 +40,30 @@
 {block name="script"}
 <script type="text/javascript">
     $(function () {
-        layui.use(['layer'], function () {
-            var layer = layui.layer;
-            layer.photos({
-                photos: '#photo_show'
-                , anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+        layui.use(['flow', 'laytpl'], function () {
+
+
+            var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
+            var flow = layui.flow;
+            var laytpl = layui.laytpl;
+
+            flow.load({
+                elem: '#photo_show', //指定列表容器
+                end: '没有更多了...',
+                done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
+                    var lis = [];
+                    //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+                    $.get('{:url("/index/member/get_all_photo")}?page=' + page + '&type=', function (res) {
+                        lis.push(res);
+                        next(lis.join(''), page < {$pages});
+                        layerphotos();
+                    }, 'json');
+                }
             });
+
         });
+
+
         $('.photo input').change(function () {
             var name = $(this).attr('name');
             var photo = $(this).val();
@@ -84,5 +86,16 @@
         })
 
     })
+
+    function layerphotos() {
+        layui.use(['layer'], function () {
+            var layer = layui.layer;
+            layer.photos({
+                photos: '#photo_show'
+                , anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
+        })
+
+    }
 </script>
 {/block}

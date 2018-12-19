@@ -174,16 +174,31 @@ class Member extends Controller
      */
     public function photo()
     {
-        $order ['create_time'] = 'desc';
-        //获取所有上传完成的照片
-        $allwhere [] = ['front_photo&back_photo&side_photo', 'not null', ''];
-        $allphotos = $this->memberModel->get_member_photos($allwhere, $order);
-        $this->assign('allphotos', $allphotos);
         //获取未上传完成的照片
         $notwhere [] = ['front_photo|back_photo|side_photo', 'null', ''];
         $notphoto = $this->memberModel->get_member_photo($notwhere);
         $this->assign('notphoto', $notphoto);
+        $allwhere [] = ['front_photo&back_photo&side_photo', 'not null', ''];
+        $count = count($this->memberModel->get_member_photos($allwhere));
+        $this->assign('pages', $count);
         return $this->fetch();
+    }
+
+    /**
+     * 获取会员已完成的照片
+     */
+    public function get_all_photo()
+    {
+        $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
+        $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 1;
+        $order ['create_time'] = 'desc';
+        //获取所有上传完成的照片
+        $allwhere [] = ['front_photo&back_photo&side_photo', 'not null', ''];
+        $allphotos = $this->memberModel->get_member_photos($allwhere, $order, $page, $limit);
+
+        $this->assign('allphotos', $allphotos);
+
+        return $this->fetch('photo_ajax');
     }
 
     /**
