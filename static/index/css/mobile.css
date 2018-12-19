@@ -164,11 +164,19 @@
 
 
 .sole_man .sole_man_l{
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 50%;
-  float: left;
-  position: relative;
-  top: 2px;
-  margin-right: 3%;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    float: left;
+    position: relative;
+    top: 2px;
+    margin-right: 3%;
+}
+.photo{
+    height: auto;
+}
+.photo div{
+    width: 99.9% ; 
+    padding: 3px 0 ;
+
 }

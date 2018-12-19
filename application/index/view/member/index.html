@@ -21,14 +21,24 @@
         <li>
             <a href="javascript:;">
                 <div class="a_header"><i class="layui-icon">&#xe643;</i>我的塑形</div>
-                <div class="show_div">
+
+                <div class="show_div " style="width: 100%" id="photo_show">
+                    <p>最新图片</p>
+                    {empty name="photo"}
+                    <p class=""> 暂无照片</p>
+                    {else /}
                     <div class="front">
-                        
+                        <img alt="正面照片" layer-src="{$photo.front_photo|default='__STATIC__/theme/img/image.png'}" src="{$photo.front_photo|default='__STATIC__/theme/img/image.png'}">
                     </div>
-                    <div class="back">
-                        
+                    <div class="back" >
+                        <img alt="背面照片" layer-src="{$photo.back_photo|default='__STATIC__/theme/img/image.png'}" src="{$photo.back_photo|default='__STATIC__/theme/img/image.png'}">
                     </div>
-                    
+                    <div class="side">
+                        <img alt="侧面照片" layer-src="{$photo.side_photo|default='__STATIC__/theme/img/image.png'}" src="{$photo.side_photo|default='__STATIC__/theme/img/image.png'}">
+                    </div>
+                    <p class="show_div_more">查看更多 >>> </p>
+                    {/empty}
+
                 </div>
             </a>
         </li>
@@ -84,6 +94,14 @@
 {block name="script"}
 <script type="text/javascript">
     $(function () {
+        layui.use(['layer'], function () {
+            var layer = layui.layer;
+            layer.photos({
+                photos: '#photo_show'
+                , anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
+        });
+
         //导航点击相应的div显示 开始
         $(".a_header").click(function () {
             if ($(this).siblings('.show_div').is(":hidden")) {
@@ -97,6 +115,9 @@
             layer.confirm('确定要退出？', function () {
                 window.location.href = '{:url("/login/out")}'
             })
+        })
+        $('.show_div_more').click(function () {
+            window.location.href = '{:url("photo")}';
         })
     })
 </script>

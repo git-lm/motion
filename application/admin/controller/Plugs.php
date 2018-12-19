@@ -44,6 +44,7 @@ class Plugs extends BasicAdmin
      * 3、留言图片
      * 4、会员运动记录
      * 5、会员头像
+     * 6、会员照片
      */
 
     /**
@@ -85,6 +86,9 @@ class Plugs extends BasicAdmin
         } else if ($filetype == 5)
         {
             $pr = "{$uid}/member";
+        } else if ($filetype == 6)
+        {
+            $pr = "{$uid}/photo";
         } else
         {
             $pr = "{$uid}/others";

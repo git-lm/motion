@@ -27,4 +27,6 @@ $(function () {
         var url = '/index.php/admin/plugs/upfile.html?mode=' + method + '&uptype=' + uptype + '&type=' + type + '&field=' + field + '&filetype=' + filetype;
         $.form.iframe(url, title || '文件管理');
     });
+    
+    
 })

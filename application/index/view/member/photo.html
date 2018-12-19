@@ -1,0 +1,80 @@
+{extend  name="public:main"}
+{block name="main"}
+
+<!--main 开始-->
+<div class='main profile  width'>
+    <ul>
+        <li>
+            <a href="javascript:;">
+                <div class="a_header"><i class="layui-icon">&#xe643;</i>我的塑形</div>
+
+                <div class="photo upload" style="width: 100%">
+                    <p>上传照片</p>
+                    <div class="front">
+                        <img data-file="one"  data-filetype="6" data-field="front" data-type="jpg,png,jpeg" src="{$notphoto.front_photo|default='__STATIC__/theme/img/image.png'}">
+                        <input type="hidden"  name="front" value="">
+                        <p></p>
+                    </div>
+                    <div class="back" >
+                        <img data-file="one"  data-filetype="6" data-field="back" data-type="jpg,png,jpeg" src="{$notphoto.back_photo|default='__STATIC__/theme/img/image.png'}">
+                        <input type="hidden"  name="back" value="">
+                    </div>
+                    <div class="side" >
+                        <img data-file="one"  data-filetype="6" data-field="side" data-type="jpg,png,jpeg" src="{$notphoto.side_photo|default='__STATIC__/theme/img/image.png'}">
+                        <input type="hidden"  name="side" value="">
+                    </div>
+                </div>
+            </a>
+        </li>
+        {volist name="allphotos" id="ap"}
+        <li>
+            <a href="javascript:;">
+                <p>{$ap.create_time_show}</p>
+                <div class="photo show" >
+                    <div class="front" >
+                        <img src="{$ap.front_photo}">
+                    </div>
+                    <div class="back" >
+                        <img src="{$ap.back_photo}">
+                    </div>
+                    <div class="side" >
+                        <img src="{$ap.side_photo}">
+                    </div>
+                </div>
+            </a>
+        </li>
+        {/volist}
+
+    </ul>
+</div>
+<!--main 结束-->
+
+</body>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    $(function () {
+        $('.photo input').change(function () {
+            var name = $(this).attr('name');
+            var photo = $(this).val();
+            $.post('{:url("photo_add")}', {'name': name, 'photo': photo}, function (data) {
+                if (data.code == 0) {
+                    layer.msg(data.msg);
+                } else if (data.code == 1) {
+                    layer.msg(data.msg, '', function () {
+                        location.reload()
+                    });
+                } else if (data.code == 2) {
+                    layer.msg(data.msg);
+                } else {
+                    layer.msg('上传失败');
+                }
+            }, 'json')
+            $('.' + name + ' img').attr('src', photo);
+
+            $('.show_div').show();
+        })
+
+    })
+</script>
+{/block}

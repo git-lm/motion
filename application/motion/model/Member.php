@@ -139,6 +139,7 @@ class Member extends Model
         $list = DbService::queryOne($db, $where, $order);
         return $list;
     }
+
     /**
      * 编辑或者更新会员信息
      */
@@ -405,6 +406,70 @@ class Member extends Model
         }
         DbService::save_log('motion_log', json_encode($member_time), json_encode($data), json_encode($where), '编辑会员时间');
         $code = DbService::update('motion_member_time mt', $data, $where);
+        return $code;
+    }
+
+    /**
+     * 获取会员照片
+     * @param type $where
+     * @param type $order
+     * @return type
+     */
+    public function get_member_photos($where = [], $order = [])
+    {
+        $lists = DbService::queryALL('motion_member_photo', $where, $order);
+        foreach ($lists as &$list)
+        {
+            $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+        }
+        return $lists;
+    }
+
+    /**
+     * 获取会员照片
+     * @param type $where
+     * @param type $order
+     * @return type
+     */
+    public function get_member_photo($where = [], $order = [])
+    {
+        $list = DbService::queryOne('motion_member_photo', $where, $order);
+        if (!empty($list))
+        {
+            $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+        }
+        return $list;
+    }
+
+    /**
+     * 上传照片
+     * @param type $data
+     */
+    public function photo_check_add($data)
+    {
+        //判断是否存未完成的
+        $notwhere [] = ['front_photo|back_photo|side_photo', 'null', ''];
+        $notphoto = $this->get_member_photo($notwhere);
+        //如果存在  则更新未完成的
+        if ($notphoto)
+        {
+            $where[] = ['id', '=', $notphoto['id']];
+            $data[$data['name'] . '_photo'] = $data['photo'];
+            $data['update_time'] = time();
+            unset($data['name']);
+            unset($data['photo']);
+            $code = DbService::update('motion_member_photo', $data, $where);
+            DbService::save_log('motion_log', '', json_encode($data), '', '修改会员照片');
+        } else //不存在 则新增一条
+        {
+            $data['create_time'] = time();
+            $data[$name . '_photo'] = $data['photo'];
+            unset($data['name']);
+            unset($data['photo']);
+            $code = DbService::save('motion_member_photo', $data);
+            DbService::save_log('motion_log', '', json_encode($data), '', '新增会员照片');
+        }
+
         return $code;
     }
 

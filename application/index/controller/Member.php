@@ -42,7 +42,11 @@ class Member extends Controller
             }
         }
         $this->assign('list', $list);
-
+        //获取最新的照片
+        $pwhere [] = ['m_id', '=', $this->m_id];
+        $order['create_time'] = 'desc';
+        $photo = $this->memberModel->get_member_photo($pwhere, $order);
+        $this->assign('photo', $photo);
         return $this->fetch();
     }
 
@@ -162,6 +166,62 @@ class Member extends Controller
         } else
         {
             $this->error('原密码不正确');
+        }
+    }
+
+    /**
+     * 会员照片
+     */
+    public function photo()
+    {
+        $order ['create_time'] = 'desc';
+        //获取所有上传完成的照片
+        $allwhere [] = ['front_photo&back_photo&side_photo', 'not null', ''];
+        $allphotos = $this->memberModel->get_member_photos($allwhere, $order);
+        $this->assign('allphotos', $allphotos);
+        //获取未上传完成的照片
+        $notwhere [] = ['front_photo|back_photo|side_photo', 'null', ''];
+        $notphoto = $this->memberModel->get_member_photo($notwhere);
+        $this->assign('notphoto', $notphoto);
+        return $this->fetch();
+    }
+
+    /**
+     * 添加会员照片
+     */
+    public function photo_add()
+    {
+
+        $name = request()->has('name', 'post') ? request()->post('name/s') : '';
+        $photo = request()->has('photo', 'post') ? request()->post('photo/s') : '';
+        if (!$name && $name != 'front' && $name != 'back' && $name != 'side')
+        {
+            $this->error('请正确选择位置');
+        }
+        if (!$photo)
+        {
+            $this->error('请上传照片');
+        }
+        $data['name'] = $name;
+        $data['photo'] = $photo;
+        $data['m_id'] = $this->m_id;
+        $code = $this->memberModel->photo_check_add($data);
+        if ($code)
+        {
+            //验证是否有未完成的  没有则更新
+            //获取未上传完成的照片
+            $notwhere [] = ['front_photo|back_photo|side_photo', 'null', ''];
+            $notphoto = $this->memberModel->get_member_photo($notwhere);
+            if ($notphoto)
+            {
+                echo json_encode(array('code' => 2, 'msg' => '上传成功'));
+            } else
+            {
+                echo json_encode(array('code' => 1, 'msg' => '上传成功'));
+            }
+        } else
+        {
+            $this->error('上传失败');
         }
     }
 

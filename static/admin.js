@@ -515,7 +515,6 @@ $(function () {
         $(this).attr('name', name).after($tpl).on('change', function () {
 
             !!this.value && $tpl.css('backgroundImage', 'url(' + this.value + ')');
-            console.log(111111);
         }).trigger('change');
     };
 

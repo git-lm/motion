@@ -424,11 +424,28 @@ body{
 }
 
 .profile ul li a .show_div{
-    background-color: #f45;
-    height: 300px;
+    /*background-color: #f45;*/
+    min-height: 300px;
     width: 100%;
     margin-top: 2%;
     display: none;
+}
+.profile ul li a .show_div .show_div_more{
+    text-align: right;
+    padding-top: 20px;
+    font-size: 15px;
+}
+.photo {
+    height: 150px;
+    width: 100%;
+    margin-top: 2%;
+}
+.photo div{
+    width: 32% ; 
+    height: 150px ;
+    display:inline-block;
+}
+.photo .show{
 }
 
 
