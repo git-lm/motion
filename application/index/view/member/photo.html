@@ -26,25 +26,26 @@
                 </div>
             </a>
         </li>
-        {volist name="allphotos" id="ap"}
-        <li>
-            <a href="javascript:;">
-                <p>{$ap.create_time_show}</p>
-                <div class="photo show" >
-                    <div class="front" >
-                        <img src="{$ap.front_photo}">
+        <div id="photo_show">
+            {volist name="allphotos" id="ap"}
+            <li>
+                <a href="javascript:;">
+                    <p>{$ap.create_time_show}</p>
+                    <div class="photo show" >
+                        <div class="front" >
+                            <img alt="{$ap.create_time_show}-----正面照" layer-src="{$ap.front_photo}" src="{$ap.front_photo}">
+                        </div>
+                        <div class="back" >
+                            <img alt="{$ap.create_time_show}-----背面照"  layer-src="{$ap.back_photo}" src="{$ap.back_photo}">
+                        </div>
+                        <div class="side" >
+                            <img alt="{$ap.create_time_show}-----侧面照"  layer-src="{$ap.side_photo}" src="{$ap.side_photo}">
+                        </div>
                     </div>
-                    <div class="back" >
-                        <img src="{$ap.back_photo}">
-                    </div>
-                    <div class="side" >
-                        <img src="{$ap.side_photo}">
-                    </div>
-                </div>
-            </a>
-        </li>
-        {/volist}
-
+                </a>
+            </li>
+            {/volist}
+        </div>
     </ul>
 </div>
 <!--main 结束-->
@@ -54,6 +55,13 @@
 {block name="script"}
 <script type="text/javascript">
     $(function () {
+        layui.use(['layer'], function () {
+            var layer = layui.layer;
+            layer.photos({
+                photos: '#photo_show'
+                , anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
+        });
         $('.photo input').change(function () {
             var name = $(this).attr('name');
             var photo = $(this).val();

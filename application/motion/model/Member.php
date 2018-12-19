@@ -463,7 +463,7 @@ class Member extends Model
         } else //不存在 则新增一条
         {
             $data['create_time'] = time();
-            $data[$name . '_photo'] = $data['photo'];
+            $data[$data['name'] . '_photo'] = $data['photo'];
             unset($data['name']);
             unset($data['photo']);
             $code = DbService::save('motion_member_photo', $data);
