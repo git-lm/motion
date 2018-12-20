@@ -1,0 +1,119 @@
+{extend  name="public:main"}
+{block name="main"}
+<!--choose_nav  开始-->
+<div class="choose_nav">
+    <div class="choose_nav_c width">
+        <div class="choose_nav_c_span">
+            <span class=' {eq name='$type' value='upcomming'}span_cur{/eq}' ><a href="{:url('/list')}">upcomming</a></span>
+             <span class=' {eq name='$type' value='past'}span_cur{/eq}'><a href="{:url('/list')}?type=past">past</a></span>
+             </div>
+
+             <!--        <div class="R"><img src="__STATIC__/index/images/icon_w.png" alt="">History</div>-->
+
+            </div>
+        </div>
+        <!--main 开始-->
+        <div class='main  index width'>
+            <ol id="lessons">
+
+            </ol>
+
+            <!--    <a href="javascript:;" class="layui-btn layui-btn-normal layui-btn-sm layui-btn-fluid load-more">Load More</a>-->
+        </div>
+        {/block}
+        {block name="script"}
+        <script id="lessonstpl" type="text/html">
+            {{#  layui.each(d.msg, function(index, item){ }}
+            <li>
+                <a target='_blank' href="{:url('/lesson/detile')}?id={{item.id}}">
+                    <div class="a_cover">
+                        <!--文字部分 开始-->
+                        <div class="font_l">
+                            <div class="date ">
+                                <p class="date-month">{{item.month_e}}</p>
+                                <p class="date-day">{{item.day}}</p>
+                            </div>
+                        </div>
+                        <!--文字部分 结束-->
+
+                        <!--其他内容  开始-->
+                        <div class="bucket-content">
+                            <!--上面部分 开始-->
+                            <div class="wallflower">
+                                <div class="wallflower-cell">
+                                    <p class="byline">{{item.class_time_show}}</p>
+                                    <h3 class="client-workout-item-header">
+                                        {{item.name}}
+                                    </h3>
+                                    {{# if(d.state ==0){ }}
+                                    <span  class="mbs tag is-missed ember-view"><i class="layui-icon">&#x1005;</i> missed</span>
+                                    {{# }else{ }}
+                                    <span  class="mbs tag is-completed ember-view"><i class="layui-icon">&#x1005;</i> Completed</span>
+                                    {{# } }}
+                                </div>
+                                <div class="wallflower-cell">
+                                    <span class="btn btn--s btn--stroke-dk ember-view">View Details</span>
+                                </div>
+                            </div>
+                            <!--上面部分 结束-->
+
+                            <!--下面部分  开始-->
+                            <div class="ember">
+                                {{#  layui.each(item.course, function(index1, item1){ }}
+                                <div class="ember_list">{{item1.name}}</div>
+                                {{#}) }}
+                            </div>
+                            <!--下面部分  结束-->
+
+
+                            <div class="people_li">
+                                {{#  layui.each(item.message, function(index2, item2){ }}
+                                <!--                        <img src="images/icon3.png"  class="head_img" alt="">-->
+                                {{# if(item2.c_id !=null){}}
+                                <div class="people_r">
+                                    <h4 class="comments-name">{{item2.cname}} <span class="day_h4">{{item2.time_trans}}</span> </h4>
+                                    <p class="font_div">{{item2.content}}</p>
+                                </div>
+                                {{# }}}
+                                {{# }) }}
+                            </div>
+                        </div>
+                    </div>
+                    <!--其他内容  结束-->
+                </a>
+            </li>
+            {{# }) }}
+        </script>
+
+        <script>
+
+            $(function () {
+                layui.use(['flow', 'laytpl'], function () {
+
+                    var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
+                    var flow = layui.flow;
+                    var laytpl = layui.laytpl;
+
+                    flow.load({
+                        elem: '#lessons', //指定列表容器
+                        end: '没有更多了...',
+                        done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
+                            var lis = [];
+                            //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+                            $.get('{:url("/index/lesson/get_arranges")}?page=' + page + '&type={$type}', function (res) {
+                                var lessonstpl = $('#lessonstpl').html();
+                                var html = laytpl(lessonstpl).render(res);
+                                lis.push(html);
+                                next(lis.join(''), page < res.pages);
+                            }, 'json');
+                        }
+                    });
+                });
+
+            })
+
+
+
+
+        </script>
+        {/block}

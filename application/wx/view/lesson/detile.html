@@ -1,0 +1,336 @@
+{extend  name="public:main"}
+{block name="main"}
+<!--choose_nav  开始-->
+<div class="choose_nav">
+    <div class="choose_nav_c Header-title width">
+        <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" data-icon="calendar" data-prefix="fas" id="ember1202" class="mrxxs svg-inline--fa fa-calendar fa-w-14 mrxxs ember-view"><path fill="currentColor" d="M12 192h424c6.6 0 12 5.4 12 12v260c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V204c0-6.6 5.4-12 12-12zm436-44v-36c0-26.5-21.5-48-48-48h-48V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H160V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H48C21.5 64 0 85.5 0 112v36c0 6.6 5.4 12 12 12h424c6.6 0 12-5.4 12-12z"></path>
+        </svg>
+        {$list.class_time_show|default=''}
+    </div>
+</div>
+<!--choose_nav  结束-->
+
+<!--main 开始-->
+<div class='main detile  width'>
+    <!--title 开始-->
+    <div class="detile_tit">
+        <span class="titl"> {$list.name|default=''}</span>
+        <div class="detile_tit_r">
+            <i class="layui-icon">&#xe630;</i>
+            <i class="layui-icon">&#xe62e;</i>
+            <i class="layui-icon">&#xe630;</i>
+        </div>
+    </div>
+    <!--title 结束-->
+
+    <div class="detile_in">
+        <h4>Warmup</h4>
+        <div class="font_list"> {$list.warmup|default=''}</div>
+
+        <!--videos-->
+        <div class="videos">
+            {volist name="list.warmup_motions" id="wm"}
+            <div class="video_list">
+                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$wm.name|default=''}</div>
+                <div class="video_show_div">
+                    {$wm.url|default='javascripti'}
+                </div>
+            </div>
+            {/volist}
+        </div>
+        <!--videos-->
+
+        <!--main_list 开始-->
+        <div class="main_list">
+            <!---main_list_l 开始-->
+            {volist name="list.course" id="c"}
+            <div class="main_list_l">
+
+
+                <div class="main_list_l_r">
+                    <!--  main_list_l_r_top start-->
+                    <h4 class="main_list_l_r_top">
+                        {$c.num|default=""} {$c.name|default=""}
+                        {if $c.state == 1}
+                        <i class="layui-icon green" itemid="{$c.id}">&#x1005;</i>
+                        {else /}
+                        <i class="layui-icon red" itemid="{$c.id}">&#x1007;</i>
+                        {/if}
+
+                    </h4>
+                    <!--  main_list_l_r_top end-->
+
+                    <!--main_list_l_r_top_b start-->
+                    <div class="main_list_l_r_top_b">
+                        <p class="font_l">{$c.remark|default=''}</p>
+                        <!--视频 开始-->
+                        <div class="videos">
+                            {volist name="c.motions" id="motion"}
+                            <div class="video_list">
+                                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$motion.name|default=''}</div>
+                                <div class="video_show_div">
+                                    {$motion.url|default=''}
+                                </div>
+                            </div>
+                            {/volist}
+                        </div>
+                        <!--视频 结束-->
+
+                        <!--history 开始-->
+                        <div class="history"><i class="layui-icon">&#xe665;</i><a href='{:url("/lesson/history")}?id={$c.id}'  target='_blank'>Exercise History</a></div>
+                        <!--history 结束-->
+
+                        <!--textarea_over 开始-->
+                        <div class="textarea_over clearfix">
+                            <input type="hidden" name="file{$c.id}" onchange="recordfile('{$c.id}', this)"   class="layui-input" />
+                            <i class="layui-icon" data-field="file{$c.id}" data-file="one" data-type="jpg,png,jpeg,mp4" data-title="运动记录" data-filetype="4">&#xe65d;</i>
+                            <textarea itemid="{$c.id|default=0}" placeholder="输入内容">{$c.message|default=''}</textarea>
+                        </div>
+                        <!--textarea_over 结束-->
+                        <div class="uploadshow">
+                            {if !empty($c.file.url)}
+                            <div class="hasvideo">
+                                {if $c.pathinf == 'mp4'}
+                                <video src="{$c.file.url}" controls="controls"></video>
+                                {else /}
+                                <img src='{$c.file.url}'>
+                                    {/if}
+                            </div>
+
+                            <button class="layui-btn backgroundred filedel" itemid="{$c.file.id}">
+                                <i class="layui-icon ">&#xe640;</i>删除
+                            </button>
+                            {/if}
+
+
+                        </div>
+                    </div>
+                    <!--main_list_l_r_top_b end-->
+                </div>
+            </div>
+            {/volist}
+            <!---main_list_l 结束-->
+
+        </div>
+        <!--main_list 结束-->
+
+        <h4>Cooldown</h4>
+        <div class="font_list">{$list.colldown|default=''} </div>
+
+        <!--videos-->
+        <div class="videos">
+            {volist name="$list.colldown_motions" id="cm"}
+            <div class="video_list">
+                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$cm.name|default=''}</div>
+                <div class="video_show_div">
+                    {$cm.url|default=''}
+                </div>
+            </div>
+            {/volist}
+
+        </div>
+        <!--videos-->
+        {if $list.state == 0}
+        <button class="layui-btn  layui-btn-normal complete" itemid="{$list.id}">
+            完成
+        </button>
+        {else}
+        <button class="layui-btn  layui-btn-normal layui-btn-disabled">
+            已完成
+        </button>
+        {/if}
+    </div>
+    <div class="sole">
+        <!--sole_man  开始-->
+        {volist name="$list.message" id="vo_msg"}
+        {if !empty($vo_msg.c_id)}
+        <div class="sole_man">
+            <!--<img src="images/bg.png" alt=""  class="sole_man_l" />-->
+            <div class="sole_man_r">
+                <h4>{$vo_msg.cname} <span>{$vo_msg.time_trans}</span></h4>
+                <div class="font_sole_man">{$vo_msg.content|raw|default=""}</div>
+            </div>
+        </div>
+        {else /}
+        <div class="sole_man sole_man_rdiv">
+            <!--<img src="images/bg.png" alt=""  class="sole_man_l" />-->
+            <div class="sole_man_r">
+                <h4>{$vo_msg.mname} <span>{$vo_msg.time_trans}</span></h4>
+                <div class="font_sole_man">{$vo_msg.content|raw|default=""}</div>
+            </div>
+        </div>
+        {/if}
+        {/volist}
+    </div>
+    <!--sole_man  结束-->
+    <!--chart 开始-->
+    <div class="chart">
+        <textarea class="layui-textarea" name='message' data-type="png,jpg,gif,jpeg,mp4" data-filetype-textarea="3" id="LAY-msg-content"  placeholder="请输入回复，一千字以内" maxlength="1000" style="resize:none"></textarea>
+        <div class="chart_b">
+            <!--            <i class="layui-icon">&#xe65d;</i>
+                        <i class="layui-icon">&#xe60c;</i>
+                        <i class="layui-icons">GIF</i>-->
+            <button class="layui-btn layui-btn-normal send" itemid="{$list.id}">发送</button>
+        </div>
+    </div>
+    <!--chart 结束-->
+</div>
+
+<!--main 结束-->
+{/block}
+
+{block name="script"}
+
+<script type="text/javascript">
+
+
+    $(function () {
+//        var me = window.createEditor('[name="message"]', {height: 200});
+        //导航点击相应的div显示 开始
+        $(".video_list_top").click(function () {
+            if ($(this).siblings('.video_show_div').is(":hidden")) {
+                $(this).siblings('.video_show_div').show();
+            } else {
+                $(this).siblings('.video_show_div').hide()
+            }
+        });
+        //导航点击相应的div显示 结束
+        //状态tips显示 开始
+
+        $('.green').mouseover(function () {
+            var _this = $(this)
+            index = layer.tips('完成的提示', _this);
+        })
+        $('.red').mouseover(function () {
+            var _this = $(this)
+            index = layer.tips('未完成的提示', _this);
+        })
+
+        $('.main_list_l_r_top').on('click', '.green', function () {
+            var _this = $(this);
+            layer.confirm('确定未完成该项内容', function () {
+                var id = _this.attr('itemid');
+                $.post('{:url("handle")}', {'id': id, 'state': 0}, function (data) {
+                    if (data.code == 1) {
+                        _this.removeClass('green').addClass('red');
+                        _this.html('&#x1007;');
+                        layer.closeAll();
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                }, 'json');
+            })
+        })
+        $('.main_list_l_r_top').on('click', '.red', function () {
+            var _this = $(this);
+
+            layer.confirm('确定完成该项内容', function () {
+                var id = _this.attr('itemid');
+                $.post('{:url("handleCourse")}', {'id': id, 'state': 1}, function (data) {
+                    if (data.code == 1) {
+                        _this.removeClass('red').addClass('green');
+                        _this.html('&#x1005;');
+                        layer.closeAll();
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                }, 'json');
+            })
+        })
+
+
+        $('.complete').click(function () {
+            var _this = $(this);
+            layer.confirm('确定完成', function () {
+                var id = _this.attr('itemid');
+                $.post('{:url("handleMotion")}', {'id': id}, function (data) {
+                    if (data.code == 1) {
+                        _this.addClass('layui-btn-disabled').removeClass('complete');
+                        _this.html('已完成');
+                        layer.closeAll();
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                })
+            })
+        })
+
+        //状态tips显示 结束
+
+        //文本输入记录
+        $('.textarea_over').on('blur', 'textarea', function () {
+            var message = $(this).val();
+            var id = $(this).attr('itemid');
+            if ($.trim(message) != '') {
+                $.post("{:url('message_add')}", {'id': id, 'message': message}, function (data) {
+                    console.log(data);
+                    if (data.code == 0) {
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+                            layer.msg(data.msg);
+                        });
+                    }
+                }, 'json')
+            }
+        })
+
+        //发送留言
+        $('.send').click(function () {
+//            var message = me.getData();
+//            var message = CKEDITOR.instances.WORK_INTRODUCTION.getData();
+            var message = $('textarea[name="message"]').val();
+            var id = $(this).attr('itemid');
+            if ($.trim(message) != '') {
+                $.post('{:url("message")}', {'id': id, 'message': message}, function (data) {
+                    if (data.code == 1) {
+                        location.reload();
+                    } else {
+                        layer.msg(data.msg)
+                    }
+                }, 'json')
+            }
+        })
+
+        $('.uploadshow').on('click', '.filedel', function () {
+            var id = $(this).attr('itemid');
+            $.post('{:url("file_del")}', {'id': id}, function (data) {
+                if (data.code == 1) {
+                    $('.uploadshow').html('');
+                } else {
+                    layer.msg(data.msg);
+                }
+            }, 'json')
+        })
+    })
+    function recordfile(id, e) {
+        var _this = $(e)
+        var fileurl = _this.val();
+        $.post('{:url("file_add")}', {'fileurl': fileurl, 'id': id}, function (data) {
+            if (data.code == 0) {
+                layer.msg(data.msg);
+            } else {
+                var pathinfo = data.msg;
+                if (pathinfo == 'mp4') {
+                    var html = '<div class="hasvideo">'
+                            + '<video src="' + fileurl + '" controls="controls"></video>'
+                            + '</div>'
+                            + '<button class="layui-btn backgroundred filedel" itemid="' + data.lcfid + '">'
+                            + '<i class="layui-icon ">&#xe640;</i> 删除'
+                            + '</button>';
+                } else {
+                    var html = '<div class="hasvideo">'
+                            + '<img src="' + fileurl + '">'
+                            + '</div>'
+                            + '<button class="layui-btn backgroundred filedel" itemid="' + data.lcfid + '">'
+                            + '<i class="layui-icon ">&#xe640;</i> 删除'
+                            + '</button>';
+                }
+                _this.parent().siblings('.uploadshow').html(html);
+            }
+        }, 'json')
+    }
+
+</script>
+
+<script  src="__STATIC__/plugs/ckeditor/ckeditor.js"></script>
+{/block}

@@ -1,0 +1,124 @@
+{extend  name="public:main"}
+{block name="main"}
+
+<!--main 开始-->
+<div class='main profile  width'>
+    <!--infor  开始-->
+    <a href='{:url("/member/info")}' class="profile_infor">
+        <div class="profile_infor_in">
+            <div class="profile_infor_c">
+                <div class='l_img'><img src="{$list.picture}" class="" /></div>
+                <div class="font_r">
+                    <h3>{$list.last_name|default=""}</h3>
+                    <!--<p><i class="layui-icon">&#x1005;</i>94Completed Workouts</p>-->
+                </div>
+            </div>
+        </div>
+    </a>
+    <!--infor  结束-->
+
+    <ul>
+        <li>
+            <a href="javascript:;">
+                <div class="a_header"><i class="layui-icon">&#xe643;</i>我的塑形</div>
+
+                <div class="show_div " style="width: 100%" id="photo_show">
+                    <p>最新图片</p>
+                    {empty name="photo"}
+                    <p class=""> 暂无照片</p>
+                    {else /}
+                    <div class="front">
+                        <img alt="正面照片" layer-src="{$photo.front_photo|default='__STATIC__/theme/img/image.png'}" src="{$photo.front_photo|default='__STATIC__/theme/img/image.png'}">
+                    </div>
+                    <div class="back" >
+                        <img alt="背面照片" layer-src="{$photo.back_photo|default='__STATIC__/theme/img/image.png'}" src="{$photo.back_photo|default='__STATIC__/theme/img/image.png'}">
+                    </div>
+                    <div class="side">
+                        <img alt="侧面照片" layer-src="{$photo.side_photo|default='__STATIC__/theme/img/image.png'}" src="{$photo.side_photo|default='__STATIC__/theme/img/image.png'}">
+                    </div>
+
+                    {/empty}
+                    <p class="show_div_more">查看更多 >>> </p>
+                </div>
+            </a>
+        </li>
+
+        <!--        <li>
+                    <a href="javascript:;">
+                        <div class="a_header"><i class="layui-icon">&#xe614;</i>Metrics</div>
+                        <div class="show_div"></div>
+                    </a>
+                </li>-->
+        <!--
+                <li>
+                    <a href="javascript:;">
+                        <div class="a_header"><i class="layui-icon">&#xe60d;</i>Progress Pictures</div>
+                        <div class="show_div"></div>
+                    </a>
+                </li>
+        
+                <li>
+                    <a href="javascript:;">
+                        <div class="a_header"><i class="layui-icon">&#xe60a;</i>Shared Documents</div>
+                        <div class="show_div"></div>
+                    </a>
+                </li>-->
+
+
+
+        <!--        <li class="margintop">
+                    <a href="javascript:;">
+                        <div class="a_header">
+                            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" data-icon="exchange" data-prefix="far" id="ember1169" class="fa-fw mrs tcp svg-inline--fa fa-exchange fa-w-16 mrs tcp ember-view"><path fill="currentColor" d="M508.485 168.485l-100.375 100c-4.686 4.686-12.284 4.686-16.97 0l-19.626-19.626c-4.753-4.753-4.675-12.484.173-17.14L422.916 184H12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h410.916l-51.228-47.719c-4.849-4.656-4.927-12.387-.173-17.14l19.626-19.626c4.686-4.686 12.284-4.686 16.97 0l100.375 100c4.685 4.686 4.685 12.284-.001 16.97zm-504.97 192l100.375 100c4.686 4.686 12.284 4.686 16.97 0l19.626-19.626c4.753-4.753 4.675-12.484-.173-17.14L89.084 376H500c6.627 0 12-5.373 12-12v-24c0-6.627-5.373-12-12-12H89.084l51.228-47.719c4.849-4.656 4.927-12.387.173-17.14l-19.626-19.626c-4.686-4.686-12.284-4.686-16.97 0l-100.375 100c-4.686 4.686-4.686 12.284.001 16.97z"></path>
+                            </svg>
+                            Switch to Coach</div>
+                        <div class="show_div"></div>
+                    </a>
+                </li>-->
+
+        <li>
+            <a href="javascript:;" class="out">
+                <div class="">
+                    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" data-icon="sign-out-alt" data-prefix="fas" id="ember1171" class="fa-fw mrs svg-inline--fa fa-sign-out-alt fa-w-16 mrs ember-view"><path fill="currentColor" d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"></path>
+                    </svg>
+                    Log out</div>
+                <div class="show_div"></div>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--main 结束-->
+
+</body>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    $(function () {
+        layui.use(['layer'], function () {
+            var layer = layui.layer;
+            layer.photos({
+                photos: '#photo_show'
+                , anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
+        });
+
+        //导航点击相应的div显示 开始
+        $(".a_header").click(function () {
+            if ($(this).siblings('.show_div').is(":hidden")) {
+                $('.show_div').hide().filter($(this).siblings('.show_div')).show();
+            } else {
+                $('.show_div').hide();
+            }
+        });
+        //导航点击相应的div显示 结束
+        $('.out').click(function () {
+            layer.confirm('确定要退出？', function () {
+                window.location.href = '{:url("/login/out")}'
+            })
+        })
+        $('.show_div_more').click(function () {
+            window.location.href = '{:url("photo")}';
+        })
+    })
+</script>
+{/block}

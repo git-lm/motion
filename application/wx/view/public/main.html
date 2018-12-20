@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="x-dns-prefetch-control" content="on" />
+        <!-- uc强制竖屏 -->
+        <meta name="screen-orientation" content="portrait">
+        <!-- QQ强制竖屏 -->
+        <meta name="x5-orientation" content="portrait">
+        <!-- UC强制全屏 -->
+        <meta name="full-screen" content="yes">
+        <!-- QQ强制全屏 -->
+        <meta name="x5-fullscreen" content="true">
+        <!-- UC应用模式 -->
+        <meta name="browsermode" content="application">
+        <!-- QQ应用模式 -->
+        <meta name="x5-page-mode" content="app">
+        <!-- windows phone 点击无高光 -->
+        <meta name="msapplication-tap-highlight" content="no" >
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>{:sysconf('site_name')}</title>
+        <link rel="stylesheet" type="text/css" href="__STATIC__/plugs/layui/css/layui.css?v={:date('ymd')}" >
+        <link rel="stylesheet" type="text/css" href="__STATIC__/index/css/pubilc.css?v={:date('ymd')}" />
+        <link rel="stylesheet" type="text/css" href="__STATIC__/index/css/index.css?v={:date('ymd')}" />
+        <link rel="stylesheet" media="screen and (max-width:750px)"  href="__STATIC__/index/css/mobile.css?v={:date('ymd')}" type="text/css" />
+        {block name="style"}{/block}
+        <script>window.ROOT_URL = '__ROOT__';</script>
+        <!--js-->
+        <script type="text/javascript" src="__STATIC__/plugs/jquery/jquery.min.js"></script>
+
+        <script type="text/javascript" src="__STATIC__/index/js/rem.js"></script>
+    </head>
+    <body>
+        {include file='/public/menu' /}
+        <!--choose_nav  结束-->
+        <!--main 开始-->
+        {block name="main"}{/block}
+        <!--main 结束-->
+        {include file='/public/footer' /}
+    </body>
+    {block name="script"}{/block}
+
+</html>
