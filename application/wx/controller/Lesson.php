@@ -1,6 +1,6 @@
 <?php
 
-namespace app\index\controller;
+namespace app\wx\controller;
 
 use think\Controller;
 use app\motion\model\Lesson as lessonModel;
