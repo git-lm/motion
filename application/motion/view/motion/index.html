@@ -12,10 +12,15 @@
         <input name="name" value="" placeholder="请输入类型名称" class="layui-input">
     </div>
 </div>
-<div class="layui-form-item layui-inline">
+<div class="layui-form-item layui-inline ">
     <label class="layui-form-label">所属类型</label>
-    <div class="layui-input-inline">
-        <input name="mtname" value="" placeholder="请输入所属类型" class="layui-input">
+    <div class="layui-input-inline ">
+        <select required=""  xm-select-search xm-select-search-type="dl" xm-select="mtname" lay-verify="required" class="layui-select full-width block" name="mtid" lay-ignore="">
+            <option  value=""> - 请选择类型 -</option>
+            <!--{volist name="types" id="type"}-->
+            <option value="{$type.id}">{$type.name}</option>
+            <!--{/volist}-->
+        </select>
     </div>
 </div>
 <div class="layui-form-item layui-inline">
@@ -27,7 +32,9 @@
 <script>
     $(function () {
         $.layuitable('motionTable');
+        formSelects.render('mtname');
     })
+
     table.render({
         elem: '#motionTable',
 
@@ -57,11 +64,12 @@
     //搜索按钮绑定事件
     form.on('submit(motion_search)', function () {
         var name = $('input[name="name"]').val();
-        var mtname = $('input[name="mtname"]').val();
+        var mtid = formSelects.value('mtname' , 'valStr'); 
+//        var mtid = $('select[name="mtid"]').val();
         table.reload('motionTable', {
             where: {
                 name: name,
-                mtname: mtname,
+                mtid :mtid,
             },
             page: {curr: 1}
         })

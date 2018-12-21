@@ -26,6 +26,11 @@ class Motion extends BasicAdmin
     public function index()
     {
         $this->assign('title', '动作库列表');
+        $typemodel = new \app\motion\model\MotionType();
+        $where[] = ['status', '<>', 0];
+        $order['create_time'] = 'desc';
+        $types = $typemodel->get_motion_types($where, $order);
+        $this->assign('types', $types);
         return $this->fetch();
     }
 
@@ -37,14 +42,14 @@ class Motion extends BasicAdmin
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
-        $mtname = request()->has('mtname', 'get') ? request()->get('mtname/s') : '';
+        $mtid = request()->has('mtid', 'get') ? request()->get('mtid/s') : 0;
         if ($name)
         {
             $where[] = ['mb.name', 'like', '%' . $name . '%'];
         }
-        if ($mtname)
+        if ($mtid)
         {
-            $where[] = ['mt.mtname', 'like', '%' . $mtname . '%'];
+            $where[] = ['mb.tid', 'in', $mtid];
         }
         $where[] = ['mb.status', '<>', 0];
         $order['mb.create_time'] = 'desc';
