@@ -62,8 +62,12 @@
     })
 </script>
 <script type="text/html" id="coursehandle">
+    <!--{if auth("$classuri/little_edit")}-->
     <a class="layui-btn layui-btn-xs" data-action="{:url('little_edit')}" data-title="编辑小动作" lay-event="open">编辑</a>
+     <!--{/if}-->
+    <!--{if auth("$classuri/little_del")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('little_del')}"  lay-event="del">删除</a>
+     <!--{/if}-->
 
 </script>
 

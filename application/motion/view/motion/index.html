@@ -1,6 +1,8 @@
 {extend name='admin@public/content'}
 {block name="button"}
+  <!--{if auth("$classuri/add")}-->
 <button data-modal='{:url("$classuri/add")}' data-title="添加动作库" class='layui-btn layui-btn-sm layui-btn-primary'>添加动作库</button>
+<!--{/if}-->
 {/block}
 
 {block name="content"}
@@ -76,7 +78,11 @@
     })
 </script>
 <script type="text/html" id="motionhandle">
+      <!--{if auth("$classuri/edit")}-->
     <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="id" data-title="编辑动作库" lay-event="open">编辑</a>
+    <!--{/if}-->
+      <!--{if auth("$classuri/del")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="id" lay-event="del">删除</a>
+    <!--{/if}-->
 </script>
 {/block}
