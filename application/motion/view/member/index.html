@@ -1,5 +1,6 @@
 {extend name='admin@public/content'}
 {block name="button"}
+<!--{if auth("$classuri/add")}-->
 <button data-modal='{:url("$classuri/add")}' data-title="添加会员" class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>
 {/block}
 
@@ -93,16 +94,31 @@
     })
 </script>
 <script type="text/html" id="memberhandle">
+    <!--{if auth("$classuri/time_add")}-->
     <a class="layui-btn layui-btn-xs" data-action="{:url('time_add')}" data-field="mid" data-title="添加时间" lay-event="open">添加时间</a>
+    <!--{/if}-->
+    <!--{if auth("$classuri/edit")}-->
     <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="mid" data-title="编辑会员" lay-event="open">编辑</a>
+    <!--{/if}-->
+    <!--{if auth("$classuri/del")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="mid" lay-event="del">删除</a>
+    <!--{/if}-->
+    <!--{if auth("$classuri/pas")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('pas')}" data-field="mid" lay-event="update">重置密码</a>
+    <!--{/if}-->
+    
     {{#if (d.status == 1){}}
+    <!--{if auth("$classuri/handle")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-value="-1" data-action="{:url('handle')}" data-field="mid" lay-event="update">禁用</a>
+    <!--{/if}-->
     {{#}else{}}
+    <!--{if auth("$classuri/handle")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-value="1" data-action="{:url('handle')}" data-field="mid" lay-event="update">启用</a>
+    <!--{/if}-->
     {{#}}}
+    <!--{if auth("$classuri/dis")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('dis')}" data-field="mid" lay-event="open">分配教练</a>
+    <!--{/if}-->
 </script>
 <script type="text/html" id="end_time_show">
     {{#if(d.end_time == '' || d.end_time == null){  }}

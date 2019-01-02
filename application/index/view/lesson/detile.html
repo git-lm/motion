@@ -33,7 +33,7 @@
             <div class="video_list">
                 <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$wm.name|default=''}</div>
                 <div class="video_show_div">
-                    {$wm.url|default='javascripti'}
+                    {$wm.url|raw|default='javascripti'}
                 </div>
             </div>
             {/volist}
@@ -69,7 +69,7 @@
                             <div class="video_list">
                                 <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$motion.name|default=''}</div>
                                 <div class="video_show_div">
-                                    {$motion.url|default=''}
+                                    {$motion.url|raw|default=''}
                                 </div>
                             </div>
                             {/volist}
