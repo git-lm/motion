@@ -153,18 +153,22 @@ class Motion extends BasicAdmin
         {
             $this->error('请正确选择动作库');
         }
+        preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $url, $matched);
+        $src = $matched[1];
         //判断类型是否存在
         $this->check_data($id);
         //验证数据
         $data['tid'] = $tid;
         $data['name'] = $name;
-        $data['url'] = $url;
+        $data['src'] = $src;
         $validate = $this->motionModel->validate($data);
         if ($validate)
         {
             $this->error($validate);
         }
         $where['id'] = $id;
+        unset($data['src']);
+        $data['url'] = $url;
         $code = $this->motionModel->edit($data, $where);
         if ($code)
         {
