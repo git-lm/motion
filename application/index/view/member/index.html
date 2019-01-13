@@ -20,10 +20,10 @@
     <ul>
         <li>
             <a href="javascript:;">
-                <div class="a_header"><i class="layui-icon">&#xe643;</i>我的塑形</div>
+                <div class="a_header"><i class="layui-icon">&#xe660;</i>我的塑形</div>
 
                 <div class="show_div " style="width: 100%" id="photo_show">
-                    <p>最新图片</p>
+                    <p>最新数据</p>
                     {empty name="photo"}
                     <p class=""> 暂无照片</p>
                     {else /}
@@ -40,6 +40,16 @@
                     {/empty}
                     <p class="show_div_more">查看更多 >>> </p>
                 </div>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;">
+                <div class="a_header"><i class="layui-icon">&#xe6b2;</i>运动数据</div>
+                <div class="show_div " style="width: 100%" id="data_show">
+                    <p class="show_data_more">查看更多 >>> </p>
+                </div>
+              
+               
             </a>
         </li>
 
@@ -118,6 +128,9 @@
         })
         $('.show_div_more').click(function () {
             window.location.href = '{:url("photo")}';
+        })
+        $('.show_data_more').click(function () {
+            window.location.href = '{:url("data")}';
         })
     })
 </script>

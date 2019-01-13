@@ -430,7 +430,7 @@ body{
     margin-top: 2%;
     display: none;
 }
-.profile ul li a .show_div .show_div_more{
+.profile ul li a .show_div .show_div_more , .show_data_more{
     text-align: right;
     padding-top: 20px;
     font-size: 15px;
@@ -871,7 +871,16 @@ body{
     margin: 0;
     padding-left: 20px;
 }
-
+.infor_data{
+    width: 100%;
+    max-width: 100%;
+}
+.infor_data_title{
+    font-weight: bold ;
+    font-size: 20px;
+    padding-left: 3%;
+    text-align: center;
+}
 .infor_r_top{
     display: -webkit-box;
     display: -ms-flexbox;

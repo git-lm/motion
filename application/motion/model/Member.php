@@ -473,6 +473,105 @@ class Member extends Model
         return $code;
     }
 
+     /**
+     * 获取会员运动记录
+     * @param type $where
+     * @param type $order
+     * @return type
+     */
+    public function get_member_datas($where = [], $order = [], $page = 0, $limit = 0)
+    {
+        $lists = DbService::queryALL('motion_member_data', $where, $order, $page, $limit);
+        foreach ($lists as &$list)
+        {
+            $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+        }
+        return $lists;
+    }
+
+    /**
+     * 获取会员运动记录
+     * @param type $where
+     * @param type $order
+     * @return type
+     */
+    public function get_member_data($where = [], $order = [])
+    {
+        $list = DbService::queryOne('motion_member_data', $where, $order);
+        if (!empty($list))
+        {
+            $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+        }
+        return $list;
+    }
+    /**
+     * 编辑会员运动数据记录
+     */
+    public function data_edit($data = [], $where = [])
+    {
+        $member_data = $this->get_member_data($where);
+        if (empty($data['update_time']))
+        {
+            $data['update_time'] = time();
+        }
+        DbService::save_log('motion_log', json_encode($member_data), json_encode($data), json_encode($where), '编辑会员运动记录');
+        $code = DbService::update('motion_member_data', $data, $where);
+        return $code;
+    }
+
+    /**
+     * 保存运动数据
+     * @param Array $data   要添加的数据
+     */
+    public function data_add($data)
+    {
+        if (empty($data['create_time']))
+        {
+            $data['create_time'] = time();
+        }
+        DbService::save_log('motion_log', '', json_encode($data), '', '添加会员运动记录');
+        $code = DbService::save('motion_member_data', $data);
+        return $code;
+    }
+    /**
+     * 获取会员运动记录详情
+     * @param type $where
+     * @param type $order
+     * @return type
+     */
+    public function get_member_data_info($where = [], $order = [], $page = 0, $limit = 0)
+    {
+        $lists = DbService::queryALL('motion_member_data_info', $where, $order, $page, $limit);
+        return $lists;
+    }
+    /**
+     * 编辑会员运动数据记录详情
+     */
+    public function data_info_edit($data = [], $where = [])
+    {
+        $member_data_info = $this->get_member_data_info($where);
+        if (empty($data['update_time']))
+        {
+            $data['update_time'] = time();
+        }
+        DbService::save_log('motion_log', json_encode($member_data_info), json_encode($data), json_encode($where), '编辑会员运动记录详情');
+        $code = DbService::update('motion_member_data_info', $data, $where);
+        return $code;
+    }
+  
+    /**
+     * 保存运动数据详情
+     * @param Array $data   要添加的数据
+     */
+    public function data_info_add($data)
+    {
+        DbService::save_log('motion_log', '', json_encode($data), '', '添加会员运动记录详情');
+        $code = DbService::save('motion_member_data_info', $data);
+        return $code;
+    }
+
+
+
     /**
      * 写入操作日志
      * @param string $action
