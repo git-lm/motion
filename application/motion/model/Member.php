@@ -550,10 +550,6 @@ class Member extends Model
     public function data_info_edit($data = [], $where = [])
     {
         $member_data_info = $this->get_member_data_info($where);
-        if (empty($data['update_time']))
-        {
-            $data['update_time'] = time();
-        }
         DbService::save_log('motion_log', json_encode($member_data_info), json_encode($data), json_encode($where), '编辑会员运动记录详情');
         $code = DbService::update('motion_member_data_info', $data, $where);
         return $code;

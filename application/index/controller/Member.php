@@ -222,14 +222,53 @@ class Member extends Controller
      */
     public function data_add()
     {
-        $post = request()->post();
-        $post['m_id'] = $this->m_id;
-        $code = $this->memberModel->data_add($post);
-        if ($code) {
-            $this->success('保存成功');
+        //获取今日是否保存过
+        $where = " FROM_UNIXTIME(create_time , '%Y-%m-%d') like '" . date('Y-m-d') . "' and m_id = " . $this->m_id;
+        $memberData = $this->memberModel->get_member_data($where);
+        if (empty($memberData)) {
+            //说明没有保存则直接保存
+            $data['create_time'] = time();
+            $data['m_id'] = $this->m_id;
+            $code = $this->memberModel->data_add($data);
+            if (!$code) {
+                $this->error('保存失败');
+            }
+            $memberDataId = $code;
         } else {
-            $this->error('保存失败');
+            $data['update_time'] = time();
+            $code = $this->memberModel->data_edit($data, array('id' => $memberData['id']));
+            if (!$code) {
+                $this->error('保存失败');
+            }
+            //说明已经保存获取保存的ID 
+            $memberDataId = $memberData['id'];
         }
+        //判断是否保存了运动数据详情
+        $infoWhere[] = ['d_id', '=', $memberDataId];
+        $memberDataInfo = $this->memberModel->get_member_data_info($infoWhere);
+        if (!empty($memberDataInfo)) {
+            //今日运动数据详情 不为空则修改
+            $post = request()->post();
+            $code = $this->memberModel->data_info_edit($post, array('d_id' => $memberDataId));
+            if ($code) {
+                $this->success('保存成功');
+            } else {
+                $this->error('保存失败');
+            }
+        } else {
+            //为空则新增
+            $post = request()->post();
+            $post['d_id'] = $memberDataId;
+            $code = $this->memberModel->data_info_add($post);
+            if ($code) {
+                $this->success('保存成功');
+            } else {
+                $this->error('保存失败');
+            }
+        }
+
+
+
     }
 
 }
