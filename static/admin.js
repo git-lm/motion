@@ -134,6 +134,10 @@ $(function () {
         this.reload = function () {
             window.onhashchange.call(this);
         };
+         // 返回上一步
+         this.back = function () {
+            window.history.back(-1);
+        };
         // 异步加载的数据
         this.load = function (url, data, type, callback, loading, tips, time) {
             var self = this, dialogIndex = 0;
@@ -589,6 +593,10 @@ $(function () {
     /*! 注册 data-reload 事件行为 */
     $body.on('click', '[data-reload]', function () {
         $.form.reload();
+    });
+     /*! 注册 data-back 事件行为 */
+     $body.on('click', '[data-back]', function () {
+        $.form.back();
     });
 
     /*! 注册 data-check 事件行为 */
