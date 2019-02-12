@@ -19,7 +19,8 @@
     </div>
 </div>
 <div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="arrange_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
+    <button class="layui-btn layui-btn-primary" lay-filter="arrange_search" lay-submit><i class="layui-icon">&#xe615;</i>
+        搜 索</button>
 </div>
 <table id="arrangeTable" lay-filter="arrangeTable"></table>
 {/block}
@@ -27,7 +28,7 @@
 <script>
     $(function () {
         $.layuitable('arrangeTable');
-        laydate.render({range: true, elem: '#class_time'});
+        laydate.render({ range: true, elem: '#class_time' });
     })
     table.render({
         elem: '#arrangeTable',
@@ -38,16 +39,16 @@
         loading: true,
         title: '会员列表',
         cols: [[//表头
-                {title: '序号', fixed: 'left', type: 'numbers'},
-                {field: 'name', title: '计划名称'},
-                {field: 'class_time_show', title: '上课时间'},
-                {field: 'state_show', title: '上课状态'},
-                {field: 'coach_name', title: '教练姓名'},
-                {field: 'warmup', title: '热身语'},
-                {field: 'colldown', title: '冷身语'},
-                {field: 'create_time_show', title: '添加时间'},
-                {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#arrangehandle'}
-            ]],
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'name', title: '计划名称' },
+            { field: 'class_time_show', title: '上课时间' },
+            { field: 'state_show', title: '上课状态' },
+            { field: 'coach_name', title: '教练姓名' },
+            { field: 'warmup', title: '热身语', templet: '#warmup' },
+            { field: 'colldown', title: '冷身语', templet: '#colldown' },
+            { field: 'create_time_show', title: '添加时间' },
+            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#arrangehandle' }
+        ]],
         parseData: function (res) { //res 即为原始返回的数据
             return {
                 "code": res.code, //解析接口状态
@@ -66,7 +67,7 @@
                 name: name,
                 class_time: class_time
             },
-            page: {curr: 1}
+            page: { curr: 1 }
         })
     })
 </script>
@@ -84,5 +85,10 @@
     <a class="layui-btn layui-btn-xs" data-action="{:url('/motion/message/index')}" data-field="lid"  lay-event="href">查看留言<span class="layui-badge">{{d.count}}</span></a>
 
 </script>
-
+<script type="text/html" id="warmup">
+    <a title="{{d.warmup}}"  class="layui-table-link">{{d.warmup}}</a>
+  </script>
+  <script type="text/html" id="colldown">
+    <a title="{{d.warmup}}"  class="layui-table-link">{{d.colldown}}</a>
+  </script>
 {/block}

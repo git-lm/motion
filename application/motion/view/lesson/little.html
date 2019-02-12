@@ -13,7 +13,8 @@
     </div>
 </div>
 <div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="little_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
+    <button class="layui-btn layui-btn-primary" lay-filter="little_search" lay-submit><i class="layui-icon">&#xe615;</i>
+        搜 索</button>
 </div>
 <table id="littleTable" lay-filter="littleTable"></table>
 {/block}
@@ -24,23 +25,23 @@
     })
     table.render({
         elem: '#littleTable',
-       
+
         url: '{:url("$classuri/get_little_courses")}?lid={$lid}', //数据接口 
         page: true, //开启分页
         toolbar: '<div>动作列表</div>',
         loading: true,
         title: '会员列表',
         cols: [[//表头
-                {title: '序号', fixed: 'left', type: 'numbers'},
-                {field: 'num', title: '动作编号'},
-                {field: 'name', title: '动作名称'},
-                {field: 'status_show', title: '状态'},
-                {field: 'state_show', title: '上课状态'},
-                {field: 'create_time_show', title: '添加时间'},
-                {field: 'remark', title: '备注'},
-                {field: 'message', title: '情况'},
-                {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#coursehandle'}
-            ]],
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'num', title: '动作编号' },
+            { field: 'name', title: '动作名称' },
+            // { field: 'status_show', title: '状态' },
+            { field: 'state_show', title: '上课状态' },
+            { field: 'create_time_show', title: '添加时间' },
+            { field: 'remark', title: '备注', templet: '#remark' , width:'25%' },
+            { field: 'message', title: '情况', templet: '#message' },
+            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#coursehandle' , width:'7%' }
+        ]],
         parseData: function (res) { //res 即为原始返回的数据
             return {
                 "code": res.code, //解析接口状态
@@ -57,7 +58,7 @@
             where: {
                 cname: cname,
             },
-            page: {curr: 1}
+            page: { curr: 1 }
         })
     })
 </script>
@@ -70,5 +71,12 @@
      <!--{/if}-->
 
 </script>
-
+<script type="text/html" id="remark">
+    <a title="{{d.remark}}"  class="layui-table-link">{{d.remark}}</a>
+  </script>
+<script type="text/html" id="message">
+    {{#  if(d.message  != null){ }}
+    <a title="{{d.message}}"  class="layui-table-link">{{d.message}}</a>
+    {{#  } }}
+  </script>
 {/block}
