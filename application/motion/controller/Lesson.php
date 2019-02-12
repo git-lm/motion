@@ -368,7 +368,7 @@ class Lesson extends BasicAdmin
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $where[] = ['l_id', '=', $lid];
         $where[] = ['status', '=', 1];
-        $order['create_time'] = 'desc';
+        $order['create_time'] = 'asc';
         $lists = $this->lessonModel->get_little_courses($where, $order, $page, $limit);
         $count = count($this->lessonModel->get_little_courses($where));
         echo $this->tableReturn($lists, $count);
