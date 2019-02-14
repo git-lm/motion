@@ -18,20 +18,15 @@ class Member extends Model
      */
     protected function getDateAttr($val, $type = 'd')
     {
-        if ($type == 'd')
-        {
+        if ($type == 'd') {
             return date('Y-m-d', $val);
-        } else if ($type == 'h')
-        {
+        } else if ($type == 'h') {
             return date('Y-m-d H', $val);
-        } else if ($type == 'm')
-        {
+        } else if ($type == 'm') {
             return date('Y-m-d H:i', $val);
-        } else if ($type == 's')
-        {
+        } else if ($type == 's') {
             return date('Y-m-d H:i:s', $val);
-        } else
-        {
+        } else {
             return date('Y-m-d', $val);
         }
     }
@@ -42,17 +37,13 @@ class Member extends Model
      */
     protected function getStatusAttr($val)
     {
-        if ($val == 1)
-        {
+        if ($val == 1) {
             return '正常';
-        } else if ($val == 0)
-        {
+        } else if ($val == 0) {
             return '删除';
-        } else if ($val == -1)
-        {
+        } else if ($val == -1) {
             return '禁用';
-        } else
-        {
+        } else {
             return '异常';
         }
     }
@@ -63,14 +54,11 @@ class Member extends Model
      */
     public function getSexAttr($val)
     {
-        if ($val == 1)
-        {
+        if ($val == 1) {
             return '男';
-        } else if ($val == 2)
-        {
+        } else if ($val == 2) {
             return '女';
-        } else
-        {
+        } else {
             return '异常';
         }
     }
@@ -87,26 +75,22 @@ class Member extends Model
     public function get_members($where = [], $order = [], $page = 0, $limit = 0)
     {
         $db = Db::table($this->table)
-                ->alias('m')
-                ->field('m.* ,c.name cname ,t.end_time')
-                ->leftJoin(['motion_coach' => 'c'], 'c.id = m.c_id');
+            ->alias('m')
+            ->field('m.* ,c.name cname ,t.end_time')
+            ->leftJoin(['motion_coach' => 'c'], 'c.id = m.c_id');
         $buildSql = Db::table('motion_member_time')->field(['MAX(end_time)' => 'end_time', 'm_id'])->where('status', '=', 1)->group('m_id')->buildSql();
         $db->leftJoin([$buildSql => 't'], 't.m_id = m.id');
 
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
-        foreach ($lists as &$list)
-        {
+        foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
-            if (empty($list['end_time']))
-            {
+            if (empty($list['end_time'])) {
                 $list['end_time_show'] = '未开通';
-            } else
-            {
+            } else {
                 $list['end_time_show'] = $this->getDateAttr($list['end_time']);
             }
-            if (empty($list['cname']))
-            {
+            if (empty($list['cname'])) {
                 $list['cname'] = '无教练';
             }
         }
@@ -132,10 +116,10 @@ class Member extends Model
     public function get_member_info($where = [], $order = [])
     {
         $db = Db::table('motion_member_info')
-                ->alias('mi')
-                ->leftJoin(['motion_member' => 'm'], 'm.id = mi.m_id')
-                ->leftJoin(['wechat_fans' => 'f'], 'f.id = mi.f_id')
-                ->field('mi.* , m.status mstatus , f.openid , f.nickname , f.sex fsex , f.country , f.province , f.city ,f.headimgurl');
+            ->alias('mi')
+            ->leftJoin(['motion_member' => 'm'], 'm.id = mi.m_id')
+            ->leftJoin(['wechat_fans' => 'f'], 'f.id = mi.f_id')
+            ->field('mi.* , m.status mstatus , f.openid , f.nickname , f.sex fsex , f.country , f.province , f.city ,f.headimgurl');
         $list = DbService::queryOne($db, $where, $order);
         return $list;
     }
@@ -145,19 +129,16 @@ class Member extends Model
      */
     public function info($data, $m_id)
     {
-        if (!empty($data['sex_show']))
-        {
+        if (!empty($data['sex_show'])) {
             unset($data['sex_show']);
         }
         $where[] = ['m.id', '=', $m_id];
         $list = $this->get_member_info($where);
-        if (empty($list))
-        {
+        if (empty($list)) {
             $data['m_id'] = $m_id;
             $code = $this->add_info($data);
-        } else
-        {
-            $iwhere [] = ['m_id', '=', $m_id];
+        } else {
+            $iwhere[] = ['m_id', '=', $m_id];
             $code = $this->edit_info($data, $iwhere);
         }
         return $code;
@@ -169,8 +150,7 @@ class Member extends Model
      */
     public function add_info($data = [])
     {
-        if (empty($data['create_time']))
-        {
+        if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '新增会员信息');
@@ -186,8 +166,7 @@ class Member extends Model
     public function edit_info($data = [], $where = [])
     {
         $member = $this->get_member_info($where);
-        if (empty($data['update_time']))
-        {
+        if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
         DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员信息');
@@ -201,12 +180,10 @@ class Member extends Model
      */
     public function add($data = [])
     {
-        if (empty($data['create_time']))
-        {
+        if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        if (empty($data['password']))
-        {
+        if (empty($data['password'])) {
             $data['password'] = md5('123456');
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '新增会员');
@@ -222,8 +199,7 @@ class Member extends Model
     public function edit($data = [], $where = [])
     {
         $member = $this->get_member($where);
-        if (empty($data['update_time']))
-        {
+        if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
         DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员');
@@ -247,8 +223,7 @@ class Member extends Model
      */
     public function add_member_coach($data = [])
     {
-        if (empty($data['create_time']))
-        {
+        if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '新增会员绑定教练');
@@ -264,8 +239,7 @@ class Member extends Model
     public function edit_member_coach($data = [], $where = [])
     {
         $member_coach = $this->get_member_coach($where);
-        if (empty($data['update_time']))
-        {
+        if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
         DbService::save_log('motion_log', json_encode($member_coach), json_encode($data), json_encode($where), '更新会员绑定教练信息');
@@ -281,23 +255,20 @@ class Member extends Model
     public function dis($mid, $c_id)
     {
         Db::startTrans();
-        try
-        {
+        try {
             $mcwhere['m_id'] = $mid;
             $mcwhere['status'] = 1;
             $member_coach = $this->get_member_coach($mcwhere);
 
             //存在教练ID  绑定会员教练  更新会员教练信息
             //如果之前绑定了 则先解除绑定  更新修改事件 在添加绑定信息
-            if (!empty($member_coach))
-            {
+            if (!empty($member_coach)) {
                 $emcdata['status'] = 0;
                 $emcwhere['id'] = $member_coach['id'];
                 $this->edit_member_coach($emcdata, $emcwhere);
             }
 
-            if ($c_id)
-            {
+            if ($c_id) {
                 $amcdata['c_id'] = $c_id;
                 $amcdata['m_id'] = $mid;
 
@@ -309,8 +280,7 @@ class Member extends Model
             // 提交事务
             Db::commit();
             return 1;
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             // 回滚事务
             Db::rollback();
             return 0;
@@ -323,12 +293,10 @@ class Member extends Model
      */
     public function time_add($data)
     {
-        if (empty($data['create_time']))
-        {
+        if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        if (empty($data['u_id']))
-        {
+        if (empty($data['u_id'])) {
             $data['u_id'] = session('user.id');
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '添加会员时间');
@@ -339,8 +307,8 @@ class Member extends Model
     public function get_max_time($where = [], $order = [])
     {
         $db = Db::table('motion_member_time')
-                ->field(['MAX(end_time)' => 'end_time', 'm_id'])
-                ->group('m_id');
+            ->field(['MAX(end_time)' => 'end_time', 'm_id'])
+            ->group('m_id');
         $list = DbService::queryOne($db, $where, $order);
         return $list;
     }
@@ -357,13 +325,12 @@ class Member extends Model
     public function get_member_times($where = [], $order = [], $page = 0, $limit = 0)
     {
         $db = Db::table('motion_member_time')
-                ->alias('mt')
-                ->field('mt.* , u.username')
-                ->leftJoin(['system_user' => 'u'], 'u.id = mt.u_id');
+            ->alias('mt')
+            ->field('mt.* , u.username')
+            ->leftJoin(['system_user' => 'u'], 'u.id = mt.u_id');
 
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
-        foreach ($lists as &$list)
-        {
+        foreach ($lists as &$list) {
             $list['begin_time_show'] = $this->getDateAttr($list['begin_time']);
             $list['end_time_show'] = $this->getDateAttr($list['end_time']);
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
@@ -383,13 +350,12 @@ class Member extends Model
     public function get_member_time($where = [], $order = [])
     {
         $db = Db::table('motion_member_time')
-                ->alias('mt')
-                ->field('mt.* , u.username')
-                ->leftJoin(['system_user' => 'u'], 'u.id = mt.u_id');
+            ->alias('mt')
+            ->field('mt.* , u.username')
+            ->leftJoin(['system_user' => 'u'], 'u.id = mt.u_id');
 
         $list = DbService::queryOne($db, $where, $order);
-        if (!empty($list))
-        {
+        if (!empty($list)) {
             $list['begin_time_show'] = $this->getDateAttr($list['begin_time']);
             $list['end_time_show'] = $this->getDateAttr($list['end_time']);
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
@@ -400,8 +366,7 @@ class Member extends Model
     public function time_edit($data = [], $where = [])
     {
         $member_time = $this->get_member_time($where);
-        if (empty($data['update_time']))
-        {
+        if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
         DbService::save_log('motion_log', json_encode($member_time), json_encode($data), json_encode($where), '编辑会员时间');
@@ -418,8 +383,7 @@ class Member extends Model
     public function get_member_photos($where = [], $order = [], $page = 0, $limit = 0)
     {
         $lists = DbService::queryALL('motion_member_photo', $where, $order, $page, $limit);
-        foreach ($lists as &$list)
-        {
+        foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
         }
         return $lists;
@@ -434,8 +398,7 @@ class Member extends Model
     public function get_member_photo($where = [], $order = [])
     {
         $list = DbService::queryOne('motion_member_photo', $where, $order);
-        if (!empty($list))
-        {
+        if (!empty($list)) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
         }
         return $list;
@@ -448,11 +411,10 @@ class Member extends Model
     public function photo_check_add($data)
     {
         //判断是否存未完成的
-        $notwhere [] = ['front_photo|back_photo|side_photo', 'null', ''];
+        $notwhere[] = ['front_photo|back_photo|side_photo', 'null', ''];
         $notphoto = $this->get_member_photo($notwhere);
         //如果存在  则更新未完成的
-        if ($notphoto)
-        {
+        if ($notphoto) {
             $where[] = ['id', '=', $notphoto['id']];
             $data[$data['name'] . '_photo'] = $data['photo'];
             $data['update_time'] = time();
@@ -473,7 +435,7 @@ class Member extends Model
         return $code;
     }
 
-     /**
+    /**
      * 获取会员运动记录
      * @param type $where
      * @param type $order
@@ -482,8 +444,7 @@ class Member extends Model
     public function get_member_datas($where = [], $order = [], $page = 0, $limit = 0)
     {
         $lists = DbService::queryALL('motion_member_data', $where, $order, $page, $limit);
-        foreach ($lists as &$list)
-        {
+        foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
         }
         return $lists;
@@ -498,8 +459,7 @@ class Member extends Model
     public function get_member_data($where = [], $order = [])
     {
         $list = DbService::queryOne('motion_member_data', $where, $order);
-        if (!empty($list))
-        {
+        if (!empty($list)) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
         }
         return $list;
@@ -510,8 +470,7 @@ class Member extends Model
     public function data_edit($data = [], $where = [])
     {
         $member_data = $this->get_member_data($where);
-        if (empty($data['update_time']))
-        {
+        if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
         DbService::save_log('motion_log', json_encode($member_data), json_encode($data), json_encode($where), '编辑会员运动记录');
@@ -525,8 +484,7 @@ class Member extends Model
      */
     public function data_add($data)
     {
-        if (empty($data['create_time']))
-        {
+        if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '添加会员运动记录');
@@ -554,7 +512,7 @@ class Member extends Model
         $code = DbService::update('motion_member_data_info', $data, $where);
         return $code;
     }
-  
+
     /**
      * 保存运动数据详情
      * @param Array $data   要添加的数据
@@ -564,6 +522,60 @@ class Member extends Model
         DbService::save_log('motion_log', '', json_encode($data), '', '添加会员运动记录详情');
         $code = DbService::save('motion_member_data_info', $data);
         return $code;
+    }
+    /**
+     * 获取今日运动数据
+     */
+    public function get_today_data_info($where = [], $order = [])
+    {
+        // $where = " FROM_UNIXTIME(create_time , '%Y-%m-%d') like '" . date('Y-m-d') . "' and m_id = " . $m_id;
+        $lists = Db::table('motion_member_data')
+            ->alias('md')
+            ->leftJoin('motion_member_data_info mdi', 'mdi.d_id = md.id')
+            ->where($where)
+            ->order($order)
+            ->field('mdi.* , md.create_time')
+            ->select();
+        return $lists;
+    }
+    /**
+     * 处理运动数据 适用图标展示
+     */
+
+    public function handleDataInfo($data)
+    {
+        //定义空的周期数组
+        $weekArr = array();
+        $weeks = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+        foreach ($data as $k => $v) {
+            $weekArr[] = $weeks[date('w', $v['create_time'])];
+            $tzArr[] = $v['tz'];
+            $ggjArr[] = $v['ggj'];
+            $tzfArr[] = $v['tzf'];
+            $sfhlArr[] = $v['sfhl'];
+            $qztzArr[] = $v['qztz'];
+            $zlzsArr[] = $v['zlzs'];
+            $tzbfbArr[] = $v['tzbfb'];
+            $ytbArr[] = $v['ytb'];
+            $jcdxArr[] = $v['jcdx'];
+            $jrkzArr[] = $v['jrkz'];
+            $zfkzArr[] = $v['zfkz'];
+        }
+        $infoArr['week'] = $weekArr;
+        $infoArr['data'] = [
+            ['name' => '体重', 'type' => 'line', 'stack' => '本周', 'data' => $tzArr],
+            ['name' => '骨骼肌', 'type' => 'line', 'stack' => '本周', 'data' => $ggjArr],
+            ['name' => '体脂肪', 'type' => 'line', 'stack' => '本周', 'data' => $tzfArr],
+            ['name' => '身体水分含量', 'type' => 'line', 'stack' => '本周', 'data' => $sfhlArr],
+            ['name' => '去脂体重', 'type' => 'line', 'stack' => '本周', 'data' => $qztzArr],
+            ['name' => '身体质量指数', 'type' => 'line', 'stack' => '本周', 'data' => $zlzsArr],
+            ['name' => '体脂百分比', 'type' => 'line', 'stack' => '本周', 'data' => $tzbfbArr],
+            ['name' => '腰臀比', 'type' => 'line', 'stack' => '本周', 'data' => $ytbArr],
+            ['name' => '基础代谢', 'type' => 'line', 'stack' => '本周', 'data' => $jcdxArr],
+            ['name' => '肌肉控制', 'type' => 'line', 'stack' => '本周', 'data' => $jrkzArr],
+            ['name' => '脂肪控制', 'type' => 'line', 'stack' => '本周', 'data' => $zfkzArr],
+        ];
+        return $infoArr;
     }
 
 

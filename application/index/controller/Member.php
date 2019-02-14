@@ -215,6 +215,9 @@ class Member extends Controller
      */
     public function data()
     {
+        $where = " FROM_UNIXTIME(create_time , '%Y-%m-%d') like '" . date('Y-m-d') . "' and m_id = " . $this->m_id;
+        $lists = $this->memberModel->get_today_data_info($where);
+        $this->assign('list', !empty($lists) ? $lists[0] : array());
         return $this->fetch('data');
     }
     /**
@@ -266,9 +269,24 @@ class Member extends Controller
                 $this->error('保存失败');
             }
         }
+    }
+    /**
+     * 获取一周数据
+     */
+    public function get_week_data()
+    {
+        //获取当前时间的前一周时间
+        $beforeSeven = strtotime(date('Y-m-d 00:00:00', strtotime('-7 days')));
+        //获取当前时间的前一天
+        $beforeOne = strtotime(date('Y-m-d 23:59:59', strtotime('-1 days')));
 
-
-
+        $where[] = ['create_time', '>', $beforeSeven];
+        $where[] = ['create_time', '<', $beforeOne];
+        $where[] = ['m_id', '=', $this->m_id];
+        $order = 'create_time asc';
+        $lists = $this->memberModel->get_today_data_info($where, $order);
+        $infoArr = $this->memberModel->handleDataInfo($lists);
+        echo json_encode($infoArr);
     }
 
 }
