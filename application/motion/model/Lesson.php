@@ -18,20 +18,15 @@ class Lesson extends Model
      */
     protected function getDateAttr($val, $type = 'd')
     {
-        if ($type == 'd')
-        {
+        if ($type == 'd') {
             return date('Y-m-d', $val);
-        } else if ($type == 'h')
-        {
+        } else if ($type == 'h') {
             return date('Y-m-d H', $val);
-        } else if ($type == 'm')
-        {
+        } else if ($type == 'm') {
             return date('Y-m-d H:i', $val);
-        } else if ($type == 's')
-        {
+        } else if ($type == 's') {
             return date('Y-m-d H:i:s', $val);
-        } else
-        {
+        } else {
             return date('Y-m-d', $val);
         }
     }
@@ -42,17 +37,13 @@ class Lesson extends Model
      */
     protected function getStatusAttr($val)
     {
-        if ($val == 1)
-        {
+        if ($val == 1) {
             return '正常';
-        } else if ($val == 0)
-        {
+        } else if ($val == 0) {
             return '删除';
-        } else if ($val == -1)
-        {
+        } else if ($val == -1) {
             return '禁用';
-        } else
-        {
+        } else {
             return '异常';
         }
     }
@@ -63,14 +54,11 @@ class Lesson extends Model
      */
     protected function getStateAttr($val)
     {
-        if ($val == 1)
-        {
+        if ($val == 1) {
             return '已完成';
-        } else if ($val == 0)
-        {
+        } else if ($val == 0) {
             return '未完成';
-        } else
-        {
+        } else {
             return '异常';
         }
     }
@@ -94,8 +82,7 @@ class Lesson extends Model
         $buildSql = Db::table('motion_message')->field(['count(0)' => 'count', 'p_id'])->where('is_check', '=', 0)->group('p_id')->buildSql();
         $db->leftJoin([$buildSql => 't'], 't.p_id = l.id');
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
-        foreach ($lists as &$list)
-        {
+        foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
@@ -121,8 +108,7 @@ class Lesson extends Model
      */
     public function add($data = [])
     {
-        if (empty($data['create_time']))
-        {
+        if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '新增会员动作');
@@ -138,8 +124,7 @@ class Lesson extends Model
     public function edit($data = [], $where = [])
     {
         $lesson = $this->get_arrange_list($where);
-        if (empty($data['update_time']))
-        {
+        if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
         DbService::save_log('motion_log', json_encode($lesson), json_encode($data), json_encode($where), '编辑会员动作');
@@ -158,8 +143,7 @@ class Lesson extends Model
     public function get_little_courses($where = [], $order = [], $page = 0, $limit = 0)
     {
         $lists = DbService::queryALL('motion_lesson_course', $where, $order, $page, $limit);
-        foreach ($lists as &$list)
-        {
+        foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
             $list['state_show'] = $this->getStateAttr($list['state']);
@@ -184,8 +168,7 @@ class Lesson extends Model
      */
     public function little_add($data = [])
     {
-        if (empty($data['create_time']))
-        {
+        if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作');
@@ -201,8 +184,7 @@ class Lesson extends Model
     public function little_edit($data = [], $where = [])
     {
         $little = $this->get_little_course($where);
-        if (empty($data['update_time']))
-        {
+        if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
         DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑会员小动作');
@@ -215,8 +197,7 @@ class Lesson extends Model
      */
     public function file_add($data = [])
     {
-        if (empty($data['create_time']))
-        {
+        if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '新增会员课程记录文件');
@@ -227,18 +208,17 @@ class Lesson extends Model
     /**
      *  获取相同的课程
      */
-    public function get_history($m_ids = 0, $order = [], $page = 0, $limit = 0)
+    public function get_history($m_ids = 0, $m_id = 0,  $order = [], $page = 0, $limit = 0)
     {
         //获取相同视频的课程
-        $where = ' m_ids in ( ' . $m_ids . ')';
+        $where = ' m_ids in ( ' . $m_ids . ') and lc.state = 1 and l.class_time < "' . time() . '" and m_id = ' . $m_id;
         $db = Db::table('motion_lesson_course')
-                ->alias('lc')
-                ->leftJoin(['motion_lesson' => 'l'], 'l.id = lc.l_id')
-                ->field('lc.* ,l.id lid ,  l.name lname , l.class_time');
-        $order ['class_time'] = 'desc';
+            ->alias('lc')
+            ->leftJoin(['motion_lesson' => 'l'], 'l.id = lc.l_id')
+            ->field('lc.* ,l.id lid ,  l.name lname , l.class_time');
+        $order['class_time'] = 'desc';
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
-        foreach ($lists as &$list)
-        {
+        foreach ($lists as &$list) {
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
         }
         return $lists;
@@ -259,8 +239,7 @@ class Lesson extends Model
     public function file_edit($data = [], $where = [])
     {
         $file = $this->get_course_file($where);
-        if (empty($data['update_time']))
-        {
+        if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
         DbService::save_log('motion_log', json_encode($file), json_encode($data), json_encode($where), '编辑会员课程文件记录');
@@ -320,8 +299,7 @@ class Lesson extends Model
     {
 
         $wechat_lesson_id = sysconf('wechat_lesson_id');
-        if (!$wechat_lesson_id)
-        {
+        if (!$wechat_lesson_id) {
             return json_encode(array('errcode' => -1, 'msg' => '请先配置模板ID'));
         }
 
@@ -340,8 +318,7 @@ class Lesson extends Model
         $ltwhere['l_id'] = $lesson['id'];
         $littles = $this->get_little_courses($ltwhere);
         $little_string = '';
-        foreach ($littles as $little)
-        {
+        foreach ($littles as $little) {
             $little_string .= "\n\t\t\t" . $little['num'] . $little['name'];
         }
 
@@ -349,8 +326,7 @@ class Lesson extends Model
         $memberModel = new \app\motion\model\Member();
         $mwhere['m_id'] = $lesson['m_id'];
         $memberinfo = $memberModel->get_member_info($mwhere);
-        if (empty($memberinfo['openid']))
-        {
+        if (empty($memberinfo['openid'])) {
             return json_encode(array('errcode' => -1, 'msg' => '该会员无微信信息 ， 不能发送'));
         }
         $openid = $memberinfo['openid'];
@@ -369,5 +345,4 @@ class Lesson extends Model
         $res = $tem->sendTemplateMessage($data, $touser, $templateId, $url);
         return $res;
     }
-
 }

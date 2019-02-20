@@ -4,8 +4,8 @@
 <div class="choose_nav">
     <div class="choose_nav_c width">
         <div class="choose_nav_c_span">
-            <span class=' {eq name='$type' value='upcomming'}span_cur{/eq}' ><a href="{:url('/list')}">upcomming</a></span>
-             <span class=' {eq name='$type' value='past'}span_cur{/eq}'><a href="{:url('/list')}?type=past">past</a></span>
+            <span class=' {eq name='$type' value='upcomming'}span_cur{/eq}' ><a href="{:url('/list')}">upcomming 即将</a></span>
+             <span class=' {eq name='$type' value='past'}span_cur{/eq}'><a href="{:url('/list')}?type=past">past 历史</a></span>
              </div>
 
              <!--        <div class="R"><img src="__STATIC__/index/images/icon_w.png" alt="">History</div>-->
@@ -45,14 +45,16 @@
                                     <h3 class="client-workout-item-header">
                                         {{item.name}}
                                     </h3>
-                                    {{# if(item.state ==0){ }}
-                                    <span  class="mbs tag is-missed ember-view"><i class="layui-icon">&#x1005;</i> missed</span>
+                                    {{# if(item.state ==0 && item.class_time < (new Date()).getTime()){ }}
+                                    <span  class="mbs tag is-missed ember-view"><i class="layui-icon">&#x1007;</i> 待完成</span>
+                                    {{# }else if(item.state ==0 && item.class_time > (new Date()).getTime()){ }}
+                                    <span  class="mbs tag is-missed ember-view"><i class="layui-icon">&#x1007;</i> 未完成</span>
                                     {{# }else{ }}
-                                    <span  class="mbs tag is-completed ember-view"><i class="layui-icon">&#x1005;</i> Completed</span>
+                                    <span  class="mbs tag is-completed ember-view"><i class="layui-icon">&#x1005;</i> 已完成 </span>
                                     {{# } }}
                                 </div>
                                 <div class="wallflower-cell">
-                                    <span class="btn btn--s btn--stroke-dk ember-view">View Details</span>
+                                    <span class="btn btn--s btn--stroke-dk ember-view">View Details 详情</span>
                                 </div>
                             </div>
                             <!--上面部分 结束-->

@@ -26,9 +26,8 @@
     <!--title 结束-->
 
     <div class="detile_in">
-        <h4>Warmup</h4>
-        <div class="font_list"> {$list.warmup|default=''}</div>
-
+        <h4>Warm Up 热身</h4>
+        <div class="font_list"> {:nl2br($list.warmup)}</div>
         <!--videos-->
         <div class="videos">
             {volist name="list.warmup_motions" id="wm"}
@@ -80,7 +79,7 @@
 
                         <!--history 开始-->
                         <div class="history"><i class="layui-icon">&#xe665;</i><a href='{:url("/lesson/history")}?id={$c.id}'
-                                target='_blank'>Exercise History</a></div>
+                                target='_blank'>Exercise History 历史记录</a></div>
                         <!--history 结束-->
 
                         <!--textarea_over 开始-->
@@ -118,8 +117,8 @@
         </div>
         <!--main_list 结束-->
 
-        <h4>Cooldown</h4>
-        <div class="font_list">{$list.colldown|default=''} </div>
+        <h4>Cool Down 冷身</h4>
+        <div class="font_list">{:nl2br($list.colldown)} </div>
 
         <!--videos-->
         <div class="videos">

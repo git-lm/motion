@@ -153,9 +153,11 @@ class Member extends Controller
     {
         //获取未上传完成的照片
         $notwhere[] = ['front_photo|back_photo|side_photo', 'null', ''];
+        $notwhere[] = ['m_id', '=', $this->m_id];
         $notphoto = $this->memberModel->get_member_photo($notwhere);
         $this->assign('notphoto', $notphoto);
         $allwhere[] = ['front_photo&back_photo&side_photo', 'not null', ''];
+        $allwhere[] = ['m_id', '=', $this->m_id];
         $count = count($this->memberModel->get_member_photos($allwhere));
         $this->assign('pages', $count);
         return $this->fetch();
@@ -171,6 +173,7 @@ class Member extends Controller
         $order['create_time'] = 'desc';
         //获取所有上传完成的照片
         $allwhere[] = ['front_photo&back_photo&side_photo', 'not null', ''];
+        $allwhere[] = ['m_id', '=', $this->m_id];
         $allphotos = $this->memberModel->get_member_photos($allwhere, $order, $page, $limit);
 
         $this->assign('allphotos', $allphotos);
@@ -288,5 +291,4 @@ class Member extends Controller
         $infoArr = $this->memberModel->handleDataInfo($lists);
         echo json_encode($infoArr);
     }
-
 }

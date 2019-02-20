@@ -42,7 +42,7 @@ class Lesson extends Controller {
             $where[] = ['l.class_time', '<', time()];
         }
 
-        $order['l.class_time'] = 'desc';
+        $order['l.class_time'] = 'asc';
         $lists = $this->lessonModel->get_arrange_lists($where, $order, $page, $limit);
         $count = count($this->lessonModel->get_arrange_lists($where));
         //获取记录留言
@@ -127,7 +127,7 @@ class Lesson extends Controller {
             $this->error('无此相关记录');
         }
         $m_ids = $little['m_ids'];
-        $lists = $this->lessonModel->get_history($m_ids);
+        $lists = $this->lessonModel->get_history($m_ids , $this->m_id);
 
         $this->assign('lists', $lists);
         return $this->fetch();
