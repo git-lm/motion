@@ -70,7 +70,7 @@ class FileService
         }
         switch (empty($storage) ? sysconf('storage_type') : $storage) {
             case 'local':
-                return self::getBaseUriLocal() . $filename;
+                return self::getBaseUriLocal() . '/static/upload/' . $filename;
             case 'qiniu':
                 return self::getBaseUriQiniu() . $filename;
             case 'oss':
@@ -146,7 +146,7 @@ class FileService
         $appRoot = request()->root(true);  // 去掉参数 true 将获得相对地址
         $uriRoot = preg_match('/\.php$/', $appRoot) ? dirname($appRoot) : $appRoot;
         $uriRoot = in_array($uriRoot, ['/', '\\']) ? '' : $uriRoot;
-        return "{$uriRoot}/static/upload/";
+        return "{$uriRoot}";
     }
 
     /**

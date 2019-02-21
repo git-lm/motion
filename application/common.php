@@ -158,6 +158,22 @@ function deep_in_array($value, $array)
     }
     return false;
 }
+/**
+ * 图片生成缩略图
+ */
+function imgthumb($file_url = '', $file_name = '', $ext = '', $width = 150, $height = 150)
+{
+    $types = str_replace(',', '|', sysconf('storage_local_exts'));
+    $file = "{$file_url}/{$file_name}.{$ext}";
+
+    if (!empty($file) && file_exists($file)) {
+        if (stripos($types, $ext)) {
+            $image = \think\Image::open($file);
+            !is_dir("{$file_url}/thumb/") && mkdir("{$file_url}/thumb/", 0777, true);
+            $image->thumb($width, $height)->save("{$file_url}/thumb/{$file_name}.{$ext}");
+        }
+    }
+}
 
 // /**
 //  * 获取图片的缩略图
