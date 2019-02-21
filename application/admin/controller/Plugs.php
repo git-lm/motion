@@ -24,8 +24,7 @@ class Plugs extends BasicAdmin
     public function upfile()
     {
         $uptype = $this->request->get('uptype');
-        if (!in_array($uptype, ['local', 'qiniu', 'oss']))
-        {
+        if (!in_array($uptype, ['local', 'qiniu', 'oss'])) {
             $uptype = sysconf('storage_type');
         }
         $mode = $this->request->get('mode', 'one');
@@ -57,59 +56,46 @@ class Plugs extends BasicAdmin
     public function upload()
     {
         $file = $this->request->file('file');
-        if (!$file->checkExt(strtolower(sysconf('storage_local_exts'))))
-        {
+        if (!$file->checkExt(strtolower(sysconf('storage_local_exts')))) {
             return json(['code' => 'ERROR', 'msg' => '文件上传类型受限']);
         }
         $filetype = $this->request->post('filetype', 0);
         $menber = session('motion_member');
 
-        if (!empty($menber))
-        {
+        if (!empty($menber)) {
             $uid = md5($menber['id']);
-        } else
-        {
+        } else {
             $uid = md5(0);
         }
-        if ($filetype == 1)
-        {
-            $pr = "{$uid}/sysconfig";
-        } else if ($filetype == 2)
-        {
-            $pr = "{$uid}/store";
-        } else if ($filetype == 3)
-        {
-            $pr = "{$uid}/message";
-        } else if ($filetype == 4)
-        {
-            $pr = "{$uid}/record";
-        } else if ($filetype == 5)
-        {
-            $pr = "{$uid}/member";
-        } else if ($filetype == 6)
-        {
-            $pr = "{$uid}/photo";
-        } else
-        {
-            $pr = "{$uid}/others";
+        if ($filetype == 1) {
+            $pr = "sysconfig/{$uid}";
+        } else if ($filetype == 2) {
+            $pr = "store/{$uid}";
+        } else if ($filetype == 3) {
+            $pr = "message/{$uid}";
+        } else if ($filetype == 4) {
+            $pr = "record/{$uid}";
+        } else if ($filetype == 5) {
+            $pr = "member/{$uid}";
+        } else if ($filetype == 6) {
+            $pr = "photo/{$uid}";
+        } else {
+            $pr = "others/{$uid}";
         }
         $names = str_split($this->request->post('md5'), 16);
         $ext = strtolower(pathinfo($file->getInfo('name'), 4));
         $ext = $ext ? $ext : 'tmp';
         $filename = "{$names[0]}/{$names[1]}.{$ext}";
         // 文件上传Token验证
-        if ($this->request->post('token') !== md5($filename . session_id()))
-        {
+        if ($this->request->post('token') !== md5($filename . session_id())) {
             return json(['code' => 'ERROR', 'msg' => '文件上传验证失败']);
         }
         // 文件上传处理
-        if (($info = $file->move("static/upload/{$pr}/{$names[0]}", "{$names[1]}.{$ext}", true)))
-        {
+        if (($info = $file->move("static/upload/{$pr}/{$names[0]}", "{$names[1]}.{$ext}", true))) {
 
-            if (($site_url = FileService::getFileUrl("{$pr}/{$filename}", 'local')))
-            {
+            if (($site_url = FileService::getFileUrl("{$pr}/{$filename}", 'local'))) {
 
-//                $this->imgthumb("static/upload/{$pr}/{$names[0]}", "{$names[1]}", "{$ext}");
+                //                $this->imgthumb("static/upload/{$pr}/{$names[0]}", "{$names[1]}", "{$ext}");
                 return json(['data' => ['site_url' => $site_url], 'code' => 'SUCCESS', 'msg' => '文件上传成功']);
             }
         }
@@ -124,10 +110,8 @@ class Plugs extends BasicAdmin
         $types = 'jpeg|gif|png|jpg';
         $file = "{$file_url}/{$file_name}.{$ext}";
 
-        if (!empty($file) && file_exists($file))
-        {
-            if (stripos($types, $ext))
-            {
+        if (!empty($file) && file_exists($file)) {
+            if (stripos($types, $ext)) {
                 $image = \think\Image::open($file);
                 $image->thumb(150, 150)->save("{$file_url}/{$file_name}_thumb.{$ext}");
             }
@@ -148,15 +132,13 @@ class Plugs extends BasicAdmin
 
         $filename = join('/', str_split($post['md5'], 16)) . '.' . ($ext ? $ext : 'tmp');
         // 检查文件是否已上传
-        if (($site_url = FileService::getFileUrl($filename)))
-        {
+        if (($site_url = FileService::getFileUrl($filename))) {
             return json(['data' => ['site_url' => $site_url], 'code' => "IS_FOUND"]);
         }
 
         // 需要上传文件，生成上传配置参数
         $data = ['uptype' => $post['uptype'], 'file_url' => $filename];
-        switch (strtolower($post['uptype']))
-        {
+        switch (strtolower($post['uptype'])) {
             case 'local':
                 $data['token'] = md5($filename . session_id());
                 $data['server'] = FileService::getUploadLocalUrl();
@@ -212,5 +194,4 @@ class Plugs extends BasicAdmin
         $field = $this->request->get('field', 'icon');
         return $this->fetch('', ['field' => $field]);
     }
-
 }
