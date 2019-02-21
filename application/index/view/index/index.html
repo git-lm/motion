@@ -1,28 +1,30 @@
-{extend  name="public:main"}
+{extend name="public:main"}
 {block name="main"}
 <!--choose_nav  开始-->
 <div class="choose_nav">
     <div class="choose_nav_c width">
         <div class="choose_nav_c_span">
-            <span class=' {eq name='$type' value='upcomming'}span_cur{/eq}' ><a href="{:url('/list')}">upcomming 即将</a></span>
-             <span class=' {eq name='$type' value='past'}span_cur{/eq}'><a href="{:url('/list')}?type=past">past 历史</a></span>
-             </div>
-
-             <!--        <div class="R"><img src="__STATIC__/index/images/icon_w.png" alt="">History</div>-->
-
-            </div>
+            <span class=' {eq name=' $type' value='upcomming' }span_cur{/eq}'><a href="{:url('/list')}">upcomming
+                </a></span>
+            <span class=' {eq name=' $type' value='past' }span_cur{/eq}'> <a href="{:url('/list')}?type=past">past
+                </a></span>
         </div>
-        <!--main 开始-->
-        <div class='main  index width'>
-            <ol id="lessons">
 
-            </ol>
+        <!--        <div class="R"><img src="__STATIC__/index/images/icon_w.png" alt="">History</div>-->
 
-            <!--    <a href="javascript:;" class="layui-btn layui-btn-normal layui-btn-sm layui-btn-fluid load-more">Load More</a>-->
-        </div>
-        {/block}
-        {block name="script"}
-        <script id="lessonstpl" type="text/html">
+    </div>
+</div>
+<!--main 开始-->
+<div class='main  index width'>
+    <ol id="lessons">
+
+    </ol>
+
+    <!--    <a href="javascript:;" class="layui-btn layui-btn-normal layui-btn-sm layui-btn-fluid load-more">Load More</a>-->
+</div>
+{/block}
+{block name="script"}
+<script id="lessonstpl" type="text/html">
             {{#  layui.each(d.msg, function(index, item){ }}
             <li>
                 <a target='_blank' href="{:url('/lesson/detile')}?id={{item.id}}">
@@ -87,35 +89,35 @@
             {{# }) }}
         </script>
 
-        <script>
+<script>
 
-            $(function () {
-                layui.use(['flow', 'laytpl'], function () {
+    $(function () {
+        layui.use(['flow', 'laytpl'], function () {
 
-                    var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
-                    var flow = layui.flow;
-                    var laytpl = layui.laytpl;
+            var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
+            var flow = layui.flow;
+            var laytpl = layui.laytpl;
 
-                    flow.load({
-                        elem: '#lessons', //指定列表容器
-                        end: '没有更多了...',
-                        done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
-                            var lis = [];
-                            //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
-                            $.get('{:url("/index/lesson/get_arranges")}?page=' + page + '&type={$type}', function (res) {
-                                var lessonstpl = $('#lessonstpl').html();
-                                var html = laytpl(lessonstpl).render(res);
-                                lis.push(html);
-                                next(lis.join(''), page < res.pages);
-                            }, 'json');
-                        }
-                    });
-                });
+            flow.load({
+                elem: '#lessons', //指定列表容器
+                end: '没有更多了...',
+                done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
+                    var lis = [];
+                    //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
+                    $.get('{:url("/index/lesson/get_arranges")}?page=' + page + '&type={$type}', function (res) {
+                        var lessonstpl = $('#lessonstpl').html();
+                        var html = laytpl(lessonstpl).render(res);
+                        lis.push(html);
+                        next(lis.join(''), page < res.pages);
+                    }, 'json');
+                }
+            });
+        });
 
-            })
-
-
+    })
 
 
-        </script>
-        {/block}
+
+
+</script>
+{/block}
