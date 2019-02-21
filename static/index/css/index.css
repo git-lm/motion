@@ -430,6 +430,10 @@ body{
     margin-top: 2%;
     display: none;
 }
+.profile ul li a .show_div .showphoto{
+    width: 32%;
+    display: inline-block;
+}
 .profile ul li a .show_div .show_div_more , .show_data_more{
     text-align: right;
     padding-top: 20px;

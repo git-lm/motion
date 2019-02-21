@@ -38,13 +38,11 @@ function auth($node)
 function sysconf($name, $value = null)
 {
     static $config = [];
-    if ($value !== null)
-    {
+    if ($value !== null) {
         list($config, $data) = [[], ['name' => $name, 'value' => $value]];
         return DataService::save('SystemConfig', $data, 'name');
     }
-    if (empty($config))
-    {
+    if (empty($config)) {
         $config = Db::name('SystemConfig')->column('name,value');
     }
     return isset($config[$name]) ? $config[$name] : '';
@@ -69,8 +67,7 @@ function format_datetime($datetime, $format = 'Y年m月d日 H:i:s')
 function encode($string)
 {
     list($chars, $length) = ['', strlen($string = iconv('utf-8', 'gbk', $string))];
-    for ($i = 0; $i < $length; $i++)
-    {
+    for ($i = 0; $i < $length; $i++) {
         $chars .= str_pad(base_convert(ord($string[$i]), 10, 36), 2, 0, 0);
     }
     return $chars;
@@ -84,8 +81,7 @@ function encode($string)
 function decode($string)
 {
     $chars = '';
-    foreach (str_split($string, 2) as $char)
-    {
+    foreach (str_split($string, 2) as $char) {
         $chars .= chr(intval(base_convert($char, 36, 10)));
     }
     return iconv('gbk', 'utf-8', $chars);
@@ -126,17 +122,13 @@ function time_trans($the_time)
 
     $dur = $now_time - $the_time;
 
-    if ($dur < 60)
-    {
+    if ($dur < 60) {
         return $dur . '秒前';
-    } else if ($dur < 3600)
-    {
+    } else if ($dur < 3600) {
         return floor($dur / 60) . '分钟前';
-    } else if ($dur < 86400)
-    {
+    } else if ($dur < 86400) {
         return floor($dur / 3600) . '小时前';
-    } else
-    {
+    } else {
         return floor($dur / 86400) . '天前';
     }
 }
@@ -149,43 +141,51 @@ function time_trans($the_time)
  */
 function deep_in_array($value, $array)
 {
-    foreach ($array as $item)
-    {
-        if (!is_array($item))
-        {
-            if ($item == $value)
-            {
+    foreach ($array as $item) {
+        if (!is_array($item)) {
+            if ($item == $value) {
                 return $item;
-            } else
-            {
+            } else {
                 continue;
             }
         }
 
-        if (in_array($value, $item))
-        {
+        if (in_array($value, $item)) {
             return $item;
-        } else if (deep_in_array($value, $item))
-        {
+        } else if (deep_in_array($value, $item)) {
             return $item;
         }
     }
     return false;
 }
 
+// /**
+//  * 获取图片的缩略图
+//  * @param  string $str 内容
+//  */
+// function get_thumb($str = '')
+// {
+//     $data = [];
+//     $reg = '/((http|https):\/\/)+(\w+\.)+(\w+)[\w\/\.\-]*(jpg|gif|png)/';
+//     $matches = array();
+//     preg_match_all($reg, $str, $matches);
+//     foreach ($matches[0] as $value) {
+//         $data[] = $value;
+//     }
+//     return $data;
+// }
 /**
  * 获取图片的缩略图
  * @param  string $str 内容
  */
 function get_thumb($str = '')
 {
-    $data = [];
-    $reg = '/((http|https):\/\/)+(\w+\.)+(\w+)[\w\/\.\-]*(jpg|gif|png)/';
-    $matches = array();
-    preg_match_all($reg, $str, $matches);
-    foreach ($matches[0] as $value)
-    {
-        $data[] = $value;
+    preg_match("/\/(?P<name>\w+\.(?:" . str_replace(',', '|', sysconf('storage_local_exts')) . "))$/i", $str, $matches);
+    if (!empty($matches['name'])) {
+        $name = $matches['name'];
+        $str = str_replace($name, 'thumb/' . $name, $str);
+        return $str;
+    } else {
+        return $str;
     }
-    return $data;
 }

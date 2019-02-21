@@ -15,6 +15,11 @@ use service\FileService;
 class Plugs extends BasicAdmin
 {
 
+
+    public function test(){
+        get_thumb();
+    }
+
     /**
      * 文件上传
      * @return mixed
@@ -91,11 +96,13 @@ class Plugs extends BasicAdmin
             return json(['code' => 'ERROR', 'msg' => '文件上传验证失败']);
         }
         // 文件上传处理
-        if (($info = $file->move("static/upload/{$pr}/{$names[0]}", "{$names[1]}.{$ext}", true))) {
+        // if (($info = $file->move("static/upload/{$pr}/{$names[0]}", "{$names[1]}.{$ext}", true))) {
+        if (($info = $file->move("static/upload/{$pr}", "{$names[1]}.{$ext}", true))) {
+            // if (($site_url = FileService::getFileUrl("{$pr}/{$filename}", 'local'))) {
+            if (($site_url = FileService::getFileUrl("{$pr}/{$names[1]}.{$ext}", 'local'))) {
 
-            if (($site_url = FileService::getFileUrl("{$pr}/{$filename}", 'local'))) {
-
-                //                $this->imgthumb("static/upload/{$pr}/{$names[0]}", "{$names[1]}", "{$ext}");
+                $this->imgthumb("static/upload/{$pr}", "{$names[1]}", "{$ext}");
+                // $this->imgthumb("static/upload/{$pr}/{$names[0]}", "{$names[1]}", "{$ext}");
                 return json(['data' => ['site_url' => $site_url], 'code' => 'SUCCESS', 'msg' => '文件上传成功']);
             }
         }
@@ -105,7 +112,7 @@ class Plugs extends BasicAdmin
     /**
      * 图片生成缩略图
      */
-    public function imgthumb($file_url = '', $file_name = '', $ext = '')
+    public function imgthumb($file_url = '', $file_name = '', $ext = '', $width = 150, $height = 150)
     {
         $types = 'jpeg|gif|png|jpg';
         $file = "{$file_url}/{$file_name}.{$ext}";
@@ -113,7 +120,8 @@ class Plugs extends BasicAdmin
         if (!empty($file) && file_exists($file)) {
             if (stripos($types, $ext)) {
                 $image = \think\Image::open($file);
-                $image->thumb(150, 150)->save("{$file_url}/{$file_name}_thumb.{$ext}");
+                !is_dir("{$file_url}/thumb/") && mkdir("{$file_url}/thumb/", 0777, true);
+                $image->thumb($width, $height)->save("{$file_url}/thumb/{$file_name}.{$ext}");
             }
         }
     }

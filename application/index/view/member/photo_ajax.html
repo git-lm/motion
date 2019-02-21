@@ -1,17 +1,17 @@
-
 {volist name="allphotos" id="ap"}
 <li>
     <a href="javascript:;">
         <p>{$ap.create_time_show}</p>
-        <div class="photo show" >
-            <div class="front" >
-                <img alt="{$ap.create_time_show}-----正面照" layer-src="{$ap.front_photo}" src="{$ap.front_photo}">
+        <div class="photo show">
+            <div class="front">
+                <img alt="{$ap.create_time_show}-----正面照" layer-src="{:get_thumb($ap.front_photo)}"
+                    src="{:get_thumb($ap.front_photo)}">
             </div>
-            <div class="back" >
-                <img alt="{$ap.create_time_show}-----背面照"  layer-src="{$ap.back_photo}" src="{$ap.back_photo}">
+            <div class="back">
+                <img alt="{$ap.create_time_show}-----背面照" layer-src="{$ap.back_photo}" src="{$ap.back_photo}">
             </div>
-            <div class="side" >
-                <img alt="{$ap.create_time_show}-----侧面照"  layer-src="{$ap.side_photo}" src="{$ap.side_photo}">
+            <div class="side">
+                <img alt="{$ap.create_time_show}-----侧面照" layer-src="{$ap.side_photo}" src="{$ap.side_photo}">
             </div>
         </div>
     </a>
