@@ -564,7 +564,7 @@ class Lesson extends BasicAdmin
         $begin_time = request()->has('begin_time', 'post') ? strtotime(request()->post('begin_time/s')) : strtotime('-7 day');
         $end_time = request()->has('end_time', 'post') ? strtotime(request()->post('end_time/s')) : time();
         $where[] = ['m.id', '=', $mid];
-        // $where[] = ['l.status', '=', 1];
+        $where[] = ['l.status', '=', 1];
         $where[] = ['class_time', '>', $begin_time];
         $where[] = ['class_time', '<', $end_time];
         $order['class_time'] =  'asc';
