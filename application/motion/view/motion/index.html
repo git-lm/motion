@@ -17,7 +17,7 @@
 <div class="layui-form-item layui-inline ">
     <label class="layui-form-label">所属类型</label>
     <div class="layui-input-inline ">
-        <select required=""  xm-select-search xm-select-search-type="dl" xm-select="mtname" lay-verify="required" class="layui-select full-width block" name="mtid" lay-ignore="">
+        <select required=""  xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select="mtname" lay-verify="required" class="layui-select full-width block" name="mtid" lay-ignore="">
             <option  value=""> - 请选择类型 -</option>
             <!--{volist name="types" id="type"}-->
             <option value="{$type.id}">{$type.name}</option>
