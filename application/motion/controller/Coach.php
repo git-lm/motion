@@ -5,16 +5,19 @@ namespace app\motion\controller;
 use controller\BasicAdmin;
 use app\motion\model\Coach as coachModel;
 
-class Coach extends BasicAdmin {
+class Coach extends BasicAdmin
+{
 
-    public function initialize() {
+    public function initialize()
+    {
         $this->coachModel = new coachModel();
     }
 
     /**
      * 渲染会员首页
      */
-    public function index() {
+    public function index()
+    {
         $this->assign('title', '教练列表');
         return $this->fetch();
     }
@@ -22,7 +25,8 @@ class Coach extends BasicAdmin {
     /**
      * 获取会员列表信息
      */
-    public function get_lists() {
+    public function get_lists()
+    {
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/d') : '';
@@ -41,14 +45,16 @@ class Coach extends BasicAdmin {
     /**
      * 渲染新增窗口
      */
-    public function add() {
+    public function add()
+    {
         return $this->fetch();
     }
 
     /**
      * 新增会员数据
      */
-    public function add_info() {
+    public function add_info()
+    {
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
         $phone = request()->has('phone', 'post') ? request()->post('phone/s') : '';
         //验证数据有效性
@@ -69,7 +75,8 @@ class Coach extends BasicAdmin {
     /**
      * 渲染编辑窗口
      */
-    public function edit() {
+    public function edit()
+    {
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         if (!$id) {
             $this->error('请正确选教练');
@@ -83,7 +90,8 @@ class Coach extends BasicAdmin {
     /**
      * 编辑类型数据
      */
-    public function edit_info() {
+    public function edit_info()
+    {
         //获取数据
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
@@ -112,7 +120,8 @@ class Coach extends BasicAdmin {
     /**
      * 删除会员
      */
-    public function del() {
+    public function del()
+    {
         //获取数据
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         if (!$id) {
@@ -132,7 +141,8 @@ class Coach extends BasicAdmin {
     /**
      * 禁用/启用  
      */
-    public function handle() {
+    public function handle()
+    {
         //获取数据
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $value = request()->has('value', 'post') ? request()->post('value/d') : -1;
@@ -153,7 +163,8 @@ class Coach extends BasicAdmin {
     /**
      * 教练授权账号
      */
-    public function auth() {
+    public function auth()
+    {
         //获取数据
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
 
@@ -175,7 +186,8 @@ class Coach extends BasicAdmin {
     /**
      * 授权信息
      */
-    public function auth_info() {
+    public function auth_info()
+    {
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $uid = request()->has('uid', 'post') ? request()->post('uid/d') : 0;
         if (!$id) {
@@ -196,9 +208,28 @@ class Coach extends BasicAdmin {
     }
 
     /**
+     * 添加教练计划
+     */
+    public function lesson()
+    {
+        $where[] = ['c.status', '<>', 0];
+        $where[] = ['m.coach_id', 'not null', ''];
+        $order['create_time'] = 'desc';
+        $coachs = $this->coachModel->get_coachs($where, $order);
+        $this->assign('coachs', $coachs);
+        $motionModel = new  \app\motion\model\Motion();
+        $types = $motionModel->get_type_motions();
+        $this->assign('types', $types);
+        $is_coach = 1;
+        $this->assign('is_coach', $is_coach);
+        return $this->fetch('lesson/add');
+    }
+
+    /**
      * 判断教练是否存在
      */
-    public function check_data($id = 0) {
+    public function check_data($id = 0)
+    {
         //判断类型是否存在
         $where['id'] = $id;
         $list = $this->coachModel->get_coach($where);
@@ -207,5 +238,4 @@ class Coach extends BasicAdmin {
         }
         return $list;
     }
-
 }

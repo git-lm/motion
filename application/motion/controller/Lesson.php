@@ -191,6 +191,7 @@ class Lesson extends BasicAdmin
         $name = request()->has('name', 'post') ? request()->post('name/s') : null;
         $class_time = request()->has('class_time', 'post') ? request()->post('class_time/s') : null;
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
+        $mid_arr = explode(',', $mid);
         if (!$mid) {
             $this->error('请正确选择会员');
         }
@@ -202,9 +203,9 @@ class Lesson extends BasicAdmin
         }
         $member = $this->check_member_data($mid);
         //获取该会员时间的信息
-        $this->check_member_time($mid);
-
-
+        foreach ($mid_arr as $mid) {
+            $this->check_member_time($mid);
+        }
         //验证数据有效性
         $data['name'] = $name; // 课程名称
         $data['warmup'] = $warmup;  //热身语
@@ -213,13 +214,16 @@ class Lesson extends BasicAdmin
         $data['colldown_mids'] = $colldown_mids;    //冷身视频
         $data['class_time'] = $class_time;
         $data['coach_id'] = $member['c_id'];
-        $data['m_id'] = $mid;
+
         $validate = $this->lessonModel->validate($data);
         if ($validate) {
             $this->error($validate);
         }
         $data['class_time'] = strtotime($class_time . ' 23:59:59');
-        $code = $this->lessonModel->add($data);
+        foreach ($mid_arr as $mid) {
+            $data['m_id'] = $mid;
+            $code = $this->lessonModel->add($data);
+        }
         if ($code) {
             $this->success('保存成功', '');
         } else {
