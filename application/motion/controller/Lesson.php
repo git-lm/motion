@@ -153,7 +153,7 @@ class Lesson extends BasicAdmin
         //获取排课信息
         $where[] = ['l.m_id', '=', $id];
         $where[] = ['l.status', '=', 1];
-        $order['l.create_time'] = 'desc';
+        $order['l.create_time'] = 'asc';
         $lists = $this->lessonModel->get_arrange_lists($where, $order, $page, $limit);
         $count = count($this->lessonModel->get_arrange_lists($where));
         echo $this->tableReturn($lists, $count);
