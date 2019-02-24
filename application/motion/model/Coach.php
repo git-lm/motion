@@ -6,7 +6,8 @@ use think\Model;
 use think\Db;
 use service\DbService;
 
-class Coach extends Model {
+class Coach extends Model
+{
 
     protected $table = 'motion_coach';
 
@@ -15,7 +16,8 @@ class Coach extends Model {
      * @param type $val  转换数据
      * @param type $type 转换类型  d 天   h 小时  m 分钟  s秒
      */
-    protected function getDateAttr($val, $type = 'd') {
+    protected function getDateAttr($val, $type = 'd')
+    {
         if ($type == 'd') {
             return date('Y-m-d', $val);
         } else if ($type == 'h') {
@@ -33,7 +35,8 @@ class Coach extends Model {
      * 状态获取器
      * @param type $val  转换数据
      */
-    protected function getStatusAttr($val) {
+    protected function getStatusAttr($val)
+    {
         if ($val == 1) {
             return '正常';
         } else if ($val == 0) {
@@ -54,7 +57,8 @@ class Coach extends Model {
      * @param int $limit    每页显示条数
      * @param bool $isWhere 是否直接查询
      */
-    public function get_coachs($where = [], $order = [], $page = 0, $limit = 0) {
+    public function get_coachs($where = [], $order = [], $page = 0, $limit = 0)
+    {
         $db = Db::table($this->table);
         $db->alias('c');
         $db->leftJoin(['system_user' => 'u'], 'u.id=c.u_id');
@@ -72,16 +76,38 @@ class Coach extends Model {
      * @param Array $where  查询条件
      * @param Array $order  排序条件
      */
-    public function get_coach($where = [], $order = []) {
+    public function get_coach($where = [], $order = [])
+    {
         $list = DbService::queryOne($this->table, $where, $order);
         return $list;
+    }
+
+
+    /**
+     * 获取教练和会员的关系
+     */
+    public function get_coachs_for_member($m_id  = 0)
+    {
+
+        $db = Db::table($this->table);
+        $db->alias('c');
+        $db->leftJoin(['motion_member' => 'm'], 'm.coach_id=c.id');
+        $db->field('c.* , m.id mid');
+        $db->where('c.status', 1);
+        $db->where('m.id', 'null');
+        if ($m_id) {
+            $db->whereOr('m.id', $m_id);
+        }
+        $lists = DbService::queryALL($db);
+        return $lists;
     }
 
     /**
      * 新增教练
      * @param type $data 保存的数据
      */
-    public function add($data = []) {
+    public function add($data = [])
+    {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
@@ -99,7 +125,8 @@ class Coach extends Model {
      * @param type $data    保存的数据
      * @param type $where   编辑条件
      */
-    public function edit($data = [], $where = []) {
+    public function edit($data = [], $where = [])
+    {
         $coach = $this->get_coach($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
@@ -114,15 +141,16 @@ class Coach extends Model {
      * @param int $uid 账户ID
      * 
      */
-    public function get_user($uid = 0) {
-        
+    public function get_user($uid = 0)
+    {
+
         $db = Db::table('system_user');
         $db->alias('u');
         $db->leftJoin(['motion_coach' => 'c'], 'c.u_id = u.id');
         $db->field('u.id uid ,u.username');
-//        $db->whereNull('c.id', ' is null');
-//        $db->whereOr('u.id', '=', $uid);
-//        $db->where('is_admin', '<>', 1);
+        //        $db->whereNull('c.id', ' is null');
+        //        $db->whereOr('u.id', '=', $uid);
+        //        $db->where('is_admin', '<>', 1);
         $db->where("(c.id is null or u.id = {$uid}) and u.is_admin <> 1");
         $lists = DbService::queryALL($db);
         return $lists;
@@ -132,7 +160,8 @@ class Coach extends Model {
      * 验证类型数据有效性
      * @param type $data 需要验证的数据
      */
-    public function validate($data) {
+    public function validate($data)
+    {
         $rule = [
             'name' => 'require|max:5|min:2|chsAlpha',
             'phone' => 'require|mobile'
@@ -149,5 +178,4 @@ class Coach extends Model {
         $validate->rule($rule)->message($message)->check($data);
         return $validate->getError();
     }
-
 }

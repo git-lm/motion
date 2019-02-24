@@ -1,18 +1,39 @@
-<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('edit_info')}" data-auto="true" method="post">
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('edit_info')}" data-auto="true"
+    method="post">
 
 
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属教练</label>
+        <div class="layui-input-block">
+            <select required="" lay-verify="required" class="layui-select full-width block" name="coach_id"
+                id="coach_id" lay-ignore="">
+                <option {eq name="$list.coach_id" value="0" }selected{/eq} value=""> - 请选择教练 -</option>
+                <!--{volist name="coachs" id="coach"}-->
+                <option {eq name="$list.coach_id" value="$coach.id" }selected{/eq} value="{$coach.id}"> - {$coach.name}
+                    -
+                </option>
+                <!--{/volist}-->
 
+            </select>
+        </div>
+        <div class="layui-input-block">
+            <p style="color: red">备注：如果不选择教练 则解绑</p>
+        </div>
+    </div>
     <div class="layui-form-item">
         <label class="layui-form-label">会员名称</label>
         <div class="layui-input-block">
-            <input type="text" autofocus name="name" required lay-verify="required" value='{$list.name|default=""}' maxlength="5" minlength="2" title="请输入会员名称" placeholder="请输入会员名称" class="layui-input">
+            <input type="text" autofocus name="name" required lay-verify="required" value='{$list.name|default=""}'
+                maxlength="5" minlength="2" title="请输入会员名称" placeholder="请输入会员名称" class="layui-input">
         </div>
     </div>
-   
+
     <div class="layui-form-item">
         <label class="layui-form-label">手机号码</label>
         <div class="layui-input-block">
-            <input type="text" autofocus name="phone"  required lay-verify="required|phone|number" value='{$list.phone|default=""}' maxlength="11" title="请输入手机号码" placeholder="请输入手机号码" class="layui-input">
+            <input type="text" autofocus name="phone" required lay-verify="required|phone|number"
+                value='{$list.phone|default=""}' maxlength="11" title="请输入手机号码" placeholder="请输入手机号码"
+                class="layui-input">
         </div>
     </div>
     <div class="hr-line-dashed"></div>
@@ -22,3 +43,20 @@
         <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
     </div>
 </form>
+<script>
+    $(function () {
+        $('#coach_id').change(function () {
+            $('input[name="name"]').css('readonly', false)
+            $('input[name="phone"]').css('readonly', false)
+            var coach_id = $(this).val();
+            if (coach_id != 0 || coach_id != '' || coach_id != undefined) {
+                $.post('{:url("get_coach")}', { 'coach_id': coach_id }, function (data) {
+                    if (data.code == 1) {
+                        $('input[name="name"]').val(data.msg.name).css('readonly', 'readonly');
+                        $('input[name="phone"]').val(data.msg.phone).css('readonly', 'readonly');
+                    }
+                }, 'json')
+            }
+        })
+    })
+</script>

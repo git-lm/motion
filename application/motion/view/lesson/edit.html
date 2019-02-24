@@ -57,7 +57,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">上课时间</label>
         <div class="layui-input-block">
-            <input type="text"  required lay-verify="required" value='{$list.class_time_show}' id="class_time"  name="class_time" title="请选择上课时间" placeholder="请选择上课时间" class="layui-input">
+            <input type="text"  required lay-verify="required" value='{$list.class_time_show}' id="add_class_time"  name="class_time" title="请选择上课时间" placeholder="请选择上课时间" class="layui-input">
         </div>
     </div>
 
@@ -97,7 +97,7 @@
             return false;
         })
         form.render();
-        laydate.render({elem: '#class_time', calendar: true, min: 0});
+        laydate.render({elem: '#add_class_time', calendar: true, min: 0});
     })
 
 </script>

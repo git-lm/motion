@@ -5,16 +5,19 @@ namespace app\motion\controller;
 use controller\BasicAdmin;
 use app\motion\model\Member as memberModel;
 
-class Member extends BasicAdmin {
+class Member extends BasicAdmin
+{
 
-    public function initialize() {
+    public function initialize()
+    {
         $this->memberModel = new memberModel();
     }
 
     /**
      * 渲染会员首页
      */
-    public function index() {
+    public function index()
+    {
         $this->assign('title', '会员列表');
         return $this->fetch();
     }
@@ -22,7 +25,8 @@ class Member extends BasicAdmin {
     /**
      * 获取会员列表信息
      */
-    public function get_lists() {
+    public function get_lists()
+    {
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
@@ -55,19 +59,26 @@ class Member extends BasicAdmin {
     /**
      * 渲染新增窗口
      */
-    public function add() {
+    public function add()
+    {
+        $coachModel = new \app\motion\model\Coach;
+        $coachs =  $coachModel->get_coachs_for_member();
+        $this->assign('coachs', $coachs);
         return $this->fetch();
     }
 
     /**
      * 新增会员数据
      */
-    public function add_info() {
+    public function add_info()
+    {
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
         $phone = request()->has('phone', 'post') ? request()->post('phone/s') : '';
+        $coach_id = request()->has('coach_id', 'post') ? request()->post('coach_id/d') : 0;
         //验证数据有效性
         $data['name'] = $name;
         $data['phone'] = $phone;
+        $data['coach_id'] = $coach_id;
         $validate = $this->memberModel->validate($data);
         if ($validate) {
             $this->error($validate);
@@ -83,7 +94,8 @@ class Member extends BasicAdmin {
     /**
      * 渲染编辑窗口
      */
-    public function edit() {
+    public function edit()
+    {
         $mid = request()->has('mid', 'get') ? request()->get('mid/d') : 0;
         if (!$mid) {
             $this->error('请正确选择类型');
@@ -91,17 +103,22 @@ class Member extends BasicAdmin {
         //判断类型是否存在
         $list = $this->check_data($mid);
         $this->assign('list', $list);
+        $coachModel = new \app\motion\model\Coach;
+        $coachs =  $coachModel->get_coachs_for_member();
+        $this->assign('coachs', $coachs);
         return $this->fetch();
     }
 
     /**
      * 编辑类型数据
      */
-    public function edit_info() {
+    public function edit_info()
+    {
         //获取数据
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
         $phone = request()->has('phone', 'post') ? request()->post('phone/s') : '';
+        $coach_id = request()->has('coach_id', 'post') ? request()->post('coach_id/d') : 0;
         if (!$mid) {
             $this->error('请正确选择会员');
         }
@@ -110,6 +127,7 @@ class Member extends BasicAdmin {
         //验证数据
         $data['name'] = $name;
         $data['phone'] = $phone;
+        $data['coach_id'] = $coach_id;
         $validate = $this->memberModel->validate($data);
         if ($validate) {
             $this->error($validate);
@@ -126,7 +144,8 @@ class Member extends BasicAdmin {
     /**
      * 删除会员
      */
-    public function del() {
+    public function del()
+    {
         //获取数据
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
         if (!$mid) {
@@ -146,7 +165,8 @@ class Member extends BasicAdmin {
     /**
      * 禁用/启用  
      */
-    public function handle() {
+    public function handle()
+    {
         //获取数据
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
         $value = request()->has('value', 'post') ? request()->post('value/d') : -1;
@@ -167,7 +187,8 @@ class Member extends BasicAdmin {
     /**
      * 重置密码
      */
-    public function pas() {
+    public function pas()
+    {
         //获取数据
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
         if (!$mid) {
@@ -187,7 +208,8 @@ class Member extends BasicAdmin {
     /**
      * 渲染添加时间页面
      */
-    public function time_add() {
+    public function time_add()
+    {
         //获取数据
         $mid = request()->has('mid', 'get') ? request()->get('mid/d') : 0;
         if (!$mid) {
@@ -207,7 +229,8 @@ class Member extends BasicAdmin {
     /**
      * 会员添加到期时间
      */
-    public function time_add_info() {
+    public function time_add_info()
+    {
         //获取数据
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
         $expire_time = request()->has('expire_time', 'post') ? request()->post('expire_time/s') : 0;
@@ -238,7 +261,8 @@ class Member extends BasicAdmin {
     /**
      * 编辑会员时间
      */
-    public function time_edit() {
+    public function time_edit()
+    {
         //获取数据
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         if (!$id) {
@@ -252,7 +276,8 @@ class Member extends BasicAdmin {
     /**
      * 会员添加到期时间
      */
-    public function time_edit_info() {
+    public function time_edit_info()
+    {
         //获取数据
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $expire_time = request()->has('expire_time', 'post') ? request()->post('expire_time/s') : 0;
@@ -283,7 +308,8 @@ class Member extends BasicAdmin {
     /**
      * 删除会员时间
      */
-    public function time_del() {
+    public function time_del()
+    {
         //获取数据
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         if (!$id) {
@@ -303,7 +329,8 @@ class Member extends BasicAdmin {
     /**
      * 渲染会员时间页面
      */
-    public function time() {
+    public function time()
+    {
         $this->assign('title', '会员时间列表');
         $mid = request()->has('mid', 'get') ? request()->get('mid/d') : 0;
         if (!$mid) {
@@ -316,7 +343,8 @@ class Member extends BasicAdmin {
     /**
      * 获取会员时间
      */
-    public function get_member_times() {
+    public function get_member_times()
+    {
         $mid = request()->has('mid') ? request()->param('mid/d') : 0;
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
@@ -341,7 +369,8 @@ class Member extends BasicAdmin {
     /**
      * 分配会员-教练
      */
-    public function dis() {
+    public function dis()
+    {
         //获取数据
         $mid = request()->has('mid', 'get') ? request()->get('mid/d') : 0;
         if (!$mid) {
@@ -361,7 +390,8 @@ class Member extends BasicAdmin {
     /**
      * 分配教练信息
      */
-    public function dis_info() {
+    public function dis_info()
+    {
         //获取数据
         $mid = request()->has('mid', 'post') ? request()->post('mid/d') : 0;
         $c_id = request()->has('c_id', 'post') ? request()->post('c_id/d') : 0;
@@ -394,7 +424,8 @@ class Member extends BasicAdmin {
     /**
      * 判断会员是否存在
      */
-    public function check_data($mid = 0) {
+    public function check_data($mid = 0)
+    {
         //判断类型是否存在
         $where['id'] = $mid;
         $list = $this->memberModel->get_member($where);
@@ -407,7 +438,8 @@ class Member extends BasicAdmin {
     /**
      * 判断会员时间是否存在
      */
-    public function check_time_data($id = 0) {
+    public function check_time_data($id = 0)
+    {
         //判断类型是否存在
         $where['mt.id'] = $id;
         $list = $this->memberModel->get_member_time($where);
@@ -417,4 +449,16 @@ class Member extends BasicAdmin {
         return $list;
     }
 
+    /**
+     * 获取所属教练的信息
+     */
+    public function get_coach()
+    {
+        $coach_id = request()->has('coach_id', 'post') ? request()->post('coach_id/d') : 0;
+        $coachModel = new \app\motion\model\Coach;
+        $where['id'] = $coach_id;
+        $where['status'] = 1;
+        $coach = $coachModel->get_coach($where);
+        $this->success($coach);
+    }
 }

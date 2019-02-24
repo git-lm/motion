@@ -1,0 +1,78 @@
+{extend name='admin@public/content'}
+{block name="button"}
+<!--<button data-modal='{:url("$classuri/add")}' data-title="添加会员" class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>-->
+{/block}
+
+{block name="content"}
+
+<!-- 表单搜索 开始 -->
+<div class="layui-form-item layui-inline">
+    <label class="layui-form-label">搜索时间</label>
+    <div class="layui-input-inline">
+        <input name="search_time" id="search_time" value="" placeholder="请选择到期时间" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item layui-inline">
+    <button class="layui-btn layui-btn-primary" lay-filter="member_search" lay-submit><i class="layui-icon">&#xe615;</i>
+        搜 索</button>
+</div>
+<div>
+    <table id="statistics" lay-even class="layui-table" lay-filter="statistics">
+
+        <tbody>
+            <tr>
+                <td>日期</td>
+                {volist name="lesson" id="list"}
+                <td> {$list.class_time_show}</td>
+                {/volist}
+
+            </tr>
+            <tr>
+                <td>计划名称</td>
+                {volist name="lesson" id="list"}
+                <td>{$list.name}</td>
+                {/volist}
+
+            </tr>
+            <tr>
+                <td>上课状态</td>
+                {volist name="lesson" id="list"}
+                <td>{$list.state_show}</td>
+                {/volist}
+            </tr>
+            <tr>
+                <td>热身语</td>
+                {volist name="lesson" id="list"}
+                <td>{:nl2br($list.warmup)}</td>
+                {/volist}
+            </tr>
+
+            <tr>
+                <td>计划详情</td>
+                {volist name="lesson" id="list"}
+                <td>
+                    <ul>
+                        {volist name="list.little" id="little"}
+                        <li style="color: {if $little.state==0}#FFB800{/if}">{$little.num} ：{$little.name}</li>
+                        {/volist}
+                    </ul>
+                </td>
+                {/volist}
+            </tr>
+            <tr>
+                <td>冷身语</td>
+                {volist name="lesson" id="list"}
+                <td>{:nl2br($list.colldown)}</td>
+                {/volist}
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    laydate.render({
+        elem: '#test'
+        , min: -7 //7天前
+        , max: 7 //7天后
+    });
+</script>
+{/block}
