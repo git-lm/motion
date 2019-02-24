@@ -6,16 +6,18 @@
 {block name="content"}
 
 <!-- 表单搜索 开始 -->
-<div class="layui-form-item layui-inline">
-    <label class="layui-form-label">搜索时间</label>
-    <div class="layui-input-inline">
-        <input name="search_time" id="search_time" value="" placeholder="请选择到期时间" class="layui-input">
+<form autocomplete="off" class="layui-form layui-form-pane form-search" action="{:request()->url()}" onsubmit="return false" method="get">
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">搜索时间{:strtotime($Think.get.search_time)}</label>
+        <div class="layui-input-inline">
+            <input name="search_time" id="search_time" value="{$Think.get.search_time}" placeholder="请选择到期时间" class="layui-input">
+        </div>
     </div>
-</div>
-<div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="member_search" lay-submit><i class="layui-icon">&#xe615;</i>
-        搜 索</button>
-</div>
+    <div class="layui-form-item layui-inline">
+        <button class="layui-btn layui-btn-primary" id="statistics_search" lay-submit><i class="layui-icon">&#xe615;</i>
+            搜 索</button>
+    </div>
+</form>
 <div>
     <table id="statistics" lay-even class="layui-table" lay-filter="statistics">
 
@@ -37,7 +39,7 @@
             <tr>
                 <td>上课状态</td>
                 {volist name="lesson" id="list"}
-                <td>{$list.state_show}</td>
+                <td style="color: {if $list.state==0}#FFB800{/if}">{$list.state_show}</td>
                 {/volist}
             </tr>
             <tr>
@@ -68,11 +70,12 @@
         </tbody>
     </table>
 </div>
+
+{/block}
+{block name="script"}
 <script>
-    laydate.render({
-        elem: '#test'
-        , min: -7 //7天前
-        , max: 7 //7天后
-    });
+    $(function () {
+        laydate.render({ elem: '#search_time' });
+    })
 </script>
 {/block}

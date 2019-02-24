@@ -62,6 +62,15 @@ class Lesson extends Model
             return '异常';
         }
     }
+    /**
+     * 获取周几
+     */
+    public function getWeek($val)
+    {
+        $time = date("w", $val);
+        $array = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+        $week = $array();
+    }
 
     /**
      * 获取排课列表

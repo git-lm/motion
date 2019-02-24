@@ -8,6 +8,7 @@ use app\motion\model\Member as memberModel;
 use app\motion\model\Course as courseModel;
 use app\motion\model\Coach as coachModel;
 use app\motion\model\Motion as motionModel;
+use think\facade\Request;
 
 class Lesson extends BasicAdmin
 {
@@ -561,12 +562,13 @@ class Lesson extends BasicAdmin
     public function statistics()
     {
         $mid = request()->has('id', 'get') ? request()->get('id/d') : 0;
-        $begin_time = request()->has('begin_time', 'post') ? strtotime(request()->post('begin_time/s')) : strtotime('-7 day');
-        $end_time = request()->has('end_time', 'post') ? strtotime(request()->post('end_time/s')) : time();
+        $end_time = request()->has('search_time', 'get') ? strtotime(request()->get('search_time/s') . ' 23:59:59') : time();
+        $begin_time =  strtotime('-7 day', $end_time);
+
         $where[] = ['m.id', '=', $mid];
         $where[] = ['l.status', '=', 1];
-        $where[] = ['class_time', '>', $begin_time];
-        $where[] = ['class_time', '<', $end_time];
+        $where[] = ['class_time', '>=', $begin_time];
+        $where[] = ['class_time', '<=', $end_time];
         $order['class_time'] =  'asc';
         $lesson = $this->lessonModel->get_arrange_lists($where, $order);
 
