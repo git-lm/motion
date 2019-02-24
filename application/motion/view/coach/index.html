@@ -1,7 +1,12 @@
 {extend name='admin@public/content'}
 {block name="button"}
+<!--{if auth("$classuri/lesson")}-->
+<button data-modal='{:url("$classuri/lesson")}' data-title="添加计划"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加计划</button>
+<!--{/if}-->
 <!--{if auth("$classuri/add")}-->
-<button data-modal='{:url("$classuri/add")}' data-title="添加教练" class='layui-btn layui-btn-sm layui-btn-primary'>添加教练</button>
+<button data-modal='{:url("$classuri/add")}' data-title="添加教练"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加教练</button>
 <!--{/if}-->
 {/block}
 
@@ -15,7 +20,8 @@
     </div>
 </div>
 <div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="coach_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
+    <button class="layui-btn layui-btn-primary" lay-filter="coach_search" lay-submit><i class="layui-icon">&#xe615;</i>
+        搜 索</button>
 </div>
 <table id="coachTable" lay-filter="coachTable"></table>
 {/block}
@@ -26,21 +32,21 @@
     })
     table.render({
         elem: '#coachTable',
-       
+
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
         toolbar: '<div>教练列表</div>',
         loading: true,
         title: '会员列表',
         cols: [[//表头
-                {title: '序号', fixed: 'left', type: 'numbers'},
-                {field: 'name', title: '教练名称'},
-                {field: 'username', title: '所属账号'},
-                {field: 'phone', title: '手机号码'},
-                {field: 'status_show', title: '状态'},
-                {field: 'create_time_show', title: '添加时间'},
-                {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#coachhandle'}
-            ]],
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'name', title: '教练名称' },
+            { field: 'username', title: '所属账号' },
+            { field: 'phone', title: '手机号码' },
+            { field: 'status_show', title: '状态' },
+            { field: 'create_time_show', title: '添加时间' },
+            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#coachhandle' }
+        ]],
         parseData: function (res) { //res 即为原始返回的数据
             return {
                 "code": res.code, //解析接口状态
@@ -59,7 +65,7 @@
                 name: name,
                 expire_time: expire_time
             },
-            page: {curr: 1}
+            page: { curr: 1 }
         })
     })
 </script>
