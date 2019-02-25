@@ -106,7 +106,7 @@ class Member extends BasicAdmin
         $list = $this->check_data($mid);
         $this->assign('list', $list);
         $coachModel = new \app\motion\model\Coach;
-        $coachs =  $coachModel->get_coachs_for_member();
+        $coachs =  $coachModel->get_coachs_for_member($mid);
         $this->assign('coachs', $coachs);
         return $this->fetch();
     }
@@ -433,9 +433,9 @@ class Member extends BasicAdmin
         $where[] = ['create_time', '<=', $end_time];
         $order['create_time'] = 'desc';
         $memberData = $this->memberDataModel->get_member_datas($where, $order);
-        exit;
-        $this->memberDataModel->dataHandle($memberData);
         
+        $this->memberDataModel->dataHandle($memberData);
+        exit;
         return $this->fetch();
     }
 
