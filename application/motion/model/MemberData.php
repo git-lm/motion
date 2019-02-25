@@ -12,8 +12,8 @@ use service\DbService;
 class MemberData extends Model
 {
 
-    //动作库类型数据库
-    protected $table = 'motion_data';
+    //会员身体变化数据库
+    protected $table = 'motion_member_data';
 
     /**
      * 时间获取器
@@ -53,7 +53,7 @@ class MemberData extends Model
     }
 
     /**
-     * 获取动作库类型
+     * 获取会员数据
      * @param Array $where  查询条件
      * @param Array $order  排序条件
      * @param Arry $field  获取的字段
@@ -61,95 +61,42 @@ class MemberData extends Model
      * @param int $limit    每页显示条数
      * @param bool $isWhere 是否直接查询
      */
-    public function get_motion_types($where = [], $order = [], $page = 0, $limit = 0)
+    public function get_member_datas($where = [], $order = [], $page = 0, $limit = 0)
     {
-        $lists = DbService::queryALL($this->table, $where, $order, $page, $limit);
+        $db = Db::table($this->table)
+            ->alias('d')
+            ->leftJoin(['motion_member_data_info' => 'di'], 'di.d_id = d.id');
+        $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
-            $list['status_show'] = $this->getStatusAttr($list['status']);
         }
         return $lists;
     }
 
     /**
-     * 获取动作库类型
-     * @param Array $where  查询条件
-     * @param Array $order  排序条件
+     * 处理会员数据 给echarts 使用
      */
-    public function get_motion_type($where = [], $order = [])
+    public function dataHandle($data)
     {
-        $list = DbService::queryOne($this->table, $where, $order);
+        if (empty($data)) {
+            return array();
+        }
+        $returnJson = array();
+        $legend = [
+            'tz' => ['name' => '体重'], 'ggj' => ['name' => '骨骼肌'], 'tzf' => ['name' => '体脂肪'],
+            'sfhl' => ['name' => '身体水分含量'], 'qztz' => ['name' => '去脂体重'],
+            'zlzs' => ['name' => '身体质量指数'], 'tzbfb' => ['name' => '体脂百分比'],
+            'ytb' => ['name' => '腰臀比'], 'jcdx' => ['name' => '基础代谢'],
+            'jrkz' => ['name' => '肌肉控制'], 'zfkz' => ['name' => '脂肪控制'], ''
+        ];
 
-        return $list;
-    }
-
-    /**
-     *  按级别获取数据
-     * @param Array $data   待处理数据
-     * @param type $level   获取几级数据
-     */
-    public function get_level_types($data, $pid = 0, $level = 0, $num = 2)
-    {
-        static $lists = array();
-        foreach ($data as $key => $val) {
-            if ($val['parent_id'] == $pid && $level < $num) {
-                $level++;
-                $lists[] = $val;
-                unset($data[$key]);
-                $this->get_level_types($data, $val['id'], $level);
+        foreach ($legend  as $k => $v) {
+            foreach ($data as $j => $vv) {
+                dump($k);
+                dump($j);exit;
+                if ($k == $j) {
+                    $xAxisDate[] = $v['create_time_show'];
+                }
             }
         }
-        return $lists;
     }
-
-    /**
-     * 新增类型
-     * @param type $data 保存的数据
-     */
-    public function add($data = [])
-    {
-        if (empty($data['create_time'])) {
-            $data['create_time'] = time();
-        }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增动作类型');
-        $code = DbService::save($this->table, $data);
-        return $code;
-    }
-
-    /**
-     * 编辑类型
-     * @param type $data    保存的数据
-     * @param type $where   编辑条件
-     */
-    public function edit($data = [], $where = [])
-    {
-        $type = $this->get_motion_type($where);
-        if (empty($data['update_time'])) {
-            $data['update_time'] = time();
-        }
-        DbService::save_log('motion_log', json_encode($type), json_encode($data), json_encode($where), '编辑动作类型');
-        $code = DbService::update($this->table, $data, $where);
-        return $code;
-    }
-
-    /**
-     * 验证类型数据有效性
-     * @param type $data 需要验证的数据
-     */
-    public function validate($data)
-    {
-        $rule = [
-            'parent_id' => 'require',
-            'name' => 'require|max:50|min:2',
-        ];
-        $message = [
-            'parent_id.require' => '所属类型必选',
-            'name.require' => '类型名称必填',
-            'name.max' => '类型名称最多不超过五十个字',
-            'name.min' => '类型名称最少不小于两个字',
-        ];
-        $validate = new \think\Validate();
-        $validate->rule($rule)->message($message)->check($data);
-        return $validate->getError();
-    }
-}

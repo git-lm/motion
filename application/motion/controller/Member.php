@@ -4,6 +4,7 @@ namespace app\motion\controller;
 
 use controller\BasicAdmin;
 use app\motion\model\Member as memberModel;
+use app\motion\model\MemberData as memberDataModel;
 
 class Member extends BasicAdmin
 {
@@ -11,6 +12,7 @@ class Member extends BasicAdmin
     public function initialize()
     {
         $this->memberModel = new memberModel();
+        $this->memberDataModel = new memberDataModel();
     }
 
     /**
@@ -423,6 +425,17 @@ class Member extends BasicAdmin
 
     public function physical()
     {
+        $mid = request()->has('id', 'get') ? request()->get('id/d') : 0;
+        $end_time = request()->has('search_time', 'get') ? strtotime(request()->get('search_time/s') . ' 23:59:59') : time();
+        $begin_time =  strtotime('-7 day', $end_time);
+        $where[] = ['m_id', '=', $mid];
+        $where[] = ['create_time', '>=', $begin_time];
+        $where[] = ['create_time', '<=', $end_time];
+        $order['create_time'] = 'desc';
+        $memberData = $this->memberDataModel->get_member_datas($where, $order);
+        exit;
+        $this->memberDataModel->dataHandle($memberData);
+        
         return $this->fetch();
     }
 
