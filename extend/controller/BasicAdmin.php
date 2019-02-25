@@ -157,7 +157,6 @@ class BasicAdmin extends Controller {
                 'data' => $data,
             );
         }
-        json();
         return json_encode($array);
     }
 

@@ -87,16 +87,20 @@ class MemberData extends Model
             'sfhl' => ['name' => '身体水分含量'], 'qztz' => ['name' => '去脂体重'],
             'zlzs' => ['name' => '身体质量指数'], 'tzbfb' => ['name' => '体脂百分比'],
             'ytb' => ['name' => '腰臀比'], 'jcdx' => ['name' => '基础代谢'],
-            'jrkz' => ['name' => '肌肉控制'], 'zfkz' => ['name' => '脂肪控制'], ''
+            'jrkz' => ['name' => '肌肉控制'], 'zfkz' => ['name' => '脂肪控制']
         ];
 
         foreach ($legend  as $k => $v) {
+            $name[] = $v['name'];
             foreach ($data as $j => $vv) {
-                dump($k);
-                dump($j);exit;
-                if ($k == $j) {
-                    $xAxisDate[] = $v['create_time_show'];
-                }
+                $xAxisDate[$j] = $vv['create_time_show'];
+                $series[$v['name']]['data'][] = $vv[$k];
             }
         }
+        
+        $returnJson['name'] = $name;
+        $returnJson['xAxisDate'] = $xAxisDate;
+        $returnJson['series'] = $series;
+        return $returnJson;
     }
+}

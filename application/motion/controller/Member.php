@@ -422,8 +422,17 @@ class Member extends BasicAdmin
             $this->error('修改失败');
         }
     }
-
+    /**
+     * 渲染身体变化
+     */
     public function physical()
+    {
+        return $this->fetch();
+    }
+    /**
+     * 加载身体变化数据
+     */
+    public function getPhysical()
     {
         $mid = request()->has('id', 'get') ? request()->get('id/d') : 0;
         $end_time = request()->has('search_time', 'get') ? strtotime(request()->get('search_time/s') . ' 23:59:59') : time();
@@ -433,10 +442,8 @@ class Member extends BasicAdmin
         $where[] = ['create_time', '<=', $end_time];
         $order['create_time'] = 'desc';
         $memberData = $this->memberDataModel->get_member_datas($where, $order);
-        
-        $this->memberDataModel->dataHandle($memberData);
-        exit;
-        return $this->fetch();
+        $data = $this->memberDataModel->dataHandle($memberData);
+        echo json_encode($data);
     }
 
 

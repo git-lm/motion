@@ -9,7 +9,7 @@
 <form autocomplete="off" class="layui-form layui-form-pane form-search" action="{:request()->url()}"
     onsubmit="return false" method="get">
     <div class="layui-form-item layui-inline">
-        <label class="layui-form-label">搜索时间{:strtotime($Think.get.search_time)}</label>
+        <label class="layui-form-label">搜索时间</label>
         <div class="layui-input-inline">
             <input name="search_time" id="search_time" value="{$Think.get.search_time}" placeholder="请选择到期时间"
                 class="layui-input">
@@ -29,91 +29,70 @@
 <script>
     $(function () {
         laydate.render({ elem: '#search_time' });
-        var physical = echarts.init(document.getElementById('physical'));
-        var option = {
-            title: {
-                text: '堆叠区域图'
-            },
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'cross',
-                    label: {
-                        backgroundColor: '#6a7985'
-                    }
-                }
-            },
-            legend: {
-                data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            xAxis: [
-                {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-                }
-            ],
-            yAxis: [
-                {
-                    type: 'value'
-                }
-            ],
-            series: [
-                {
-                    name: '邮件营销',
-                    type: 'line',
-                    stack: '总量',
-                    areaStyle: {},
-                    data: [120, 132, 101, 134, 90, 230, 210]
+        $.post('{:url("getPhysical")}?id={$Think.get.id}', function (data) {
+            if (data == '') {
+                return;
+            }
+            var series = [];
+
+            for (var x in data.series) {
+                var seriesData = {};
+                seriesData.name = x;
+                seriesData.type = 'line';
+                seriesData.stack = '总量';
+                seriesData.areaStyle = {};
+                seriesData.data = data.series[x].data;
+                console.log(seriesData);
+                series.push(seriesData);
+            }
+            console.log(series);
+            var physical = echarts.init(document.getElementById('physical'));
+            var option = {
+                title: {
+                    text: '身体变化'
                 },
-                {
-                    name: '联盟广告',
-                    type: 'line',
-                    stack: '总量',
-                    areaStyle: {},
-                    data: [220, 182, 191, 234, 290, 330, 310]
-                },
-                {
-                    name: '视频广告',
-                    type: 'line',
-                    stack: '总量',
-                    areaStyle: {},
-                    data: [150, 232, 201, 154, 190, 330, 410]
-                },
-                {
-                    name: '直接访问',
-                    type: 'line',
-                    stack: '总量',
-                    areaStyle: { normal: {} },
-                    data: [320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name: '搜索引擎',
-                    type: 'line',
-                    stack: '总量',
-                    label: {
-                        normal: {
-                            show: true,
-                            position: 'top'
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
                         }
-                    },
-                    areaStyle: { normal: {} },
-                    data: [820, 932, 901, 934, 1290, 1330, 1320]
-                }
-            ]
-        };
-        physical.setOption(option);
+                    }
+                },
+                legend: {
+                    data: data.name
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: data.xAxisDate
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: series
+            };
+            console.log(option)
+            physical.setOption(option);
+        }, 'json')
+
+
     })
 </script>
 {/block}
