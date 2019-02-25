@@ -421,6 +421,12 @@ class Member extends BasicAdmin
         }
     }
 
+    public function physical()
+    {
+        return $this->fetch();
+    }
+
+
     /**
      * 判断会员是否存在
      */
