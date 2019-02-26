@@ -42,10 +42,8 @@
                 seriesData.stack = '总量';
                 seriesData.areaStyle = {};
                 seriesData.data = data.series[x].data;
-                console.log(seriesData);
                 series.push(seriesData);
             }
-            console.log(series);
             var physical = echarts.init(document.getElementById('physical'));
             var option = {
                 title: {
@@ -88,7 +86,6 @@
                 ],
                 series: series
             };
-            console.log(option)
             physical.setOption(option);
         }, 'json')
 

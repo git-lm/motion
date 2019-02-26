@@ -5,6 +5,7 @@ namespace app\motion\controller;
 use controller\BasicAdmin;
 use app\motion\model\Member as memberModel;
 use app\motion\model\MemberData as memberDataModel;
+use think\facade\Request;
 
 class Member extends BasicAdmin
 {
@@ -436,14 +437,19 @@ class Member extends BasicAdmin
     {
         $mid = request()->has('id', 'get') ? request()->get('id/d') : 0;
         $end_time = request()->has('search_time', 'get') ? strtotime(request()->get('search_time/s') . ' 23:59:59') : time();
-        $begin_time =  strtotime('-7 day', $end_time);
+        if (Request()->isMobile()) {
+            $begin_time =  strtotime('-7 day', $end_time);
+        } else {
+            $begin_time =  strtotime('-1 month', $end_time);
+        }
+
         $where[] = ['m_id', '=', $mid];
         $where[] = ['create_time', '>=', $begin_time];
         $where[] = ['create_time', '<=', $end_time];
         $order['create_time'] = 'desc';
         $memberData = $this->memberDataModel->get_member_datas($where, $order);
-        $data = $this->memberDataModel->dataHandle($memberData);
-        echo json_encode($data);
+        $dataInfo = $this->memberDataModel->dataHandle($memberData);
+        echo json_encode($dataInfo);
     }
 
 

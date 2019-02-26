@@ -276,7 +276,7 @@ class Member extends Controller
     /**
      * 获取一周数据
      */
-    public function get_week_data()
+    public function getPhysical()
     {
         //获取当前时间的前一周时间
         $beforeSeven = strtotime(date('Y-m-d 00:00:00', strtotime('-7 days')));
@@ -287,8 +287,9 @@ class Member extends Controller
         $where[] = ['create_time', '<', $beforeOne];
         $where[] = ['m_id', '=', $this->m_id];
         $order = 'create_time asc';
-        $lists = $this->memberModel->get_today_data_info($where, $order);
-        $infoArr = $this->memberModel->handleDataInfo($lists);
-        echo json_encode($infoArr);
+        $memberData = new \app\motion\model\MemberData();
+        $lists = $memberData->get_member_datas($where, $order);
+        $dataInfo = $memberData->dataHandle($lists);
+        echo json_encode($dataInfo);
     }
 }

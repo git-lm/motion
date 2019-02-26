@@ -1,20 +1,45 @@
 <script src="__STATIC__/plugs/jquery/echarts.js"></script>
-<div id="data_info" style="width:100%; max-height:550px">
+<div id="physical" style="width:100%; height:550px ;">
 </div>
 <script>
-    var dataInfoObj = echarts.init(document.getElementById('data_info'));
-    $.post('{:url("get_week_data")}', function (data) {
-        if (data.data.length != 0) {
+    $(function () {
+        var physical = echarts.init(document.getElementById('physical'));
+        $.post('{:url("getPhysical")}', function (data) {
+            if (data == '') {
+                return;
+            }
+            var series = [];
+
+            for (var x in data.series) {
+                var seriesData = {};
+                seriesData.name = x;
+                seriesData.type = 'line';
+                seriesData.stack = '总量';
+                seriesData.areaStyle = {};
+                seriesData.data = data.series[x].data;
+                series.push(seriesData);
+            }
 
             var option = {
                 title: {
                     text: ''
                 },
                 tooltip: {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    }
                 },
                 legend: {
-                    data: ['体重', '骨骼肌', '体脂肪', '身体水分含量', '去脂体重', '身体质量指数', '体脂百分比', '腰臀比', '基础代谢', '肌肉控制', '脂肪控制']
+                    data: data.name
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
                 },
                 grid: {
                     left: '3%',
@@ -22,23 +47,21 @@
                     bottom: '3%',
                     containLabel: true
                 },
-                toolbox: {
-                    feature: {
-                        saveAsImage: {}
+                xAxis: [
+                    {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: data.xAxisDate
                     }
-                },
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: data.week
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: data.data
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: series
             };
-            dataInfoObj.setOption(option);
-        }
-
-    }, 'json')
+            physical.setOption(option);
+        }, 'json')
+    })
 </script>
