@@ -1,9 +1,5 @@
 {extend name='admin@public/content'}
 {block name="button"}
-<!--{if auth("$classuri/lesson")}-->
-<button data-modal='{:url("$classuri/lesson")}' data-title="添加计划"
-    class='layui-btn layui-btn-sm layui-btn-primary'>添加计划</button>
-<!--{/if}-->
 <!--{if auth("$classuri/add")}-->
 <button data-modal='{:url("$classuri/add")}' data-title="添加教练"
     class='layui-btn layui-btn-sm layui-btn-primary'>添加教练</button>

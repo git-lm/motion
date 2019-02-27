@@ -1,27 +1,46 @@
-<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('edit_info')}" data-auto="true" method="post">
-
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('lesson/edit_info')}" data-auto="true"
+    method="post">
+    {if isset($is_coach)}
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择教练</label>
+        <div class="layui-input-block">
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select="coach"
+                lay-verify="required" class="layui-select full-width block" name="mid" lay-ignore="">
+                <option value=""> - 请选择教练 -</option>
+                <!--{volist name="coachs" id="coach"}-->
+                <option {in name="$coach.member_id" value="$list.member_ids" }selected{/in} value="{$coach.member_id}">
+                    {$coach.name}</option>
+                <!--{/volist}-->
+            </select>
+        </div>
+    </div>
+    <input type="hidden" name="is_coach" value="{$is_coach}">
+    {/if}
     <div class="layui-form-item">
         <label class="layui-form-label">课程名称</label>
         <div class="layui-input-block">
-            <input type="text" autofocus name="name" required lay-verify="required" value='{$list.name}' maxlength="50" minlength="2" title="请输入会员名称，不超过五十个字" placeholder="请输入会员名称，不超过五十个字" class="layui-input">
+            <input type="text" autofocus name="name" required lay-verify="required" value='{$list.name}' maxlength="50"
+                minlength="2" title="请输入会员名称，不超过五十个字" placeholder="请输入会员名称，不超过五十个字" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">热身语</label>
         <div class="layui-input-block">
-            <textarea name="warmup" maxlength="10000" class="form-control" placeholder="请输入热身语">{$list.warmup}</textarea>
+            <textarea name="warmup" maxlength="10000" class="form-control"
+                placeholder="请输入热身语">{$list.warmup}</textarea>
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">热身视频</label>
         <div class="layui-input-block">
-            <select required="" xm-select-search xm-select-search-type="dl" xm-select="warmup_mids"  lay-verify="required" class="layui-select full-width block" name="warmup_mids" lay-ignore="">
-                <option  value=""> - 请选择类型 -</option>
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select="warmup_mids"
+                lay-verify="required" class="layui-select full-width block" name="warmup_mids" lay-ignore="">
+                <option value=""> - 请选择类型 -</option>
                 <!--{volist name="types" id="type"}-->
                 <optgroup label="{$type.name}">
                     <!--{volist name="type.motion" id="m"}-->
-                    <option {in name="$m.id" value="$list.warmup_mids"}selected{/in} value="{$m.id}">{$m.name}</option>
+                    <option {in name="$m.id" value="$list.warmup_mids" }selected{/in} value="{$m.id}">{$m.name}</option>
                     <!--{/volist}-->
                 </optgroup>
                 <!--{/volist}-->
@@ -33,18 +52,22 @@
         <label class="layui-form-label">冷身语
         </label>
         <div class="layui-input-block">
-            <textarea name="colldown" maxlength="10000" class="form-control" placeholder="请输入结束语">{$list.colldown}</textarea>
+            <textarea name="colldown" maxlength="10000" class="form-control"
+                placeholder="请输入结束语">{$list.colldown}</textarea>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">冷身视频</label>
         <div class="layui-input-block">
-            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select="colldown_mids" lay-verify="required" class="layui-select full-width block" name="colldown_mids" lay-ignore="">
-                <option  value=""> - 请选择类型 -</option>
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
+                xm-select="colldown_mids" lay-verify="required" class="layui-select full-width block"
+                name="colldown_mids" lay-ignore="">
+                <option value=""> - 请选择类型 -</option>
                 <!--{volist name="types" id="type"}-->
                 <optgroup label="{$type.name}">
                     <!--{volist name="type.motion" id="m"}-->
-                    <option {in name="$m.id" value="$list.colldown_mids"}selected{/in}   value="{$m.id}">{$m.name}</option>
+                    <option {in name="$m.id" value="$list.colldown_mids" }selected{/in} value="{$m.id}">{$m.name}
+                    </option>
                     <!--{/volist}-->
                 </optgroup>
                 <!--{/volist}-->
@@ -57,7 +80,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">上课时间</label>
         <div class="layui-input-block">
-            <input type="text"  required lay-verify="required" value='{$list.class_time_show}' id="add_class_time"  name="class_time" title="请选择上课时间" placeholder="请选择上课时间" class="layui-input">
+            <input type="text" required lay-verify="required" value='{$list.class_time_show}' id="add_class_time"
+                name="class_time" title="请选择上课时间" placeholder="请选择上课时间" class="layui-input">
         </div>
     </div>
 
@@ -82,7 +106,7 @@
 
         $('.selecthref').on('click', function () {
             var mid = $(this).attr('data-value');
-            $.post('{:url("get_motion_url")}', {'mid': mid}, function (data) {
+            $.post('{:url("get_motion_url")}', { 'mid': mid }, function (data) {
                 if (data.code == 1) {
                     var motion = data.msg;
                     if (motion.url != '' || motion.url != null || motion.url != undefined) {
@@ -97,7 +121,7 @@
             return false;
         })
         form.render();
-        laydate.render({elem: '#add_class_time', calendar: true, min: 0});
+        laydate.render({ elem: '#add_class_time', calendar: true, min: 0 });
     })
 
 </script>

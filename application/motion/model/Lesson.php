@@ -124,6 +124,35 @@ class Lesson extends Model
         $code = DbService::save($this->table, $data);
         return $code;
     }
+    /**
+     * 新增会员动作
+     * @param type $data 保存的数据
+     */
+    public function add_coach_lesson($data = [])
+    {
+        if (empty($data['create_time'])) {
+            $data['create_time'] = time();
+        }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增教练动作');
+        $code = DbService::save('motion_coach_lesson', $data);
+        return $code;
+    }
+
+    /**
+     * 编辑会员动作
+     * @param type $data    保存的数据
+     * @param type $where   编辑条件
+     */
+    public function edit_coach_lesson($data = [], $where = [])
+    {
+        $coach_lesson = $this->get_coach_lesson($where);
+        if (empty($data['update_time'])) {
+            $data['update_time'] = time();
+        }
+        DbService::save_log('motion_log', json_encode($coach_lesson), json_encode($data), json_encode($where), '编辑教练动作');
+        $code = DbService::update('motion_coach_lesson', $data, $where);
+        return $code;
+    }
 
     /**
      * 编辑会员动作
@@ -169,6 +198,63 @@ class Lesson extends Model
     {
         $list = DbService::queryOne('motion_lesson_course', $where, $order);
         return $list;
+    }
+    /**
+     * 查看教练小动作
+     * @param Array $order  排序条件
+     * @param Arry $field  获取的字段
+     * @param int $page     查询页数
+     * @param int $limit    每页显示条数
+     * @param bool $isWhere 是否直接查询
+     */
+    public function get_coach_little_courses($where = [], $order = [], $page = 0, $limit = 0)
+    {
+        $lists = DbService::queryALL('motion_coach_lesson_course', $where, $order, $page, $limit);
+        foreach ($lists as &$list) {
+            $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+            $list['status_show'] = $this->getStatusAttr($list['status']);
+        }
+        return $lists;
+    }
+
+    /**
+     * 获取单个教练课程
+     * @param Array $where  查询条件
+     * @param Array $order  排序条件
+     */
+    public function get_coach_little_course($where = [], $order = [])
+    {
+        $list = DbService::queryOne('motion_coach_lesson_course', $where, $order);
+        return $list;
+    }
+     /**
+     * 新增教练动作详情
+     * @param type $data 保存的数据
+     */
+    public function coach_little_add($data = [])
+    {
+        if (empty($data['create_time'])) {
+            $data['create_time'] = time();
+        }
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作');
+        $code = DbService::save('motion_coach_lesson_course', $data);
+        return $code;
+    }
+
+    /**
+     * 编辑教练动作详情
+     * @param type $data    保存的数据
+     * @param type $where   编辑条件
+     */
+    public function coach_little_edit($data = [], $where = [])
+    {
+        $little = $this->get_little_course($where);
+        if (empty($data['update_time'])) {
+            $data['update_time'] = time();
+        }
+        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑教练小动作');
+        $code = DbService::update('motion_coach_lesson_course', $data, $where);
+        return $code;
     }
 
     /**
@@ -254,6 +340,31 @@ class Lesson extends Model
         DbService::save_log('motion_log', json_encode($file), json_encode($data), json_encode($where), '编辑会员课程文件记录');
         $code = DbService::update('motion_lesson_course_file', $data, $where);
         return $code;
+    }
+
+    /**
+     * 获取教练计划
+     */
+    public function get_coach_lessons($where = [], $order = [], $page = 0, $limit = 0)
+    {
+        $lists = DbService::queryALL('motion_coach_lesson', $where, $order, $page, $limit);
+        foreach ($lists as &$list) {
+            $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+            $list['class_time_show'] = $this->getDateAttr($list['class_time']);
+            $list['status_show'] = $this->getStatusAttr($list['status']);
+        }
+        return $lists;
+    }
+    /**
+     * 获取单个教练计划
+     */
+    public function get_coach_lesson($where = [], $order = [])
+    {
+        $list = DbService::queryOne('motion_coach_lesson', $where, $order);
+        if (!empty($list)) {
+            $list['class_time_show'] = $this->getDateAttr($list['class_time']);
+        }
+        return $list;
     }
 
     /**

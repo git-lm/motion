@@ -222,6 +222,11 @@ function get_thumb2($str = '')
 function get_thumb($str = '')
 {
     $str = 'http://motion.com/static/upload/photo/45c48cce2e2d7fbdea1afc51c7c6ad26/5e7894d61a0f63fa.png';
+    $path_info = parse_url($str);
+    if(!empty($path_info['path'])){
+        $path = $path_info['path'];
+    }
+    dump($path_info);exit;
     $path_parts =  pathinfo($str);
     $thumb_str = str_replace($path_parts['basename'], 'thumb/' . $path_parts['basename'], $str);
 

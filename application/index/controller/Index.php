@@ -39,6 +39,6 @@ class Index extends Controller
 
     public function test()
     {
-        get_thumb1();
+        get_thumb();
     }
 }
