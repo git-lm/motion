@@ -115,13 +115,13 @@ class Lesson extends Model
      * 新增会员动作
      * @param type $data 保存的数据
      */
-    public function add($data = [])
+    public function add($data = [], $limit = false)
     {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
         DbService::save_log('motion_log', '', json_encode($data), '', '新增会员动作');
-        $code = DbService::save($this->table, $data);
+        $code = DbService::save($this->table, $data , $limit);
         return $code;
     }
     /**
@@ -227,7 +227,7 @@ class Lesson extends Model
         $list = DbService::queryOne('motion_coach_lesson_course', $where, $order);
         return $list;
     }
-     /**
+    /**
      * 新增教练动作详情
      * @param type $data 保存的数据
      */

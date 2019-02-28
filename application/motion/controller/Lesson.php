@@ -304,12 +304,13 @@ class Lesson extends BasicAdmin
             $this->error($validate);
         }
         $data['class_time'] = strtotime($class_time . ' 23:59:59');
-        $where['id'] = $id;
+
         if ($is_coach) {
             $data['member_ids'] = $mids;
-            $code = $this->lessonModel->edit_coach_lesson($data, $where);
+            $code = $this->edit_coach_lesson($data, $id);
+            // $code = $this->lessonModel->edit_coach_lesson($data, $where);
         } else {
-
+            $where['id'] = $id;
             $code = $this->lessonModel->edit($data, $where);
         }
 
@@ -318,6 +319,29 @@ class Lesson extends BasicAdmin
         } else {
             $this->error('编辑失败');
         }
+    }
+
+    /**
+     * 编辑教练计划
+     * @param $data 数据
+     * @param $id motion_coach_lesson 主键ID
+     */
+    public function edit_coach_lesson($data, $id)
+    {
+        $where['id'] = $id;
+        $coach_lesson = $this->lessonModel->get_coach_lesson();
+        $this->lessonModel->edit_coach_lesson($data, $where);
+        if (!empty($coach_lesson['is_dispense'])) {
+            //说明已经分发了  还要修改计划信息
+            unset($data['member_ids']);
+            $lesson_ids = $coach_lesson['lesson_ids'];
+            $lesson_ids_arr = explode(',', $lesson_ids);
+            foreach ($lesson_ids_arr as $v) {
+                $lwhere['id'] = $v;
+                $code =  $this->lessonModel->edit($data, $lwhere);
+            }
+        }
+        return $code;
     }
 
     /**
@@ -444,7 +468,8 @@ class Lesson extends BasicAdmin
             $this->error($validate);
         }
         if ($is_coach) {
-            $code = $this->lessonModel->coach_little_add($data);
+            $code = $this->coach_little_add_info($data, $lid);
+            // $code = $this->lessonModel->coach_little_add($data);
         } else {
             $code = $this->lessonModel->little_add($data);
         }
@@ -452,6 +477,30 @@ class Lesson extends BasicAdmin
             $this->success('保存成功', '');
         } else {
             $this->error('保存失败');
+        }
+    }
+    /**
+     * 添加教练计划详情
+     */
+    public function coach_little_add_info($data, $lid)
+    {
+
+        $lwhere['id'] = $lid;
+        $lesson = $this->lessonModel->get_coach_lesson($lwhere);
+        if (!empty($lesson['is_dispense'])) {
+            //说明已经分发了
+            $lesson_ids_arr = explode(',', $lesson['lesson_ids']);
+            $littleIdsArr = array();  //定义一个空数组  存放自增ID
+            foreach ($lesson_ids_arr as $v) {
+                $data['l_id'] = $v; //l_id 是计划的ID
+                $code = $this->lessonModel->little_add($data);
+                $littleIdsArr[] = $code;
+            }
+            $lesson_course_ids = implode(',', $littleIdsArr);
+            $data['lesson_course_ids'] = $lesson_course_ids;
+            $data['l_id'] = $lid;  // l_id  是教练计划ID
+            $code = $this->lessonModel->coach_little_add($data);
+            return $code;
         }
     }
 
@@ -510,10 +559,12 @@ class Lesson extends BasicAdmin
         if ($validate) {
             $this->error($validate);
         }
-        $lwhere['id'] = $id;
+
         if ($is_coach) {
-            $code = $this->lessonModel->coach_little_edit($data, $lwhere);
+            $this->coach_little_edit_info($data, $id);
+            // $code = $this->lessonModel->coach_little_edit($data, $lwhere);
         } else {
+            $lwhere['id'] = $id;
             $code = $this->lessonModel->little_edit($data, $lwhere);
         }
 
@@ -522,6 +573,26 @@ class Lesson extends BasicAdmin
         } else {
             $this->error('编辑失败');
         }
+    }
+    /**
+     * 编辑教练计划
+     */
+    public function coach_little_edit_info($data, $id)
+    {
+        $llwhere['id'] = ['=', $id];
+        $little = $this->lessonModel->get_coach_little_course($llwhere); //获取教练计划详情
+        $lwhere['id'] = ['=', $little['l_id']];
+        $lesson = $this->lessonModel->get_coach_lesson($lwhere); //获取教练计划
+        $this->lessonModel->coach_little_edit($data, $llwhere);
+        if (!empty($lesson['is_dispense'])) {
+            //说明分发了
+            $lesson_course_ids_arr = explode(',', $little['lesson_course_ids']);
+            foreach ($lesson_course_ids_arr as $v) {
+                $where['id'] = $v;
+                $this->lessonModel->little_edit($data, $where);
+            }
+        }
+        $this->success('修改成功');
     }
 
     /**

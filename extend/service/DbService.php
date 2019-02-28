@@ -12,7 +12,8 @@ use think\db\Query;
  * @author Anyon 
  * @date 2017/03/22 15:32
  */
-class DbService {
+class DbService
+{
 
     /**
      * 查询所有数据
@@ -25,7 +26,8 @@ class DbService {
      * @param bool $isWhere     是否构造子查询
      * @return Array/String     返回查询结果集/子查询
      */
-    public static function queryALL($dbQuery, $where = [], $order = [], $page = 0, $limit = 0, $field = [], $isWhere = true) {
+    public static function queryALL($dbQuery, $where = [], $order = [], $page = 0, $limit = 0, $field = [], $isWhere = true)
+    {
         $db = is_string($dbQuery) ? Db::table($dbQuery) : $dbQuery;
         if ($where) {
             $db->where($where);
@@ -60,7 +62,8 @@ class DbService {
      * @param bool $isWhere     是否构造子查询
      * @return Array/String     返回查询结果集/子查询
      */
-    public static function queryOne($dbQuery, $where = [], $order = [], $field = [], $isWhere = true) {
+    public static function queryOne($dbQuery, $where = [], $order = [], $field = [], $isWhere = true)
+    {
         $db = is_string($dbQuery) ? Db::table($dbQuery) : $dbQuery;
         if ($where) {
             $db->where($where);
@@ -86,9 +89,15 @@ class DbService {
      * @param Array $data       插入的数据
      * @return int  $code       返回自增主键
      */
-    public static function save($table = '', $data = []) {
+    public static function save($table = '', $data = [], $limit = false)
+    {
         $db = Db::table($table);
-        $code = $db->strict(false)->insertGetId($data);
+        if ($limit) {
+            $code = $db->strict(false)->insertAll($data);
+        } else {
+            $code = $db->strict(false)->insertGetId($data);
+        }
+
         return $code;
     }
 
@@ -99,7 +108,8 @@ class DbService {
      * @param Array $where      更新条件
      * @return int  $code       返回
      */
-    public static function update($table = '', $data = [], $where = []) {
+    public static function update($table = '', $data = [], $where = [])
+    {
         $db = Db::table($table);
         $db->where($where);
         $code = $db->update($data);
@@ -112,7 +122,8 @@ class DbService {
      * @param Array $where      删除条件
      * @return int  $code       返回
      */
-    public static function del($table = '', $where = []) {
+    public static function del($table = '', $where = [])
+    {
         $db = Db::table($table);
         $db->where($where);
         $code = $db->delete();
@@ -128,7 +139,8 @@ class DbService {
      * @param string $content           描述
      * @return int $code                日志ID
      */
-    public static function save_log($table = '', $before = '', $after = '', $where = '', $content = '') {
+    public static function save_log($table = '', $before = '', $after = '', $where = '', $content = '')
+    {
         $data['ip'] = request()->ip();
         $data['node'] = strtolower(join('/', [request()->module(), request()->controller(), request()->action()]));
         $data['username'] = session('user.username') . '';
@@ -139,9 +151,9 @@ class DbService {
         $data['after_param'] = $after;
         $data['where_param'] = $where;
         $data['content'] = $content;
+        $data['table_name'] = $table;
         $db = Db::table($table);
         $code = $db->strict(false)->insertGetId($data);
         return $code;
     }
-
 }

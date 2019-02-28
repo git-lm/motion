@@ -4,6 +4,7 @@ namespace app\motion\controller;
 
 use controller\BasicAdmin;
 use app\motion\model\Coach as coachModel;
+use app\motion\model\Lesson as lessonModel;
 
 class Coach extends BasicAdmin
 {
@@ -11,6 +12,7 @@ class Coach extends BasicAdmin
     public function initialize()
     {
         $this->coachModel = new coachModel();
+        $this->lessonModel = new lessonModel();
     }
 
     /**
@@ -233,10 +235,10 @@ class Coach extends BasicAdmin
         if (!$id) {
             $this->error('请正确选择教练计划');
         }
-        $lessonModel = new \app\motion\model\Lesson();
+
         $lessonWhere['status'] = ['=', 1];
         $lessonWhere['id'] = ['=', $id];
-        $lesson = $lessonModel->get_coach_lesson($lessonWhere);
+        $lesson = $this->lessonModel->get_coach_lesson($lessonWhere);
         if (empty($lesson)) {
             $this->error('您选择的教练计划不存在');
         }
@@ -264,14 +266,23 @@ class Coach extends BasicAdmin
         if (!$id) {
             $this->error('请正确选择教练计划');
         }
-        $lessonModel = new \app\motion\model\Lesson();
+
         $where['id'] = ['=', $id];
-        $coach_lesson = $lessonModel->get_coach_lesson($where);
+        $coach_lesson = $this->lessonModel->get_coach_lesson($where);
         if (empty($coach_lesson)) {
             $this->error('无此教练计划');
         }
         $data['status'] = 0;
-        $code = $lessonModel->edit_coach_lesson($data, $where);
+        $code = $this->lessonModel->edit_coach_lesson($data, $where);
+        //如果已经分发  删除计划信息
+        if (!empty($coach_lesson['is_dispense'])) {
+            $lesson_ids = $coach_lesson['lesson_ids'];
+            $lesson_ids_arr = explode(',', $lesson_ids);
+            foreach ($lesson_ids_arr as $v) {
+                $lwhere['id'] = $v;
+                $this->lessonModel->edit($data, $lwhere);
+            }
+        }
         if ($code) {
             $this->success('删除成功', '');
         } else {
@@ -315,9 +326,9 @@ class Coach extends BasicAdmin
         }
         $where[] = ['status', '=', 1];
         $order['create_time'] = 'asc';
-        $lessonModel = new \app\motion\model\Lesson();
-        $lists = $lessonModel->get_coach_lessons($where, $order, $page, $limit);
-        $count = count($lessonModel->get_coach_lessons($where));
+
+        $lists = $this->lessonModel->get_coach_lessons($where, $order, $page, $limit);
+        $count = count($this->lessonModel->get_coach_lessons($where));
         echo $this->tableReturn($lists, $count);
     }
     /**
@@ -331,9 +342,9 @@ class Coach extends BasicAdmin
         if (!$id) {
             $this->error('请正确选择教练计划');
         }
-        $lessonModel = new \app\motion\model\Lesson();
+
         $where['id'] = ['=', $id];
-        $coach_lesson = $lessonModel->get_coach_lesson($where);
+        $coach_lesson = $this->lessonModel->get_coach_lesson($where);
         if (empty($coach_lesson)) {
             $this->error('无此教练计划');
         }
@@ -351,9 +362,9 @@ class Coach extends BasicAdmin
         if (!$id) {
             $this->error('请正确选择');
         }
-        $lessonModel = new \app\motion\model\Lesson();
+
         $where['id'] = ['=', $id];
-        $list =  $lessonModel->get_coach_little_course($where);
+        $list =  $this->lessonModel->get_coach_little_course($where);
         $this->assign('list', $list);
         //获取所有分组视频
         $motionModel = new \app\motion\model\Motion();
@@ -364,7 +375,7 @@ class Coach extends BasicAdmin
     }
 
     /**
-     * 删除教练计划
+     * 删除教练计划详情
      */
     public function little_del()
     {
@@ -373,10 +384,26 @@ class Coach extends BasicAdmin
         if (!$id) {
             $this->error('请正确选择');
         }
-        $lessonModel = new \app\motion\model\Lesson();
-        $where['id'] = ['=', $id];
+        //获取详情
+
+        $llwhere['id'] = $id;
+        $little = $this->lessonModel->get_coach_little_course($llwhere);
+        if (empty($little)) {
+            $this->erro('无此教练计划详情');
+        }
+        $lwhere['id'] = $little['l_id'];
+        $lesson =  $this->lessonModel->get_coach_lesson($lwhere);
+        $where['id'] = $id;
         $data['status'] = 0;
-        $code =   $lessonModel->coach_little_edit($data, $where);
+        $code =   $this->lessonModel->coach_little_edit($data, $where);
+        if (!empty($lesson['is_dispense'])) {
+            $lesson_course_ids_arr =  explode(',', $little['lesson_course_ids']);
+            foreach ($lesson_course_ids_arr as $v) {
+                $where['id'] = $v;
+                $ldata['status'] = 0;
+                $this->lessonModel->little_edit($data, $where);
+            }
+        }
         if ($code) {
             $this->success('删除成功', '');
         } else {
@@ -396,20 +423,66 @@ class Coach extends BasicAdmin
         $where[] = ['l_id', '=', $lid];
         $where[] = ['status', '=', 1];
         $order['create_time'] = 'asc';
-        $lessonModel = new \app\motion\model\Lesson();
-        $lists = $lessonModel->get_coach_little_courses($where, $order, $page, $limit);
-        $count = count($lessonModel->get_coach_little_courses($where));
+
+        $lists = $this->lessonModel->get_coach_little_courses($where, $order, $page, $limit);
+        $count = count($this->lessonModel->get_coach_little_courses($where));
         echo $this->tableReturn($lists, $count);
     }
 
     /**
      * 分发教练计划
      */
-    public function lesson_send()
+    public function lesson_dispense()
     {   //排课ID
-        $lid = request()->has('id', 'get') ? request()->get('id/d') : 0;
+        $lid = request()->has('id', 'post') ? request()->post('id/d') : 0;
         if (!$lid) {
             $this->error('请正确选择');
+        }
+        $lessonWhere['id'] = ['=', $lid];
+        $lesson = $this->lessonModel->get_coach_lesson($lessonWhere);
+        $littleWhere['l_id'] = ['=', $lid];
+        $little = $this->lessonModel->get_coach_little_courses($littleWhere);
+        if (empty($little)) {
+            $this->error('未添加计划详情');
+        }
+
+        //获取教练信息
+        $lessonIdArr = array(); //定义一个空数据数组 记录每次添加的自增ID
+        if (!empty($lesson['member_ids'])) {
+            $member_ids = explode(',', $lesson['member_ids']);
+            unset($lesson['id']); //去除ID 防止添加时ID字段
+            foreach ($member_ids as $v) {
+                $lesson['m_id'] = $v;
+                $code = $this->lessonModel->add($lesson);
+                $lessonIdArr[] = $code;
+            }
+            $lessonids = implode(',', $lessonIdArr);
+            $where['id'] = $lid;
+            $data['lesson_ids'] = $lessonids;
+            $data['is_dispense'] = 1;
+            $this->lessonModel->edit_coach_lesson($data, $where);
+        }
+
+        $data = array(); //初始化 data 数据
+        foreach ($little as $l) {
+            $littleIdArr = array(); //定义一个空数据数组 记录每次添加的自增ID
+            $little_id = $l['id'];
+            unset($l['id']); //去除ID 防止添加时ID字段
+            foreach ($lessonIdArr as $v) {
+                $l['l_id'] = $v;
+                $code = $this->lessonModel->little_add($l);
+                $littleIdArr[] = $code;
+            }
+            $littleids = implode(',', $littleIdArr);
+            $where['id'] = $little_id;
+            $data['lesson_course_ids'] = $littleids;
+            $this->lessonModel->coach_little_edit($data, $where);
+        }
+
+        if ($code) {
+            $this->success('分发成功', '');
+        } else {
+            $this->error('分发失败');
         }
     }
 
