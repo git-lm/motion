@@ -1,0 +1,90 @@
+{extend name='admin@public/content'}
+{block name="button"}
+<!--{if auth("$classuri/lesson")}-->
+<button data-modal='{:url("$classuri/add_lesson")}' data-title="添加计划"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加计划</button>
+<!--{/if}-->
+{/block}
+{block name="content"}
+
+<!-- 表单搜索 开始 -->
+<div class="layui-form-item layui-inline">
+    <label class="layui-form-label">计划名称</label>
+    <div class="layui-input-inline">
+        <input name="name" value="" placeholder="请输入计划名称" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item layui-inline">
+    <label class="layui-form-label">上课时间</label>
+    <div class="layui-input-inline">
+        <input name="class_time" id="class_time" value="" placeholder="请选择上课时间" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item layui-inline">
+    <button class="layui-btn layui-btn-primary" lay-filter="arrange_search" lay-submit><i
+            class="layui-icon">&#xe615;</i>
+        搜 索</button>
+</div>
+<table id="arrangeTable" lay-filter="arrangeTable"></table>
+{/block}
+{block name="script"}
+<script>
+    $(function () {
+        $.layuitable('arrangeTable');
+        laydate.render({ range: true, elem: '#class_time' });
+    })
+    table.render({
+        elem: '#arrangeTable',
+
+        url: '{:url("$classuri/get_coach_lesson")}', //数据接口 
+        page: true, //开启分页
+        toolbar: '<div>教练计划列表</div>',
+        loading: true,
+        title: '教练计划列表',
+        cols: [[//表头
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'name', title: '计划名称' },
+            { field: 'class_time_show', title: '上课时间' },
+            { field: 'warmup', title: '热身语', templet: '#warmup' },
+            { field: 'colldown', title: '冷身语', templet: '#colldown' },
+            { field: 'create_time_show', title: '添加时间' },
+            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#arrangehandle' }
+        ]],
+        parseData: function (res) { //res 即为原始返回的数据
+            return {
+                "code": res.code, //解析接口状态
+                "msg": res.msg, //解析提示文本
+                "count": res.count, //解析数据长度
+                "data": res.data //解析数据列表
+            };
+        }
+    });
+    //搜索按钮绑定事件
+    form.on('submit(arrange_search)', function () {
+        var name = $('input[name="name"]').val();
+        var class_time = $('input[name="class_time"]').val();
+        table.reload('arrangeTable', {
+            where: {
+                name: name,
+                class_time: class_time
+            },
+            page: { curr: 1 }
+        })
+    })
+</script>
+<script type="text/html" id="arrangehandle">
+    <a class="layui-btn layui-btn-xs" data-action="{:url('edit_lesson')}" data-title="编辑计划" lay-event="open">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del_lesson')}"  lay-event="del">删除</a>
+    {{# if(d.is_dispense == 0){ }}
+    <a class="layui-btn layui-btn-xs" data-action="{:url('lesson_dispense')}"  lay-event="update">分发计划</a>
+    {{# }}}
+    <a class="layui-btn layui-btn-xs" data-action="{:url('lesson_little')}"  lay-event="href">计划详情</a>
+
+</script>
+<script type="text/html" id="warmup">
+    <a title="{{d.warmup}}"  class="layui-table-link">{{d.warmup}}</a>
+  </script>
+<script type="text/html" id="colldown">
+    <a title="{{d.warmup}}"  class="layui-table-link">{{d.colldown}}</a>
+  </script>
+{/block}
