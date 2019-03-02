@@ -1,20 +1,20 @@
 <form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('lesson/add_info')}" data-auto="true"
     method="post">
 
-    {if isset($is_coach)}
+    {if isset($is_batch)}
     <div class="layui-form-item">
-        <label class="layui-form-label">选择教练</label>
+        <label class="layui-form-label">选择会员</label>
         <div class="layui-input-block">
             <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select="coach"
                 lay-verify="required" class="layui-select full-width block" name="mid" lay-ignore="">
-                <option value=""> - 请选择教练 -</option>
-                <!--{volist name="coachs" id="coach"}-->
-                <option value="{$coach.member_id}">{$coach.name}</option>
+                <option value=""> - 请选择会员 -</option>
+                <!--{volist name="members" id="member"}-->
+                <option value="{$member.id}">{$member.name}</option>
                 <!--{/volist}-->
             </select>
         </div>
     </div>
-    <input type="hidden" name="is_coach" value="{$is_coach}">
+    <input type="hidden" name="is_batch" value="{$is_batch}">
     {/if}
 
     <div class="layui-form-item">

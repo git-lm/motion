@@ -120,37 +120,37 @@ class Lesson extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员动作' , $this->table);
-        $code = DbService::save($this->table, $data , $limit);
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员动作', $this->table);
+        $code = DbService::save($this->table, $data, $limit);
         return $code;
     }
     /**
-     * 新增会员动作
+     * 新增批量动作
      * @param type $data 保存的数据
      */
-    public function add_coach_lesson($data = [])
+    public function add_batch_lesson($data = [])
     {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增教练动作' , 'motion_coach_lesson');
-        $code = DbService::save('motion_coach_lesson', $data);
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增批量动作', 'motion_batch_lesson');
+        $code = DbService::save('motion_batch_lesson', $data);
         return $code;
     }
 
     /**
-     * 编辑会员动作
+     * 编辑批量计划
      * @param type $data    保存的数据
      * @param type $where   编辑条件
      */
-    public function edit_coach_lesson($data = [], $where = [])
+    public function edit_batch_lesson($data = [], $where = [])
     {
-        $coach_lesson = $this->get_coach_lesson($where);
+        $batch_lesson = $this->get_batch_lesson($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($coach_lesson), json_encode($data), json_encode($where), '编辑教练动作' , 'motion_coach_lesson');
-        $code = DbService::update('motion_coach_lesson', $data, $where);
+        DbService::save_log('motion_log', json_encode($batch_lesson), json_encode($data), json_encode($where), '编辑批量计划', 'motion_batch_lesson');
+        $code = DbService::update('motion_batch_lesson', $data, $where);
         return $code;
     }
 
@@ -165,7 +165,7 @@ class Lesson extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($lesson), json_encode($data), json_encode($where), '编辑会员动作' , $this->table);
+        DbService::save_log('motion_log', json_encode($lesson), json_encode($data), json_encode($where), '编辑会员动作', $this->table);
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }
@@ -200,16 +200,16 @@ class Lesson extends Model
         return $list;
     }
     /**
-     * 查看教练小动作
+     * 查看批量计划小动作
      * @param Array $order  排序条件
      * @param Arry $field  获取的字段
      * @param int $page     查询页数
      * @param int $limit    每页显示条数
      * @param bool $isWhere 是否直接查询
      */
-    public function get_coach_little_courses($where = [], $order = [], $page = 0, $limit = 0)
+    public function get_batch_littles($where = [], $order = [], $page = 0, $limit = 0)
     {
-        $lists = DbService::queryALL('motion_coach_lesson_course', $where, $order, $page, $limit);
+        $lists = DbService::queryALL('motion_batch_lesson_course', $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
@@ -218,42 +218,42 @@ class Lesson extends Model
     }
 
     /**
-     * 获取单个教练课程
+     * 获取单个批量假话
      * @param Array $where  查询条件
      * @param Array $order  排序条件
      */
-    public function get_coach_little_course($where = [], $order = [])
+    public function get_batch_little($where = [], $order = [])
     {
-        $list = DbService::queryOne('motion_coach_lesson_course', $where, $order);
+        $list = DbService::queryOne('motion_batch_lesson_course', $where, $order);
         return $list;
     }
     /**
-     * 新增教练动作详情
+     * 新增批量计划详情
      * @param type $data 保存的数据
      */
-    public function coach_little_add($data = [])
+    public function batch_little_add($data = [])
     {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作' , 'motion_coach_lesson_course');
-        $code = DbService::save('motion_coach_lesson_course', $data);
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增批量计划详情', 'motion_batch_lesson_course');
+        $code = DbService::save('motion_batch_lesson_course', $data);
         return $code;
     }
 
     /**
-     * 编辑教练动作详情
+     * 编辑批量计划详情
      * @param type $data    保存的数据
      * @param type $where   编辑条件
      */
-    public function coach_little_edit($data = [], $where = [])
+    public function batch_little_edit($data = [], $where = [])
     {
         $little = $this->get_little_course($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑教练小动作' , 'motion_coach_lesson_course');
-        $code = DbService::update('motion_coach_lesson_course', $data, $where);
+        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑批量计划详情', 'motion_batch_lesson_course');
+        $code = DbService::update('motion_batch_lesson_course', $data, $where);
         return $code;
     }
 
@@ -266,7 +266,7 @@ class Lesson extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作' ,'motion_lesson_course');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作', 'motion_lesson_course');
         $code = DbService::save('motion_lesson_course', $data);
         return $code;
     }
@@ -282,7 +282,7 @@ class Lesson extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑会员小动作' , 'motion_lesson_course');
+        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑会员小动作', 'motion_lesson_course');
         $code = DbService::update('motion_lesson_course', $data, $where);
         return $code;
     }
@@ -295,7 +295,7 @@ class Lesson extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员课程记录文件' ,'motion_lesson_course_file');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员课程记录文件', 'motion_lesson_course_file');
         $code = DbService::save('motion_lesson_course_file', $data);
         return $code;
     }
@@ -337,7 +337,7 @@ class Lesson extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($file), json_encode($data), json_encode($where), '编辑会员课程文件记录' , 'motion_lesson_course_file');
+        DbService::save_log('motion_log', json_encode($file), json_encode($data), json_encode($where), '编辑会员课程文件记录', 'motion_lesson_course_file');
         $code = DbService::update('motion_lesson_course_file', $data, $where);
         return $code;
     }
@@ -345,9 +345,9 @@ class Lesson extends Model
     /**
      * 获取教练计划
      */
-    public function get_coach_lessons($where = [], $order = [], $page = 0, $limit = 0)
+    public function get_batch_lessons($where = [], $order = [], $page = 0, $limit = 0)
     {
-        $lists = DbService::queryALL('motion_coach_lesson', $where, $order, $page, $limit);
+        $lists = DbService::queryALL('motion_batch_lesson', $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
@@ -358,9 +358,9 @@ class Lesson extends Model
     /**
      * 获取单个教练计划
      */
-    public function get_coach_lesson($where = [], $order = [])
+    public function get_batch_lesson($where = [], $order = [])
     {
-        $list = DbService::queryOne('motion_coach_lesson', $where, $order);
+        $list = DbService::queryOne('motion_batch_lesson', $where, $order);
         if (!empty($list)) {
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
         }
