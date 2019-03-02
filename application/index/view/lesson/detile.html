@@ -63,7 +63,7 @@
 
                     <!--main_list_l_r_top_b start-->
                     <div class="main_list_l_r_top_b">
-                        <p class="font_l">{$c.remark|default=''}</p>
+                        <p class="font_l">{:nl2br($c.remark)}</p>
                         <!--视频 开始-->
                         <div class="videos">
                             {volist name="c.motions" id="motion"}
