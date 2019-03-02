@@ -50,7 +50,7 @@ class MobileBase extends Controller
             session('motion_member', $member);
             $this->redirect('/list');
         } else {
-            if (request()->controller() != 'Login' && request()->acion() != 'login')
+            if (request()->controller() != 'Login' && request()->action() != 'login')
                 $this->redirect('/login');
         }
     }
