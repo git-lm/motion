@@ -76,7 +76,7 @@ class Lesson extends BasicAdmin
         $cname = request()->has('cname', 'get') ? request()->get('cname/s') : '';
         $expire_time = request()->has('expire_time', 'get') ? request()->get('expire_time/s') : '';
         if ($name) {
-            $where[] = ['name', 'like', '%' . $name . '%'];
+            $where[] = ['m.name', 'like', '%' . $name . '%'];
         }
         if ($cname) {
             $where[] = ['t.cname', 'like', '%' . $cname . '%'];
