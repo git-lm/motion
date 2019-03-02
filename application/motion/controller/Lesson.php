@@ -764,10 +764,16 @@ class Lesson extends BasicAdmin
      */
     public function add_batch()
     {
-        $where[] = ['c.status', '<>', 0];
-        $order['create_time'] = 'desc';
-        $members = $this->memberModel->get_members($where, $order);
-        // $coachs = $this->coachModel->get_coachs($where, $order);
+        $uid = session('user.id');
+        //获取所属uid 的教练
+        $where['u_id'] = $uid;
+        $where['status'] = 1;
+        $coach = $this->coachModel->get_coach($where);
+        if (empty($coach)) {
+            $this->error('该账号未绑定教练');
+        }
+        $lwhere[] = ['c_id', '=', $coach['id']];
+        $members =  $this->get_member_lists($lwhere);
         $this->assign('members', $members);
         $motionModel = new  \app\motion\model\Motion();
         $types = $motionModel->get_type_motions();
