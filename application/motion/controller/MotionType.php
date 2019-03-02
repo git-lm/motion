@@ -105,6 +105,7 @@ class MotionType extends BasicAdmin {
      * 编辑类型数据
      */
     public function edit_info() {
+        
         //获取数据
         $tid = request()->has('tid', 'post') ? request()->post('tid/d') : 0;
         $parent_id = request()->has('parent_id', 'post') ? request()->post('parent_id/d') : 0;
@@ -118,9 +119,10 @@ class MotionType extends BasicAdmin {
         $data['parent_id'] = $parent_id;
         $data['name'] = $name;
         $validate = $this->motionTypeModel->validate($data);
-        if (!$validate) {
+        if ($validate) {
             $this->error($validate);
         }
+        
         $where['id'] = $tid;
         $code = $this->motionTypeModel->edit($data, $where);
         if ($code) {

@@ -88,7 +88,7 @@ class Course extends Model {
         if (empty($data['password'])) {
             $data['password'] = md5('123456');
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增课程');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增课程' , $this->table);
         $code = DbService::save($this->table, $data);
         return $code;
     }
@@ -103,8 +103,7 @@ class Course extends Model {
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($course), json_encode($data), json_encode($where), '编辑课程');
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增课程');
+        DbService::save_log('motion_log', json_encode($course), json_encode($data), json_encode($where), '编辑课程' , $this->table);
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }

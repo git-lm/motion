@@ -329,8 +329,8 @@ class Lesson extends BasicAdmin
     public function edit_coach_lesson($data, $id)
     {
         $where['id'] = $id;
-        $coach_lesson = $this->lessonModel->get_coach_lesson();
-        $this->lessonModel->edit_coach_lesson($data, $where);
+        $coach_lesson = $this->lessonModel->get_coach_lesson($where);
+        $code = $this->lessonModel->edit_coach_lesson($data, $where);
         if (!empty($coach_lesson['is_dispense'])) {
             //说明已经分发了  还要修改计划信息
             unset($data['member_ids']);
@@ -467,6 +467,7 @@ class Lesson extends BasicAdmin
         if ($validate) {
             $this->error($validate);
         }
+
         if ($is_coach) {
             $code = $this->coach_little_add_info($data, $lid);
             // $code = $this->lessonModel->coach_little_add($data);
@@ -484,7 +485,6 @@ class Lesson extends BasicAdmin
      */
     public function coach_little_add_info($data, $lid)
     {
-
         $lwhere['id'] = $lid;
         $lesson = $this->lessonModel->get_coach_lesson($lwhere);
         if (!empty($lesson['is_dispense'])) {
@@ -500,8 +500,10 @@ class Lesson extends BasicAdmin
             $data['lesson_course_ids'] = $lesson_course_ids;
             $data['l_id'] = $lid;  // l_id  是教练计划ID
             $code = $this->lessonModel->coach_little_add($data);
-            return $code;
+        } else {
+            $code = $this->lessonModel->coach_little_add($data);
         }
+        return $code;
     }
 
     /**

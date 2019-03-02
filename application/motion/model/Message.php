@@ -93,7 +93,7 @@ class Message extends Model {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '回复留言');
+        DbService::save_log('motion_log', '', json_encode($data), '', '回复留言' , $this->tanble);
         $code = DbService::save($this->table, $data);
         return $code;
     }
@@ -108,7 +108,7 @@ class Message extends Model {
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员');
+        DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员' , $this->table);
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }

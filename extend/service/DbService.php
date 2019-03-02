@@ -139,7 +139,7 @@ class DbService
      * @param string $content           描述
      * @return int $code                日志ID
      */
-    public static function save_log($table = '', $before = '', $after = '', $where = '', $content = '')
+    public static function save_log($table = '', $before = '', $after = '', $where = '', $content = '', $change_table = '')
     {
         $data['ip'] = request()->ip();
         $data['node'] = strtolower(join('/', [request()->module(), request()->controller(), request()->action()]));
@@ -151,7 +151,7 @@ class DbService
         $data['after_param'] = $after;
         $data['where_param'] = $where;
         $data['content'] = $content;
-        $data['table_name'] = $table;
+        $data['table_name'] = $change_table;
         $db = Db::table($table);
         $code = $db->strict(false)->insertGetId($data);
         return $code;

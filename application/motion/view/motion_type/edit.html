@@ -18,7 +18,7 @@
             <input required lay-verify="required" type="text" autofocus name="name" value='{$list.name|default=""}' maxlength="50" title="请输入类型名称" placeholder="请输入类型名称" class="layui-input">
         </div>
     </div>
-    {if isset($list.id)}<input type='hidden' value='{$list.id}' name='tid'>{/if}
+    {if isset($list.id)}<input type='hidden' value='{$list.id}' name='tid' />{/if}
 
     <div class="hr-line-dashed"></div>
 

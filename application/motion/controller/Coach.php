@@ -267,13 +267,15 @@ class Coach extends BasicAdmin
             $this->error('请正确选择教练计划');
         }
 
-        $where['id'] = ['=', $id];
+        $where['id'] =  $id;
         $coach_lesson = $this->lessonModel->get_coach_lesson($where);
         if (empty($coach_lesson)) {
             $this->error('无此教练计划');
         }
         $data['status'] = 0;
         $code = $this->lessonModel->edit_coach_lesson($data, $where);
+        $cllwhere['l_id'] = $id; //教练计划详情
+        $code = $this->lessonModel->coach_little_edit($data, $cllwhere);
         //如果已经分发  删除计划信息
         if (!empty($coach_lesson['is_dispense'])) {
             $lesson_ids = $coach_lesson['lesson_ids'];
@@ -281,6 +283,8 @@ class Coach extends BasicAdmin
             foreach ($lesson_ids_arr as $v) {
                 $lwhere['id'] = $v;
                 $this->lessonModel->edit($data, $lwhere);
+                $llwhere['l_id'] = $v;
+                $this->lessonModel->little_edit($data, $llwhere);
             }
         }
         if ($code) {

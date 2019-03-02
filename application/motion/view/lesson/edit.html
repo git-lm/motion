@@ -1,11 +1,12 @@
-<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('lesson/edit_info')}" data-auto="true"
-    method="post">
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('lesson/edit_info')}"
+    data-auto="true" method="post">
     {if isset($is_coach)}
     <div class="layui-form-item">
         <label class="layui-form-label">选择教练</label>
         <div class="layui-input-block">
-            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select="coach"
-                lay-verify="required" class="layui-select full-width block" name="mid" lay-ignore="">
+            <select required="" {if $list.is_dispense==1 }disabled="disabled" {/if} xm-select-search
+                xm-select-search-type="dl" xm-select-direction="down" xm-select="coach" lay-verify="required"
+                class="layui-select full-width block" name="mid" lay-ignore="">
                 <option value=""> - 请选择教练 -</option>
                 <!--{volist name="coachs" id="coach"}-->
                 <option {in name="$coach.member_id" value="$list.member_ids" }selected{/in} value="{$coach.member_id}">

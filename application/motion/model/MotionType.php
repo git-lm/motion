@@ -9,7 +9,8 @@ use service\DbService;
 /**
  * 动作库模型
  */
-class MotionType extends Model {
+class MotionType extends Model
+{
 
     //动作库类型数据库
     protected $table = 'motion_type';
@@ -19,7 +20,8 @@ class MotionType extends Model {
      * @param type $val  转换数据
      * @param type $type 转换类型  d 天   h 小时  m 分钟  s秒
      */
-    protected function getDateAttr($val, $type = 'd') {
+    protected function getDateAttr($val, $type = 'd')
+    {
         if ($type == 'd') {
             return date('Y-m-d', $val);
         } else if ($type == 'h') {
@@ -37,7 +39,8 @@ class MotionType extends Model {
      * 状态获取器
      * @param type $val  转换数据
      */
-    protected function getStatusAttr($val) {
+    protected function getStatusAttr($val)
+    {
         if ($val == 1) {
             return '正常';
         } else if ($val == 0) {
@@ -58,7 +61,8 @@ class MotionType extends Model {
      * @param int $limit    每页显示条数
      * @param bool $isWhere 是否直接查询
      */
-    public function get_motion_types($where = [], $order = [], $page = 0, $limit = 0) {
+    public function get_motion_types($where = [], $order = [], $page = 0, $limit = 0)
+    {
         $lists = DbService::queryALL($this->table, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
@@ -72,7 +76,8 @@ class MotionType extends Model {
      * @param Array $where  查询条件
      * @param Array $order  排序条件
      */
-    public function get_motion_type($where = [], $order = []) {
+    public function get_motion_type($where = [], $order = [])
+    {
         $list = DbService::queryOne($this->table, $where, $order);
 
         return $list;
@@ -83,11 +88,12 @@ class MotionType extends Model {
      * @param Array $data   待处理数据
      * @param type $level   获取几级数据
      */
-    public function get_level_types($data, $pid = 0, $level = 0, $num = 2) {
+    public function get_level_types($data, $pid = 0, $level = 0, $num = 2)
+    {
         static $lists = array();
         foreach ($data as $key => $val) {
             if ($val['parent_id'] == $pid && $level < $num) {
-                $level ++;
+                $level++;
                 $lists[] = $val;
                 unset($data[$key]);
                 $this->get_level_types($data, $val['id'], $level);
@@ -100,11 +106,12 @@ class MotionType extends Model {
      * 新增类型
      * @param type $data 保存的数据
      */
-    public function add($data = []) {
+    public function add($data = [])
+    {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增动作类型');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增动作类型', $this->table);
         $code = DbService::save($this->table, $data);
         return $code;
     }
@@ -114,12 +121,13 @@ class MotionType extends Model {
      * @param type $data    保存的数据
      * @param type $where   编辑条件
      */
-    public function edit($data = [], $where = []) {
+    public function edit($data = [], $where = [])
+    {
         $type = $this->get_motion_type($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($type), json_encode($data), json_encode($where), '编辑动作类型');
+        DbService::save_log('motion_log', json_encode($type), json_encode($data), json_encode($where), '编辑动作类型', $this->table);
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }
@@ -128,7 +136,8 @@ class MotionType extends Model {
      * 验证类型数据有效性
      * @param type $data 需要验证的数据
      */
-    public function validate($data) {
+    public function validate($data)
+    {
         $rule = [
             'parent_id' => 'require',
             'name' => 'require|max:50|min:2',
@@ -143,5 +152,4 @@ class MotionType extends Model {
         $validate->rule($rule)->message($message)->check($data);
         return $validate->getError();
     }
-
 }

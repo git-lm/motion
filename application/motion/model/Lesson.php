@@ -120,7 +120,7 @@ class Lesson extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员动作');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员动作' , $this->table);
         $code = DbService::save($this->table, $data , $limit);
         return $code;
     }
@@ -133,7 +133,7 @@ class Lesson extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增教练动作');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增教练动作' , 'motion_coach_lesson');
         $code = DbService::save('motion_coach_lesson', $data);
         return $code;
     }
@@ -149,7 +149,7 @@ class Lesson extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($coach_lesson), json_encode($data), json_encode($where), '编辑教练动作');
+        DbService::save_log('motion_log', json_encode($coach_lesson), json_encode($data), json_encode($where), '编辑教练动作' , 'motion_coach_lesson');
         $code = DbService::update('motion_coach_lesson', $data, $where);
         return $code;
     }
@@ -165,7 +165,7 @@ class Lesson extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($lesson), json_encode($data), json_encode($where), '编辑会员动作');
+        DbService::save_log('motion_log', json_encode($lesson), json_encode($data), json_encode($where), '编辑会员动作' , $this->table);
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }
@@ -236,7 +236,7 @@ class Lesson extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作' , 'motion_coach_lesson_course');
         $code = DbService::save('motion_coach_lesson_course', $data);
         return $code;
     }
@@ -252,7 +252,7 @@ class Lesson extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑教练小动作');
+        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑教练小动作' , 'motion_coach_lesson_course');
         $code = DbService::update('motion_coach_lesson_course', $data, $where);
         return $code;
     }
@@ -266,7 +266,7 @@ class Lesson extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员小动作' ,'motion_lesson_course');
         $code = DbService::save('motion_lesson_course', $data);
         return $code;
     }
@@ -282,7 +282,7 @@ class Lesson extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑会员小动作');
+        DbService::save_log('motion_log', json_encode($little), json_encode($data), json_encode($where), '编辑会员小动作' , 'motion_lesson_course');
         $code = DbService::update('motion_lesson_course', $data, $where);
         return $code;
     }
@@ -295,7 +295,7 @@ class Lesson extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员课程记录文件');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员课程记录文件' ,'motion_lesson_course_file');
         $code = DbService::save('motion_lesson_course_file', $data);
         return $code;
     }
@@ -337,7 +337,7 @@ class Lesson extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($file), json_encode($data), json_encode($where), '编辑会员课程文件记录');
+        DbService::save_log('motion_log', json_encode($file), json_encode($data), json_encode($where), '编辑会员课程文件记录' , 'motion_lesson_course_file');
         $code = DbService::update('motion_lesson_course_file', $data, $where);
         return $code;
     }
