@@ -15,6 +15,7 @@ class Login extends MobileBase
 
     public function initialize()
     {
+        parent::initialize();
         $this->memberModel = new memberModel();
     }
 

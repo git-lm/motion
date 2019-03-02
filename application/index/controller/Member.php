@@ -14,6 +14,7 @@ class Member extends MobileBase
 
     public function initialize()
     {
+        parent::initialize();
         // 登录状态检查
         if (!session('motion_member')) {
             $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('/login.html')];

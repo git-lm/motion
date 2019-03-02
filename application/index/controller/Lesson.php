@@ -11,9 +11,12 @@ use app\motion\model\Motion as motionModel;
  * 应用入口控制器
  * @author Anyon 
  */
-class Lesson extends MobileBase {
+class Lesson extends MobileBase
+{
 
-    public function initialize() {
+    public function initialize()
+    {
+        parent::initialize();
         // 登录状态检查
         if (!session('motion_member')) {
             $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('/login')];
@@ -28,7 +31,8 @@ class Lesson extends MobileBase {
     /**
      * 获取未到时间的
      */
-    public function get_arranges() {
+    public function get_arranges()
+    {
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $type = request()->has('type', 'get') ? request()->get('type/s') : 'upcomming';
@@ -64,7 +68,8 @@ class Lesson extends MobileBase {
     /**
      * 记录详情
      */
-    public function detile() {
+    public function detile()
+    {
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         if (!$id) {
             $this->error('请正确选择');
@@ -93,14 +98,15 @@ class Lesson extends MobileBase {
     /**
      * 添加小动作信息
      */
-    public function message_add() {
+    public function message_add()
+    {
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $message = request()->has('message', 'post') ? request()->post('message/s') : '';
         if (!$message) {
             $this->error('请填写记录');
         }
         $where[] = ['id', '=', $id];
-        $data ['message'] = $message;
+        $data['message'] = $message;
         $code = $this->lessonModel->little_edit($data, $where);
         if ($code) {
             $this->success('保存成功');
@@ -112,14 +118,16 @@ class Lesson extends MobileBase {
     /**
      * 获取总页面
      */
-    public function get_pages($count = 0, $limit = 0) {
+    public function get_pages($count = 0, $limit = 0)
+    {
         return ceil($count / $limit);
     }
 
     /**
      * 获取记录
      */
-    public function history() {
+    public function history()
+    {
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         $lwhere['id'] = $id;
         $little = $this->lessonModel->get_little_course($lwhere);
@@ -127,7 +135,7 @@ class Lesson extends MobileBase {
             $this->error('无此相关记录');
         }
         $m_ids = $little['m_ids'];
-        $lists = $this->lessonModel->get_history($m_ids , $this->m_id);
+        $lists = $this->lessonModel->get_history($m_ids, $this->m_id);
 
         $this->assign('lists', $lists);
         return $this->fetch();
@@ -136,7 +144,8 @@ class Lesson extends MobileBase {
     /**
      * 操作动作完成情况
      */
-    public function handleCourse() {
+    public function handleCourse()
+    {
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $state = request()->has('state', 'post') ? request()->post('state/d') : 0;
         $lwhere['id'] = $id;
@@ -156,7 +165,8 @@ class Lesson extends MobileBase {
     /**
      * 操作动作完成情况
      */
-    public function handleMotion() {
+    public function handleMotion()
+    {
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $lwhere['id'] = $id;
         $little = $this->lessonModel->get_arrange_list($lwhere);
@@ -175,7 +185,8 @@ class Lesson extends MobileBase {
     /**
      * 发送记录信息
      */
-    public function message() {
+    public function message()
+    {
         $messageModel = new \app\motion\model\Message();
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $messsage = request()->has('message', 'post') ? request()->post('message/s') : '';
@@ -200,7 +211,8 @@ class Lesson extends MobileBase {
     /**
      * 上传课程文件记录
      */
-    public function file_add() {
+    public function file_add()
+    {
         $file = request()->has('fileurl', 'post') ? request()->post('fileurl/s') : '';
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         $data['lc_id'] = $id;
@@ -214,7 +226,8 @@ class Lesson extends MobileBase {
         }
     }
 
-    public function file_del() {
+    public function file_del()
+    {
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         if (!$id) {
             $this->error('删除失败');
@@ -232,7 +245,8 @@ class Lesson extends MobileBase {
     /**
      * 获取留言
      */
-    public function get_messages($lid = 0) {
+    public function get_messages($lid = 0)
+    {
         $mwhere[] = ['m.p_id', '=', $lid];
         $mwhere[] = ['m.type', '=', 1];
         $morder['create_time'] = 'desc';
@@ -244,9 +258,10 @@ class Lesson extends MobileBase {
     /**
      * 获取动作
      */
-    public function get_course($lid = 0) {
-        $cwhere [] = ['l_id', '=', $lid];
-        $cwhere [] = ['status', '=', 1];
+    public function get_course($lid = 0)
+    {
+        $cwhere[] = ['l_id', '=', $lid];
+        $cwhere[] = ['status', '=', 1];
         $corder['create_time'] = 'asc';
         $course = $this->lessonModel->get_little_courses($cwhere, $corder);
         foreach ($course as &$c) {
@@ -254,9 +269,9 @@ class Lesson extends MobileBase {
             $motions = $this->get_motion($c['m_ids']);
             $c['motions'] = $motions;
             //获取课程记录
-            $fwhere ['lc_id'] = $c['id'];
-            $fwhere ['status'] = 1;
-            $forder ['create_time'] = 'desc';
+            $fwhere['lc_id'] = $c['id'];
+            $fwhere['status'] = 1;
+            $forder['create_time'] = 'desc';
             $file = $this->lessonModel->get_course_file($fwhere, $forder);
             if (!empty($file)) {
                 $pathinf = pathinfo($file['url'], PATHINFO_EXTENSION);
@@ -272,11 +287,11 @@ class Lesson extends MobileBase {
     /**
      * 获取视频
      */
-    public function get_motion($ids = '') {
-        $vwhere [] = ['mb.id', 'in', $ids];
-        $vwhere [] = ['mb.status', '=', 1];
+    public function get_motion($ids = '')
+    {
+        $vwhere[] = ['mb.id', 'in', $ids];
+        $vwhere[] = ['mb.status', '=', 1];
         $motion = $this->motionModel->get_motions($vwhere);
         return $motion;
     }
-
 }
