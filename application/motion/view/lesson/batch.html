@@ -1,7 +1,7 @@
 {extend name='admin@public/content'}
 {block name="button"}
-<!--{if auth("$classuri/lesson")}-->
-<button data-modal='{:url("$classuri/add_lesson")}' data-title="添加计划"
+<!--{if auth("$classuri/add_batch")}-->
+<button data-modal='{:url("$classuri/add_batch")}' data-title="添加计划"
     class='layui-btn layui-btn-sm layui-btn-primary'>添加计划</button>
 <!--{/if}-->
 {/block}
@@ -36,9 +36,9 @@
     table.render({
         elem: '#arrangeTable',
 
-        url: '{:url("$classuri/get_coach_lesson")}', //数据接口 
+        url: '{:url("$classuri/get_batch_lesson")}', //数据接口 
         page: true, //开启分页
-        toolbar: '<div>教练计划列表(分发后不能修改教练)</div>',
+        toolbar: '<div>批量计划列表(分发后不能修改会员)</div>',
         loading: true,
         title: '教练计划列表',
         cols: [[//表头
@@ -73,12 +73,12 @@
     })
 </script>
 <script type="text/html" id="arrangehandle">
-    <a class="layui-btn layui-btn-xs" data-action="{:url('edit_lesson')}" data-title="编辑计划" lay-event="open">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del_lesson')}"  lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-xs" data-action="{:url('edit_batch')}" data-title="编辑计划" lay-event="open">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del_batch')}"  lay-event="del">删除</a>
     {{# if(d.is_dispense == 0){ }}
-    <a class="layui-btn layui-btn-xs" data-action="{:url('lesson_dispense')}"  lay-event="update">分发计划</a>
+    <a class="layui-btn layui-btn-xs" data-action="{:url('batch_dispense')}"  lay-event="update">分发计划</a>
     {{# }}}
-    <a class="layui-btn layui-btn-xs" data-action="{:url('lesson_little')}"  lay-event="href">计划详情</a>
+    <a class="layui-btn layui-btn-xs" data-action="{:url('batch_little')}"  lay-event="href">计划详情</a>
 
 </script>
 <script type="text/html" id="warmup">
