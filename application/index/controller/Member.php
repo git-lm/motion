@@ -2,14 +2,14 @@
 
 namespace app\index\controller;
 
-use think\Controller;
+use app\index\controller\MobileBase;
 use app\motion\model\Member as memberModel;
 
 /**
  * 应用入口控制器
  * @author Anyon 
  */
-class Member extends Controller
+class Member extends MobileBase
 {
 
     public function initialize()

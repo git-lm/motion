@@ -2,13 +2,13 @@
 
 namespace app\index\controller;
 
-use think\Controller;
+use app\index\controller\MobileBase;
 
 /**
  * 应用入口控制器
  * @author Anyon 
  */
-class Index extends Controller
+class Index extends MobileBase
 {
 
     public function initialize()

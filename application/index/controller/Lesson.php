@@ -2,7 +2,7 @@
 
 namespace app\index\controller;
 
-use think\Controller;
+use app\index\controller\MobileBase;
 use app\motion\model\Lesson as lessonModel;
 use app\motion\model\Message as messageModel;
 use app\motion\model\Motion as motionModel;
@@ -11,7 +11,7 @@ use app\motion\model\Motion as motionModel;
  * 应用入口控制器
  * @author Anyon 
  */
-class Lesson extends Controller {
+class Lesson extends MobileBase {
 
     public function initialize() {
         // 登录状态检查
