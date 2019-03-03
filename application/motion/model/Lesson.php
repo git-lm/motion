@@ -303,16 +303,27 @@ class Lesson extends Model
     /**
      *  获取相同的课程
      */
-    public function get_history($m_ids = 0, $m_id = 0,  $order = [], $page = 0, $limit = 0)
+    public function get_history($where = 0,  $order = [], $page = 0, $limit = 0)
     {
+        $whereString = '';
         //获取相同视频的课程
-        $where = ' m_ids in ( ' . $m_ids . ') and lc.state = 1 and l.class_time < "' . time() . '" and m_id = ' . $m_id;
+        if (!empty($where['m_ids']) && !empty($where['name'])) {
+            $whereString = '  (m_ids in ( ' . $where['m_ids'] . ') or lc.name like "%' . $where['name'] . '%")  and lc.state = 1 and l.class_time < "' . time() . '" and m_id =  ' . $where['m_id'];
+        } else {
+            if (!empty($where['m_ids'])) {
+                $whereString = ' m_ids in ( ' . $where['m_ids'] . ') and lc.state = 1 and l.class_time < "' . time() . '" and m_id =  ' . $where['m_id'];
+            }
+            if (!empty($where['name'])) {
+                $whereString = ' lc.name like "%' . $where['name'] . '%" and lc.state = 1 and l.class_time < "' . time() . '" and m_id =  ' . $where['m_id'];
+            }
+        }
+        // $where = ' m_ids in ( ' . $m_ids . ') and lc.state = 1 and l.class_time < "' . time() . '" and m_id = ' . $m_id;
         $db = Db::table('motion_lesson_course')
             ->alias('lc')
             ->leftJoin(['motion_lesson' => 'l'], 'l.id = lc.l_id')
             ->field('lc.* ,l.id lid ,  l.name lname , l.class_time');
         $order['class_time'] = 'desc';
-        $lists = DbService::queryALL($db, $where, $order, $page, $limit);
+        $lists = DbService::queryALL($db, $whereString, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
         }

@@ -46,7 +46,7 @@ class Lesson extends MobileBase
             $where[] = ['l.class_time', '<', time()];
         }
 
-        $order['l.class_time'] = 'asc';
+        $order['l.class_time'] = 'desc';
         $lists = $this->lessonModel->get_arrange_lists($where, $order, $page, $limit);
         $count = count($this->lessonModel->get_arrange_lists($where));
         //获取记录留言
@@ -131,11 +131,16 @@ class Lesson extends MobileBase
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         $lwhere['id'] = $id;
         $little = $this->lessonModel->get_little_course($lwhere);
-        if (empty($little['m_ids'])) {
-            $this->error('无此相关记录');
+        if (!empty($little['m_ids'])) {
+            $m_ids = $little['m_ids'];
+        } else {
+            $m_ids = 0;
         }
-        $m_ids = $little['m_ids'];
-        $lists = $this->lessonModel->get_history($m_ids, $this->m_id);
+        $where['m_ids'] = $m_ids;
+        $where['name'] = $little['name'];
+        $where['m_id'] = $this->m_id;
+
+        $lists = $this->lessonModel->get_history($where);
 
         $this->assign('lists', $lists);
         return $this->fetch();
