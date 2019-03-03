@@ -92,7 +92,7 @@ class MotionType extends Model
     {
         static $lists = array();
         foreach ($data as $key => $val) {
-            if ($val['parent_id'] == $pid && $level < $num) {
+            if ($val['parent_id'] == $pid) { //&& $level < $num
                 $level++;
                 $lists[] = $val;
                 unset($data[$key]);

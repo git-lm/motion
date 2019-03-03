@@ -1,7 +1,8 @@
 {extend name='admin@public/content'}
 {block name="button"}
-  <!--{if auth("$classuri/add")}-->
-<button data-modal='{:url("$classuri/add")}' data-title="添加类型" class='layui-btn layui-btn-sm layui-btn-primary'>添加类型</button>
+<!--{if auth("$classuri/add")}-->
+<button data-modal='{:url("$classuri/add")}' data-title="添加类型"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加类型</button>
 <!--{/if}-->
 {/block}
 
@@ -15,7 +16,8 @@
     </div>
 </div>
 <div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="type_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
+    <button class="layui-btn layui-btn-primary" lay-filter="type_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜
+        索</button>
 </div>
 <table id="typeTable" lay-filter="typeTable"></table>
 {/block}
@@ -26,19 +28,20 @@
     })
     table.render({
         elem: '#typeTable',
-       
+
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
         toolbar: '<div>类型列表</div>',
         loading: true,
         title: '类型列表',
         cols: [[//表头
-                {title: '序号', fixed: 'left', type: 'numbers'},
-                {field: 'name', title: '类型名称'},
-                {field: 'status_show', title: '状态'},
-                {field: 'create_time_show', title: '添加时间'},
-                {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#typehandle'}
-            ]],
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'name', title: '类型名称' },
+            { field: 'status_show', title: '状态' },
+            { field: 'create_time_show', title: '添加时间' },
+            { field: 'sort', title: '排序' },
+            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#typehandle' }
+        ]],
         parseData: function (res) { //res 即为原始返回的数据
             return {
                 "code": res.code, //解析接口状态
@@ -55,7 +58,7 @@
             where: {
                 name: name
             },
-            page: {curr: 1}
+            page: { curr: 1 }
         })
     })
 </script>

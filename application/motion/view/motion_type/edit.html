@@ -1,12 +1,16 @@
-<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('edit_info')}" data-auto="true" method="post">
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('edit_info')}" data-auto="true"
+    method="post">
 
     <div class="layui-form-item">
         <label class="layui-form-label">所属类型</label>
         <div class="layui-input-block">
-            <select required lay-verify="required" class="layui-select full-width block" name="parent_id" lay-ignore="">
-                <option  {eq name="$list.parent_id" value="0"}selected{/eq} value="0"> - 顶级类型 -</option>
+            <select xm-select-search xm-select-search-type="dl" xm-select-radio xm-select-direction="down"
+                xm-select="edit_type" required lay-verify="required" class="layui-select full-width block"
+                name="parent_id" lay-ignore="">
+                <option {eq name="$list.parent_id" value="0" }selected{/eq} value="0"> - 顶级类型 -</option>
                 <!--{volist name="types" id="type"}-->
-                <option {eq name="$list.parent_id" value="$type.id"}selected{/eq} value="{$type.id}"> - {$type.name} -</option>
+                <option {eq name="$list.parent_id" value="$type.id" }selected{/eq} value="{$type.id}"> - {$type.name} -
+                </option>
                 <!--{/volist}-->
             </select>
         </div>
@@ -15,7 +19,16 @@
     <div class="layui-form-item">
         <label class="layui-form-label">类型名称</label>
         <div class="layui-input-block">
-            <input required lay-verify="required" type="text" autofocus name="name" value='{$list.name|default=""}' maxlength="50" title="请输入类型名称" placeholder="请输入类型名称" class="layui-input">
+            <input required lay-verify="required" type="text" autofocus name="name" value='{$list.name|default=""}'
+                maxlength="50" title="请输入类型名称" placeholder="请输入类型名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-block">
+            <input required type="text" autofocus name="sort" lay-verify="required|number"
+                value='{$list.sort|default="0"}' maxlength="50" title="请输入类型排序" placeholder="请输入类型排序"
+                class="layui-input">
         </div>
     </div>
     {if isset($list.id)}<input type='hidden' value='{$list.id}' name='tid' />{/if}
@@ -27,3 +40,8 @@
         <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
     </div>
 </form>
+{block name="script"}
+<script>
+    formSelects.render('add_type');
+</script>
+{/block}

@@ -3,7 +3,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">所属类型</label>
         <div class="layui-input-block">
-            <select required lay-verify="required" class="layui-select full-width block" name="tid" lay-ignore="">
+            <select xm-select-search xm-select-search-type="dl" xm-select-radio xm-select-direction="down"
+            xm-select="add_motion" required lay-verify="required" class="layui-select full-width block" name="tid" lay-ignore="">
                 <option  selected="selected" value=""> - 请选择类型 -</option>
                 <!--{volist name="types" id="type"}-->
                 <option  value="{$type.id}"> - {$type.name} -</option>
@@ -34,3 +35,8 @@
         <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
     </div>
 </form>
+{block name="script"}
+<script>
+    formSelects.render('add_type');
+</script>
+{/block}

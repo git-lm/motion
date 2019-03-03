@@ -37,6 +37,7 @@ class MotionType extends BasicAdmin {
             $where[] = ['name', 'like', '%' . $name . '%'];
         }
         $where[] = ['status', '<>', 0];
+        $order['sort'] = 'asc';
         $order['create_time'] = 'desc';
         $lists = $this->motionTypeModel->get_motion_types($where, $order, $page, $limit);
         $count = count($this->motionTypeModel->get_motion_types($where));
@@ -48,10 +49,10 @@ class MotionType extends BasicAdmin {
      */
     public function add() {
         $where[] = ['status', '<>', 0];
+        $order['sort'] = 'asc';
         $order['create_time'] = 'desc';
         //获取所有菜单
         $lists = $this->motionTypeModel->get_motion_types($where, $order);
-
         //按级别获取菜单
         $types = $this->motionTypeModel->get_level_types($lists);
         $this->assign('types', $types);
@@ -65,9 +66,11 @@ class MotionType extends BasicAdmin {
         //获取数据
         $parent_id = request()->has('parent_id', 'post') ? request()->post('parent_id/d') : 0;
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
+        $sort = request()->has('sort', 'post') ? request()->post('sort/d') : '';
         //验证数据
         $data['parent_id'] = $parent_id;
         $data['name'] = $name;
+        $data['sort'] = $sort;
         $validate = $this->motionTypeModel->validate($data);
         if ($validate) {
             $this->error($validate);
@@ -90,6 +93,7 @@ class MotionType extends BasicAdmin {
         }
         //判断类型是否存在
         $list = $this->check_data($tid);
+        $order['sort'] = 'asc';
         $where[] = ['status', '<>', 0];
         $order['create_time'] = 'desc';
         //获取所有菜单
@@ -110,6 +114,7 @@ class MotionType extends BasicAdmin {
         $tid = request()->has('tid', 'post') ? request()->post('tid/d') : 0;
         $parent_id = request()->has('parent_id', 'post') ? request()->post('parent_id/d') : 0;
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
+        $sort = request()->has('sort', 'post') ? request()->post('sort/d') : '';
         if (!$tid) {
             $this->error('请正确选择类型');
         }
@@ -118,6 +123,7 @@ class MotionType extends BasicAdmin {
         //验证数据
         $data['parent_id'] = $parent_id;
         $data['name'] = $name;
+        $data['sort'] = $sort;
         $validate = $this->motionTypeModel->validate($data);
         if ($validate) {
             $this->error($validate);

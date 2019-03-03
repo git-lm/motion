@@ -1,12 +1,15 @@
-<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('add_info')}" data-auto="true" method="post">
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('add_info')}" data-auto="true"
+    method="post">
 
     <div class="layui-form-item">
         <label class="layui-form-label">所属类型</label>
         <div class="layui-input-block">
-            <select required class="layui-select full-width block" lay-verify="required"  name="parent_id" lay-ignore="">
-                <option  selected="selected" value="0"> - 顶级类型 -</option>
+            <select xm-select-search xm-select-search-type="dl" xm-select-radio xm-select-direction="down"
+                xm-select="add_type" required class="layui-select full-width block" lay-verify="required"
+                name="parent_id" lay-ignore="">
+                <option selected="selected" value="0"> - 顶级类型 -</option>
                 <!--{volist name="types" id="type"}-->
-                <option  value="{$type.id}"> - {$type.name} -</option>
+                <option value="{$type.id}"> - {$type.name} -</option>
                 <!--{/volist}-->
             </select>
         </div>
@@ -15,7 +18,15 @@
     <div class="layui-form-item">
         <label class="layui-form-label">类型名称</label>
         <div class="layui-input-block">
-            <input required type="text" autofocus name="name" lay-verify="required" value='' maxlength="50" title="请输入类型名称" placeholder="请输入类型名称" class="layui-input">
+            <input required type="text" autofocus name="name" lay-verify="required" value='' maxlength="50"
+                title="请输入类型名称" placeholder="请输入类型名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-block">
+            <input required type="text" autofocus name="sort" lay-verify="required|number" value='' maxlength="50"
+                title="请输入类型排序" placeholder="请输入类型排序" class="layui-input">
         </div>
     </div>
 
@@ -27,3 +38,8 @@
         <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
     </div>
 </form>
+{block name="script"}
+<script>
+    formSelects.render('add_type');
+</script>
+{/block}

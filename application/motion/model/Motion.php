@@ -58,7 +58,7 @@ class Motion extends Model {
     public function get_motions($where = [], $order = [], $page = 0, $limit = 0) {
         $db = Db::table($this->table);
         $db->alias('mb');
-        $buildSql = Db::table('motion_type')->field('id mtid, name mtname')->where('status', '=', 1)->buildSql();
+        $buildSql = Db::table('motion_type')->field('id mtid, name mtname ,sort mtsort')->where('status', '=', 1)->buildSql();
         $db->leftJoin([$buildSql => 'mt'], 'mt.mtid = mb.tid');
 
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
