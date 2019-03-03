@@ -226,6 +226,8 @@ class Lesson extends BasicAdmin
         }
         $data['class_time'] = strtotime($class_time . ' 23:59:59');
         if (!empty($is_batch)) {
+            $uid = session('user.id');
+            $data['u_id'] = $uid;
             $data['member_ids'] = $mids;
             $code = $this->lessonModel->add_batch_lesson($data);
         } else {
@@ -737,6 +739,9 @@ class Lesson extends BasicAdmin
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $class_time = request()->has('class_time', 'get') ? request()->get('class_time/s') : '';
+        if (session('user.is_admin') == 0) {
+            $where[] = ['u_id', '=', session('user.id')];
+        }
         if ($name) {
             $where[] = ['name', 'like', '%' . $name . '%'];
         }
@@ -769,11 +774,15 @@ class Lesson extends BasicAdmin
         $where['u_id'] = $uid;
         $where['status'] = 1;
         $coach = $this->coachModel->get_coach($where);
-        if (empty($coach)) {
+        if (empty($coach) && session('user.is_admin') == 0) {
             $this->error('该账号未绑定教练');
         }
-        $lwhere[] = ['c_id', '=', $coach['id']];
-        $members =  $this->get_member_lists($lwhere);
+        if (session('user.is_admin') == 0) {
+            $lwhere[] = ['c_id', '=', $coach['id']];
+        }
+        $lwhere[] = ['m.status', '=', 1];
+        $lwhere[] = ['t.end_time', '>', time()];
+        $members =  $this->memberModel->get_members($lwhere);
         $this->assign('members', $members);
         $motionModel = new  \app\motion\model\Motion();
         $types = $motionModel->get_type_motions();
@@ -800,9 +809,20 @@ class Lesson extends BasicAdmin
             $this->error('您选择的批量计划不存在');
         }
         $this->assign('list', $lesson);
-        $where[] = ['c.status', '<>', 0];
-        $order['create_time'] = 'desc';
-        $members = $this->memberModel->get_members($where, $order);
+        $uid = session('user.id');
+        //获取所属uid 的教练
+        $where['u_id'] = $uid;
+        $where['status'] = 1;
+        $coach = $this->coachModel->get_coach($where);
+        if (empty($coach) && session('user.is_admin') == 0) {
+            $this->error('该账号未绑定教练');
+        }
+        if (session('user.is_admin') == 0) {
+            $lwhere[] = ['c_id', '=', $coach['id']];
+        }
+        $lwhere[] = ['m.status', '=', 1];
+        $lwhere[] = ['t.end_time', '>', time()];
+        $members =  $this->memberModel->get_members($lwhere);
         $this->assign('members', $members);
         $motionModel = new  \app\motion\model\Motion();
         $types = $motionModel->get_type_motions();
