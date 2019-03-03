@@ -5,8 +5,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">选择会员</label>
         <div class="layui-input-block">
-            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select="coach"
-                lay-verify="required" class="layui-select full-width block" name="mid" lay-ignore="">
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
+                xm-select="add_coach" lay-verify="required" class="layui-select full-width block" name="mid"
+                lay-ignore="">
                 <option value=""> - 请选择会员 -</option>
                 <!--{volist name="members" id="member"}-->
                 <option value="{$member.id}">{$member.name}</option>
@@ -35,8 +36,8 @@
         <label class="layui-form-label">热身视频</label>
         <div class="layui-input-block">
             <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
-                xm-select="warmup_mids" lay-verify="required" class="layui-select full-width block" name="warmup_mids"
-                lay-ignore="">
+                xm-select="add_warmup_mids" lay-verify="required" class="layui-select full-width block"
+                name="warmup_mids" lay-ignore="">
                 <option value=""> - 请选择类型 -</option>
                 <!--{volist name="types" id="type"}-->
                 <optgroup label="{$type.name}">
@@ -59,7 +60,7 @@
         <label class="layui-form-label">冷身视频</label>
         <div class="layui-input-block">
             <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
-                xm-select="colldown_mids" lay-verify="required" class="layui-select full-width block"
+                xm-select="add_colldown_mids" lay-verify="required" class="layui-select full-width block"
                 name="colldown_mids" lay-ignore="">
                 <option value=""> - 请选择类型 -</option>
                 <!--{volist name="types" id="type"}-->
@@ -94,19 +95,19 @@
 {block name="script"}
 <script>
     $(function () {
-        formSelects.render('warmup_mids', {
+        formSelects.render('add_warmup_mids', {
             template: function (name, value, selected, disabled) {
                 var mid = value.value;
                 return value.name + '<a data-value="' + mid + '"  class="selecthref" style="position: absolute; right: 0; color: #A0A0A0; font-size: 12px;">点击查看</a>';
             }
         });
-        formSelects.render('colldown_mids', {
+        formSelects.render('add_colldown_mids', {
             template: function (name, value, selected, disabled) {
                 var mid = value.value;
                 return value.name + '<a data-value="' + mid + '"  class="selecthref" style="position: absolute; right: 0; color: #A0A0A0; font-size: 12px;">点击查看</a>';
             }
         });
-        formSelects.render('coach');
+        formSelects.render('add_coach');
         $('.selecthref').on('click', function () {
             var mid = $(this).attr('data-value');
             $.post('{:url("get_motion_url")}', { 'mid': mid }, function (data) {

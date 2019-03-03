@@ -20,8 +20,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">添加视频</label>
         <div class="layui-input-block">
-            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select="m_ids"
-                lay-verify="required" class="layui-select full-width block" name="m_ids" lay-ignore="">
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
+                xm-select="edit_m_ids" lay-verify="required" class="layui-select full-width block" name="m_ids"
+                lay-ignore="">
                 <option value=""> - 请选择视频 -</option>
                 <!--{volist name="types" id="type"}-->
                 <optgroup label="{$type.name}">
@@ -54,7 +55,12 @@
 {block name="script"}
 <script>
     $(function () {
-        formSelects.render();
+        formSelects.render('edit_m_ids', {
+            template: function (name, value, selected, disabled) {
+                var mid = value.value;
+                return value.name + '<a data-value="' + mid + '"  class="selecthref" style="position: absolute; right: 0; color: #A0A0A0; font-size: 12px;">点击查看</a>';
+            }
+        });
         $('.selecthref').on('click', function () {
             var mid = $(this).attr('data-value');
             $.post('{:url("get_motion_url")}', { 'mid': mid }, function (data) {

@@ -5,7 +5,7 @@
         <label class="layui-form-label">选择会员</label>
         <div class="layui-input-block">
             <select required="" {if $list.is_dispense==1 }disabled="disabled" {/if} xm-select-search
-                xm-select-search-type="dl" xm-select-direction="down" xm-select="coach" lay-verify="required"
+                xm-select-search-type="dl" xm-select-direction="down" xm-select="edit_coach" lay-verify="required"
                 class="layui-select full-width block" name="mid" lay-ignore="">
                 <option value=""> - 请选择会员 -</option>
                 <!--{volist name="members" id="member"}-->
@@ -35,7 +35,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">热身视频</label>
         <div class="layui-input-block">
-            <select required="" xm-select-search xm-select-search-type="dl" xm-select="warmup_mids"
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select="edit_warmup_mids"
                 lay-verify="required" class="layui-select full-width block" name="warmup_mids" lay-ignore="">
                 <option value=""> - 请选择类型 -</option>
                 <!--{volist name="types" id="type"}-->
@@ -61,7 +61,7 @@
         <label class="layui-form-label">冷身视频</label>
         <div class="layui-input-block">
             <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
-                xm-select="colldown_mids" lay-verify="required" class="layui-select full-width block"
+                xm-select="edit_colldown_mids" lay-verify="required" class="layui-select full-width block"
                 name="colldown_mids" lay-ignore="">
                 <option value=""> - 请选择类型 -</option>
                 <!--{volist name="types" id="type"}-->
@@ -98,7 +98,7 @@
 <script>
     $(function () {
         formSelects.render();
-        formSelects.render('colldown_mids', {
+        formSelects.render('edit_colldown_mids', {
             template: function (name, value, selected, disabled) {
                 var mid = value.value;
                 return value.name + '<a data-value="' + mid + '"  class="selecthref" style="position: absolute; right: 0; color: #A0A0A0; font-size: 12px;">点击查看</a>';
