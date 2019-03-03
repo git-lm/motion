@@ -16,6 +16,8 @@
         </div>
     </div>
     <input type="hidden" name="is_batch" value="{$is_batch}">
+    {else /}
+    <input type="hidden" name="mid" value="{$list.m_id}">
     {/if}
     <div class="layui-form-item">
         <label class="layui-form-label">课程名称</label>
