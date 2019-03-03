@@ -35,12 +35,12 @@
                     <div class="showphoto back">
                         <img alt="背面照片" layer-src="{$photo.back_photo|default='__STATIC__/theme/img/image.png'}"
                             src="{$photo.back_photo|default='__STATIC__/theme/img/image.png'}">
-                            <span>背面照片</span>
+                        <span>背面照片</span>
                     </div>
                     <div class="showphoto side">
                         <img alt="侧面照片" layer-src="{$photo.side_photo|default='__STATIC__/theme/img/image.png'}"
                             src="{$photo.side_photo|default='__STATIC__/theme/img/image.png'}">
-                            <span>侧面照片</span>
+                        <span>侧面照片</span>
                     </div>
 
                     {/empty}
@@ -94,7 +94,7 @@
                         <div class="show_div"></div>
                     </a>
                 </li>-->
-
+        {if empty($list.f_id) || !is_weixin()}
         <li>
             <a href="javascript:;" class="out">
                 <div class="">
@@ -105,10 +105,26 @@
                             d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z">
                         </path>
                     </svg>
-                    Log out</div>
+                    退出</div>
                 <div class="show_div"></div>
             </a>
         </li>
+        {else /}
+        <li>
+            <a href="javascript:;" class="untying">
+                <div class="">
+                    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true"
+                        data-icon="sign-out-alt" data-prefix="fas" id="ember1171"
+                        class="fa-fw mrs svg-inline--fa fa-sign-out-alt fa-w-16 mrs ember-view">
+                        <path fill="currentColor"
+                            d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z">
+                        </path>
+                    </svg>
+                    解除绑定</div>
+                <div class="show_div"></div>
+            </a>
+        </li>
+        {/if}
     </ul>
 </div>
 <!--main 结束-->
@@ -138,6 +154,11 @@
         $('.out').click(function () {
             layer.confirm('确定要退出？', function () {
                 window.location.href = '{:url("/login/out")}'
+            })
+        })
+        $('.untying').click(function () {
+            layer.confirm('确定要退出？', function () {
+                window.location.href = '{:url("/login/untying")}'
             })
         })
         $('.show_div_more').click(function () {

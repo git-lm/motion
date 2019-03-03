@@ -42,7 +42,7 @@ class MobileBase extends Controller
         }
         $memberModel = new Member();
         $where['openid'] = $openid;
-
+        
         $memberInfo = $memberModel->get_member_info($where);
         if (!empty($memberInfo['m_id'])) {
             $mwhere['id'] = $memberInfo['m_id'];

@@ -47,7 +47,7 @@ class Login extends MobileBase
         }
         session('motion_member', $member);
         $this->memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id']);
-        if ($this->is_weixin()) {
+        if (is_weixin()) {
             $urlString = WechatService::WeChatOauth()->getOauthRedirect(url('/index/login/wxinfo', '', true, true));
             $this->success('登录成功，正在进入系统...', $urlString);
         } else {
@@ -94,20 +94,7 @@ class Login extends MobileBase
         }
     }
 
-    /**
-     * 判断是否微信
-     * @return boolean
-     */
-    function is_weixin()
-    {
-        if (strpos(
-            $_SERVER['HTTP_USER_AGENT'],
-            'MicroMessenger'
-        ) !== false) {
-            return true;
-        }
-        return false;
-    }
+
 
     /**
      * 退出登录
@@ -118,5 +105,20 @@ class Login extends MobileBase
         session('motion_member', null);
         $this->memberModel->write('退出系统', '用户退出系统成功', $member['name'], $member['id']);
         $this->success('退出登录成功！', '/login.html');
+    }
+
+
+    /**
+     * 解除绑定微信
+     */
+    public function untying()
+    {
+        $member = session('motion_member');
+        $where['m_id'] = $member['id'];
+        $data['f_id'] = 0;
+        $this->memberModel->edit_info($data, $where);
+        session('motion_member', null);
+        $this->memberModel->write('解绑微信', '用户解绑微信成功', $member['name'], $member['id']);
+        $this->success('解绑成功！请重新登录', '/login.html');
     }
 }
