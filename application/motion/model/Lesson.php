@@ -305,16 +305,19 @@ class Lesson extends Model
      */
     public function get_history($where = 0,  $order = [], $page = 0, $limit = 0)
     {
-        $whereString = '';
         //获取相同视频的课程
+        $whereArr[] = ['lc.state', '=', 1];
+        $whereArr[] = ['l.class_time', '=', time()];
+        $whereArr[] = ['m_id', '=', $where['m_id']];
+
         if (!empty($where['m_ids']) && !empty($where['name'])) {
-            $whereString = '  (m_ids in ( ' . $where['m_ids'] . ') or lc.name like "%' . $where['name'] . '%")  and lc.state = 1 and l.class_time < "' . time() . '" and m_id =  ' . $where['m_id'];
+            $whereArr[] = [['m_ids', 'in', $where['m_ids']], ['lc.name', 'like', $where['name']]];
         } else {
             if (!empty($where['m_ids'])) {
-                $whereString = ' m_ids in ( ' . $where['m_ids'] . ') and lc.state = 1 and l.class_time < "' . time() . '" and m_id =  ' . $where['m_id'];
+                $whereArr[] = ['m_ids', 'in', $where['m_ids']];
             }
             if (!empty($where['name'])) {
-                $whereString = ' lc.name like "%' . $where['name'] . '%" and lc.state = 1 and l.class_time < "' . time() . '" and m_id =  ' . $where['m_id'];
+                $whereArr[] = ['lc.name', 'like', $where['name']];
             }
         }
         // $where = ' m_ids in ( ' . $m_ids . ') and lc.state = 1 and l.class_time < "' . time() . '" and m_id = ' . $m_id;
@@ -323,7 +326,7 @@ class Lesson extends Model
             ->leftJoin(['motion_lesson' => 'l'], 'l.id = lc.l_id')
             ->field('lc.* ,l.id lid ,  l.name lname , l.class_time');
         $order['class_time'] = 'desc';
-        $lists = DbService::queryALL($db, $whereString, $order, $page, $limit);
+        $lists = DbService::queryALL($db, $whereArr, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
         }
