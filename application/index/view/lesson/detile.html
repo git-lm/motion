@@ -214,7 +214,7 @@
             var _this = $(this);
             layer.confirm('确定未完成该项内容', function () {
                 var id = _this.attr('itemid');
-                $.post('{:url("handle")}', { 'id': id, 'state': 0 }, function (data) {
+                $.post('{:url("handleCourse")}', { 'id': id, 'state': 0 }, function (data) {
                     if (data.code == 1) {
                         _this.removeClass('green').addClass('red');
                         _this.html('&#x1007;');
