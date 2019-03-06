@@ -48,7 +48,8 @@ class Login extends MobileBase
         session('motion_member', $member);
 
         if (is_weixin()) {
-            WechatService::WeChatOauth()->getOauthRedirect(url('/index/login/wxinfo', '', true, true));
+            $urlString = WechatService::WeChatOauth()->getOauthRedirect(url('/index/login/wxinfo', '', true, true));
+            $this->success('登录成功，正在进入系统...', $urlString);
         } else {
             $this->memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id']);
             $this->success('登录成功，正在进入系统...', '/list.html');
