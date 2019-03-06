@@ -153,7 +153,7 @@ class Member extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员信息' , 'motion_member_info');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员信息', 'motion_member_info');
         $code = DbService::save('motion_member_info', $data);
         return $code;
     }
@@ -169,7 +169,7 @@ class Member extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员信息' ,'motion_member_info');
+        DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员信息', 'motion_member_info');
         $code = DbService::update('motion_member_info', $data, $where);
         return $code;
     }
@@ -186,7 +186,7 @@ class Member extends Model
         if (empty($data['password'])) {
             $data['password'] = md5('123456');
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员' , $this->table);
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员', $this->table);
         $code = DbService::save($this->table, $data);
         return $code;
     }
@@ -202,7 +202,7 @@ class Member extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员' , $this->table);
+        DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员', $this->table);
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }
@@ -226,7 +226,7 @@ class Member extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员绑定教练' , 'motion_member_coach');
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增会员绑定教练', 'motion_member_coach');
         $code = DbService::save('motion_member_coach', $data);
         return $code;
     }
@@ -242,7 +242,7 @@ class Member extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($member_coach), json_encode($data), json_encode($where), '更新会员绑定教练信息' ,'motion_member_coach');
+        DbService::save_log('motion_log', json_encode($member_coach), json_encode($data), json_encode($where), '更新会员绑定教练信息', 'motion_member_coach');
         $code = DbService::update('motion_member_coach', $data, $where);
         return $code;
     }
@@ -299,7 +299,7 @@ class Member extends Model
         if (empty($data['u_id'])) {
             $data['u_id'] = session('user.id');
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '添加会员时间' ,'motion_member_time');
+        DbService::save_log('motion_log', '', json_encode($data), '', '添加会员时间', 'motion_member_time');
         $code = DbService::save('motion_member_time', $data);
         return $code;
     }
@@ -369,7 +369,7 @@ class Member extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($member_time), json_encode($data), json_encode($where), '编辑会员时间' , 'motion_member_time');
+        DbService::save_log('motion_log', json_encode($member_time), json_encode($data), json_encode($where), '编辑会员时间', 'motion_member_time');
         $code = DbService::update('motion_member_time mt', $data, $where);
         return $code;
     }
@@ -421,16 +421,16 @@ class Member extends Model
             unset($data['name']);
             unset($data['photo']);
             $code = DbService::update('motion_member_photo', $data, $where);
-            DbService::save_log('motion_log', '', json_encode($data), '', '修改会员照片' , 'motion_member_photo');
+            DbService::save_log('motion_log', '', json_encode($data), '', '修改会员照片', 'motion_member_photo');
         } else //不存在 则新增一条
-        {
-            $data['create_time'] = time();
-            $data[$data['name'] . '_photo'] = $data['photo'];
-            unset($data['name']);
-            unset($data['photo']);
-            $code = DbService::save('motion_member_photo', $data);
-            DbService::save_log('motion_log', '', json_encode($data), '', '新增会员照片' ,'motion_member_photo');
-        }
+            {
+                $data['create_time'] = time();
+                $data[$data['name'] . '_photo'] = $data['photo'];
+                unset($data['name']);
+                unset($data['photo']);
+                $code = DbService::save('motion_member_photo', $data);
+                DbService::save_log('motion_log', '', json_encode($data), '', '新增会员照片', 'motion_member_photo');
+            }
 
         return $code;
     }
@@ -473,7 +473,7 @@ class Member extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($member_data), json_encode($data), json_encode($where), '编辑会员运动记录' ,'motion_member_data');
+        DbService::save_log('motion_log', json_encode($member_data), json_encode($data), json_encode($where), '编辑会员运动记录', 'motion_member_data');
         $code = DbService::update('motion_member_data', $data, $where);
         return $code;
     }
@@ -487,7 +487,7 @@ class Member extends Model
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '添加会员运动记录' ,'motion_member_data');
+        DbService::save_log('motion_log', '', json_encode($data), '', '添加会员运动记录', 'motion_member_data');
         $code = DbService::save('motion_member_data', $data);
         return $code;
     }
@@ -508,7 +508,7 @@ class Member extends Model
     public function data_info_edit($data = [], $where = [])
     {
         $member_data_info = $this->get_member_data_info($where);
-        DbService::save_log('motion_log', json_encode($member_data_info), json_encode($data), json_encode($where), '编辑会员运动记录详情' ,'motion_member_data_info');
+        DbService::save_log('motion_log', json_encode($member_data_info), json_encode($data), json_encode($where), '编辑会员运动记录详情', 'motion_member_data_info');
         $code = DbService::update('motion_member_data_info', $data, $where);
         return $code;
     }
@@ -519,7 +519,7 @@ class Member extends Model
      */
     public function data_info_add($data)
     {
-        DbService::save_log('motion_log', '', json_encode($data), '', '添加会员运动记录详情' ,'motion_member_data_info');
+        DbService::save_log('motion_log', '', json_encode($data), '', '添加会员运动记录详情', 'motion_member_data_info');
         $code = DbService::save('motion_member_data_info', $data);
         return $code;
     }
@@ -586,7 +586,7 @@ class Member extends Model
      * @param string $content
      * @return bool
      */
-    public static function write($action, $content, $member_name, $member_id)
+    public static function write($action, $content, $member_name, $member_id, $openid = null)
     {
         $node = strtolower(join('/', [request()->module(), request()->controller(), request()->action()]));
         $data = [
@@ -596,6 +596,7 @@ class Member extends Model
             'content' => $content,
             'username' => $member_name . '',
             'm_id' => $member_id,
+            'openid' => $openid,
             'ageni' => $_SERVER['HTTP_USER_AGENT'],
             'create_time' => time(),
             'is_mobile' => request()->isMobile()
@@ -659,5 +660,4 @@ class Member extends Model
         $validate->rule($rule)->message($message)->check($data);
         return $validate->getError();
     }
-
 }

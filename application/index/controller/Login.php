@@ -46,11 +46,11 @@ class Login extends MobileBase
             $this->error('账号已经被禁用，请联系管理员!');
         }
         session('motion_member', $member);
-        $this->memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id']);
+
         if (is_weixin()) {
-            $urlString = WechatService::WeChatOauth()->getOauthRedirect(url('/index/login/wxinfo', '', true, true));
-            $this->success('登录成功，正在进入系统...', $urlString);
+            WechatService::WeChatOauth()->getOauthRedirect(url('/index/login/wxinfo', '', true, true));
         } else {
+            $this->memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id']);
             $this->success('登录成功，正在进入系统...', '/list.html');
         }
     }
@@ -90,6 +90,7 @@ class Login extends MobileBase
         if (!session('motion_member')) {
             $this->redirect('/login');
         } else {
+            $this->memberModel->write('登录系统', '用户登录系统成功', session('motion_member.name'), session('motion_member.id'), $info['openid']);
             $this->redirect('/list');
         }
     }
