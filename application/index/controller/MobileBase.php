@@ -48,7 +48,7 @@ class MobileBase extends Controller
             $mwhere['id'] = $memberInfo['m_id'];
             $member = $memberModel->get_member($mwhere);
             session('motion_member', $member);
-            $this->memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id'], $openid);
+            $memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id'], $openid);
             $this->redirect('/list');
         } else {
             if (request()->controller() != 'Login' && request()->action() != 'login')
