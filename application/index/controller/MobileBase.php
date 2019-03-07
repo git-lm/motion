@@ -31,7 +31,7 @@ class MobileBase extends Controller
                     $this->get_member($openid);
                 }
             } else {
-                write_log('说明已经授权获取了openid:' . $openid);
+                write_log('说明已经授权获取了openid:' . session("{$appid}_openid"));
                 $this->get_member(session("{$appid}_openid"));
             }
         }
