@@ -67,7 +67,11 @@ class Login extends MobileBase
             $fwhere['openid'] = $openid;
             $fans = Db('wechat_fans')->where($fwhere)->find();
             if (empty($fans)) {
-                $this->redirect('/list');
+                if (request()->isAjax()) {
+                    $this->success('登录成功，请重新登录...', '/list');
+                } else {
+                    $this->redirect('/list');
+                }
                 return;
             }
             //获取用户信息
