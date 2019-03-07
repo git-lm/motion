@@ -63,7 +63,8 @@ use think\Exception;
  * @method mixed wechat() static 第三方微信工具
  * @method mixed config() static 第三方配置工具
  */
-class WechatService {
+class WechatService
+{
 
     /**
      * 接口类型模式
@@ -79,7 +80,8 @@ class WechatService {
      * @throws Exception
      * @throws \think\exception\PDOException
      */
-    public static function instance($name, $type = null) {
+    public static function instance($name, $type = null)
+    {
         if (!in_array($type, ['WeChat', 'WeMini'])) {
             $type = self::$type;
         }
@@ -121,7 +123,8 @@ class WechatService {
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public static function webJsSDK($url = null) {
+    public static function webJsSDK($url = null)
+    {
         $signUrl = is_null($url) ? app('request')->url(true) : $url;
         switch (strtolower(sysconf('wechat_type'))) {
             case 'api':
@@ -143,7 +146,8 @@ class WechatService {
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public static function webOauth($url, $fullMode = 0, $isRedirect = true) {
+    public static function webOauth($url, $fullMode = 0, $isRedirect = true)
+    {
         $appid = self::getAppid();
         list($openid, $fansinfo) = [session("{$appid}_openid"), session("{$appid}_fansinfo")];
         if ((empty($fullMode) && !empty($openid)) || (!empty($fullMode) && !empty($fansinfo))) {
@@ -157,10 +161,12 @@ class WechatService {
                     $snsapi = empty($fullMode) ? 'snsapi_base' : 'snsapi_userinfo';
                     $param = (strpos($url, '?') !== false ? '&' : '?') . 'rcode=' . encode($url);
                     $OauthUrl = $wechat->getOauthRedirect($url . $param, $appid, $snsapi);
+                    write_log('访问地址：' . $OauthUrl);
                     $isRedirect && redirect($OauthUrl, [], 301)->send();
                     exit("window.location.href='{$OauthUrl}'");
                 }
                 $token = $wechat->getOauthAccessToken();
+                write_log('token' . json_encode($token));
                 if (isset($token['openid'])) {
                     session("{$appid}_openid", $openid = $token['openid']);
                     if (empty($fullMode) && request()->get('rcode')) {
@@ -195,7 +201,8 @@ class WechatService {
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public static function getAppid() {
+    public static function getAppid()
+    {
         switch (strtolower(sysconf('wechat_type'))) {
             case 'api':
                 return sysconf('wechat_appid');
@@ -214,7 +221,8 @@ class WechatService {
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public static function __callStatic($name, $arguments) {
+    public static function __callStatic($name, $arguments)
+    {
         if (substr($name, 0, 6) === 'WeMini') {
             self::$type = 'WeMini';
             $name = substr($name, 6);
@@ -227,5 +235,4 @@ class WechatService {
         }
         return self::instance($name);
     }
-
 }
