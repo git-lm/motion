@@ -165,7 +165,7 @@ class WechatService
                     $isRedirect && redirect($OauthUrl, [], 301)->send();
                     exit("window.location.href='{$OauthUrl}'");
                 }
-                write_log('参数信息：' .request()->get());
+                write_log('参数信息：' .json_encode(request()->get()));
                 $token = $wechat->getOauthAccessToken();
                 write_log('token' . json_encode($token));
                 if (isset($token['openid'])) {
