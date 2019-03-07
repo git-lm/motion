@@ -86,10 +86,18 @@ class Login extends MobileBase
             }
         }
         if (!session('motion_member')) {
-            $this->redirect('/login');
+            if (request()->isAjax()) {
+                $this->success('登录失败，请重新登录...', '/login.html');
+            } else {
+                $this->redirect('/login');
+            }
         } else {
             $this->memberModel->write('登录系统', '用户登录系统成功', session('motion_member.name'), session('motion_member.id'), $openid);
-            $this->redirect('/list');
+            if (request()->isAjax()) {
+                $this->success('登录成功，正在进入系统...', '/list.html');
+            } else {
+                $this->redirect('/list');
+            }
         }
     }
 
