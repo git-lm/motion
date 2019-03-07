@@ -110,6 +110,7 @@ class Login extends MobileBase
     {
         $member = session('motion_member');
         session('motion_member', null);
+        session(null);
         $this->memberModel->write('退出系统', '用户退出系统成功', $member['name'], $member['id']);
         $this->success('退出登录成功！', '/login.html');
     }
@@ -125,6 +126,7 @@ class Login extends MobileBase
         $data['f_id'] = 0;
         $this->memberModel->edit_info($data, $where);
         session('motion_member', null);
+        session(null);
         $this->memberModel->write('解绑微信', '用户解绑微信成功', $member['name'], $member['id']);
         $this->success('解绑成功！请重新登录', '/login.html');
     }
