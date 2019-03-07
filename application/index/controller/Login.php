@@ -48,8 +48,8 @@ class Login extends MobileBase
         session('motion_member', $member);
 
         if (is_weixin()) {
-            $urlString = WechatService::WeChatOauth()->getOauthRedirect(url('/index/login/wxinfo', '', true, true));
-            $this->success('登录成功，正在进入系统...', $urlString);
+            $this->wxinfo();
+            // $this->success('登录成功，正在进入系统...', $urlString);
         } else {
             $this->memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id']);
             $this->success('登录成功，正在进入系统...', '/list.html');
@@ -58,16 +58,13 @@ class Login extends MobileBase
 
     public function wxinfo()
     {
-
-        if (!request()->has('code', 'get')) {
-            $this->redirect('/list');
-            return;
-        }
-        $info = WechatService::WeChatOauth()->getOauthAccessToken();
-        if (!empty($info) && !empty($info['openid'])) {
+        $WechatService =  new WechatService();
+        $appid = $WechatService->getAppid();
+        $openid = session("{$appid}_openid");;
+        if (!empty($openid)) {
             //更新用户绑定信息
             //获取关注用户信息
-            $fwhere['openid'] = $info['openid'];
+            $fwhere['openid'] = $openid;
             $fans = Db('wechat_fans')->where($fwhere)->find();
             if (empty($fans)) {
                 $this->redirect('/list');
@@ -91,7 +88,7 @@ class Login extends MobileBase
         if (!session('motion_member')) {
             $this->redirect('/login');
         } else {
-            $this->memberModel->write('登录系统', '用户登录系统成功', session('motion_member.name'), session('motion_member.id'), $info['openid']);
+            $this->memberModel->write('登录系统', '用户登录系统成功', session('motion_member.name'), session('motion_member.id'), $openid);
             $this->redirect('/list');
         }
     }
