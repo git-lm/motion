@@ -52,7 +52,7 @@ class MobileBase extends Controller
             $memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id'], $openid);
             $this->redirect('/list');
         } else {
-            if (request()->controller() != 'Login' || request()->action() != 'login'){
+            if (request()->controller() != 'Login' && request()->action() != 'login'){
                 $this->redirect('/login');
             }
                
