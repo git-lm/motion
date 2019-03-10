@@ -459,7 +459,7 @@ class Member extends BasicAdmin
     public function check_data($mid = 0)
     {
         //判断类型是否存在
-        $where['id'] = $mid;
+        $where['m.id'] = $mid;
         $list = $this->memberModel->get_member($where);
         if (empty($list)) {
             $this->error('无此会员');

@@ -35,8 +35,8 @@ class Login extends MobileBase
         if (!$username || !$password) {
             $this->error('请完整输入');
         }
-        $where[] = ['name|phone', '=', $username];
-        $where[] = ['status', '<>', 0];
+        $where[] = ['m.name|m.phone', '=', $username];
+        $where[] = ['m.status', '<>', 0];
         $member = $this->memberModel->get_member($where);
         empty($member) && $this->error('登录账号不存在，请重新输入!');
         if ($member['password'] != md5($password)) {
@@ -44,6 +44,9 @@ class Login extends MobileBase
         }
         if ($member['status'] == -1) {
             $this->error('账号已经被禁用，请联系管理员!');
+        }
+        if ($member['end_time'] < time()) {
+            $this->error('您的账号已过期，请联系管理员续费!');
         }
         session('motion_member', $member);
 

@@ -104,7 +104,13 @@ class Member extends Model
      */
     public function get_member($where = [], $order = [])
     {
-        $list = DbService::queryOne($this->table, $where, $order);
+        $db = Db::table($this->table)
+            ->alias('m')
+            ->field('m.* ,c.name cname ,t.end_time')
+            ->leftJoin(['motion_coach' => 'c'], 'c.id = m.c_id');
+        $buildSql = Db::table('motion_member_time')->field(['MAX(end_time)' => 'end_time', 'm_id'])->where('status', '=', 1)->group('m_id')->buildSql();
+        $db->leftJoin([$buildSql => 't'], 't.m_id = m.id');
+        $list = DbService::queryOne($db, $where, $order);
         return $list;
     }
 

@@ -96,8 +96,8 @@ class Member extends MobileBase
             if (!$pwd) {
                 $this->error('请正确填写');
             }
-            $where[] = ['id', '=', $this->m_id];
-            $where[] = ['password', '=', md5($oldPwd)];
+            $where[] = ['m.id', '=', $this->m_id];
+            $where[] = ['m.password', '=', md5($oldPwd)];
             $list = $this->memberModel->get_member($where);
             if (empty($list)) {
                 $this->error('原密码错误');

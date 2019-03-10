@@ -1032,7 +1032,7 @@ class Lesson extends BasicAdmin
     public function check_member_data($id = 0)
     {
         //判断类型是否存在
-        $where['id'] = $id;
+        $where['m.id'] = $id;
         $list = $this->memberModel->get_member($where);
         if (empty($list)) {
             $this->error('无此会员');
@@ -1046,7 +1046,7 @@ class Lesson extends BasicAdmin
      */
     public function check_member_time($id = 0)
     {
-        $where[] = ['id', '=', $id];
+        $where[] = ['m.id', '=', $id];
         $member = $this->memberModel->get_member($where);
         if (empty($member) || empty($member['c_id'])) {
             $this->error('无此会员或者该会员无教练');
