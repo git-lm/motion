@@ -27,35 +27,42 @@ class Expire extends BasicAdmin
         $where[] = ['mt.end_time', '<', strtotime("+{$expire_time} day")];
         $where[] = ['f.openid', 'NOT NULL', ''];
         $times = Db::table('motion_member_time')
-                ->alias('mt')
-                ->field('mt.id ,mt.end_time ,  f.openid')
-                ->where($where)
-                ->leftJoin(['motion_member_info' => 'mi'], 'mi.m_id = mt.m_id')
-                ->leftJoin(['wechat_fans' => ' f'], 'f.id = mi.f_id')
-                ->select();
-        foreach ($times as $time)
-        {
+            ->alias('mt')
+            ->field('mt.id ,mt.end_time ,  f.openid ,mi.m_id')
+            ->where($where)
+            ->leftJoin(['motion_member_info' => 'mi'], 'mi.m_id = mt.m_id')
+            ->leftJoin(['wechat_fans' => ' f'], 'f.id = mi.f_id')
+            ->select();
+        foreach ($times as $time) {
             $data = array(
                 'first' => array('value' => '时间到期提醒', 'color' => '#0000ff'),
                 'name' => array('value' => '私教时间', 'color' => '#cc0000'),
                 'expDate' => array('value' => date('Y-m-d', $time['end_time']), 'color' => '#cc0000'),
                 'remark' => array('value' => '请注意时间，防止过期失效。', 'color' => '#cc0000'),
             );
-            try
-            {
+            try {
                 $touser = $time['openid'];
                 $templateId = $wechat_expire_id;
                 $url = '';
                 Template::sendTemplateMessage($data, $touser, $templateId, $url);
-            } catch (Exception $exc)
-            {
-                $logdata['data'] = $data;
+                $logdata['mt_id'] = $time['id'];
+                $logdata['data'] = json_encode($data);
                 $logdata['openid'] = $time['openid'];
                 $logdata['templateId'] = $wechat_expire_id;
+                $logdata['create_at'] = time();
+                $logdata['m_id'] = $time['m_id'];
+                $logdata['error'] = '发送成功';
+                Db::table('motion_member_time_log')->insertGetId($logdata);
+            } catch (Exception $exc) {
+                $logdata['mt_id'] = $time['id'];
+                $logdata['data'] = json_encode($data);
+                $logdata['openid'] = $time['openid'];
+                $logdata['templateId'] = $wechat_expire_id;
+                $logdata['create_at'] = time();
+                $logdata['m_id'] = $time['m_id'];
                 $logdata['error'] = $exc->getMessage();
                 Db::table('motion_member_time_log')->insertGetId($logdata);
             }
         }
     }
-
 }

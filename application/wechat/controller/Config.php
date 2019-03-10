@@ -68,6 +68,7 @@ class Config extends BasicAdmin
             sysconf('wechat_encodingaeskey', $this->request->post('wechat_encodingaeskey'));
             sysconf('wechat_lesson_id', $this->request->post('wechat_lesson_id'));
             sysconf('wechat_expire_id', $this->request->post('wechat_expire_id'));
+            sysconf('wechat_expire_time', $this->request->post('wechat_expire_time'));
             // 第三方平台配置
             sysconf('wechat_thr_appid', $this->request->post('wechat_thr_appid'));
             sysconf('wechat_thr_appkey', $this->request->post('wechat_thr_appkey'));
