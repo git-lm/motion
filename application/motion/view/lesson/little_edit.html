@@ -27,7 +27,7 @@
                 <!--{volist name="types" id="type"}-->
                 <optgroup label="{$type.name}">
                     <!--{volist name="type.motion" id="m"}-->
-                    <option {in name="$m.id" value="$list.m_ids" }selected{/in} value="{$m.id}">{$m.name}</option>
+                    <option {in name="$m.id" value="$list.m_ids" }selected='selected'{/in} value="{$m.id}">{$m.name}</option>
                     <!--{/volist}-->
                 </optgroup>
                 <!--{/volist}-->
