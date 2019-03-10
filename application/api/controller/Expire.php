@@ -62,7 +62,7 @@ class Expire extends BasicAdmin
                 $logdata['m_id'] = $time['m_id'];
                 $logdata['error'] = $exc->getMessage();
                 Db::table('motion_member_time_log')->insertGetId($logdata);
-            }
+            } 
         }
     }
 }
