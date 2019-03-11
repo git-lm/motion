@@ -31,7 +31,6 @@ class ClassWarn
             ->field('f.openid, l.id, l.name , c.name cname ,l.m_id')
             ->where('to_days( FROM_UNIXTIME(l.class_time, "%Y-%m-%d")) = to_days(now())')
             ->where('f.openid is not null and l.status = 1 and l.state = 0')
-            ->fetchSql()
             ->select();
         foreach ($classes as $class) {
             $data = array(
@@ -54,7 +53,7 @@ class ClassWarn
                 $logdata['m_id'] = $class['m_id'];
                 $logdata['error'] = '发送成功';
                 $logdata['type'] = 2;
-                Db::table('motion_member_time_log')->insertGetId($logdata);
+                Db::table('motion_template_log')->insertGetId($logdata);
             } catch (Exception $exc) {
                 $logdata['byid'] = $class['id'];
                 $logdata['data'] = json_encode($data);
@@ -64,7 +63,7 @@ class ClassWarn
                 $logdata['m_id'] = $class['m_id'];
                 $logdata['error'] = $exc->getMessage();
                 $logdata['type'] = 2;
-                Db::table('motion_member_time_log')->insertGetId($logdata);
+                Db::table('motion_template_log')->insertGetId($logdata);
             }
         }
     }
