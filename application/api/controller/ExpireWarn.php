@@ -55,6 +55,7 @@ class ExpireWarn
                 $logdata['create_at'] = time();
                 $logdata['m_id'] = $time['m_id'];
                 $logdata['error'] = '发送成功';
+                $logdata['type'] = 1;
                 Db::table('motion_template_log')->insertGetId($logdata);
             } catch (Exception $exc) {
                 $logdata['byid'] = $time['id'];
@@ -64,6 +65,7 @@ class ExpireWarn
                 $logdata['create_at'] = time();
                 $logdata['m_id'] = $time['m_id'];
                 $logdata['error'] = $exc->getMessage();
+                $logdata['type'] = 1;
                 Db::table('motion_template_log')->insertGetId($logdata);
             }
         }

@@ -30,13 +30,14 @@ class ClassWarn
             ->leftJoin('motion_coach c', 'c.id = l.coach_id')
             ->field('f.openid, l.id, l.name , c.name cname ,l.m_id')
             ->where('to_days( FROM_UNIXTIME(l.class_time, "%Y-%m-%d")) = to_days(now())')
-            ->where('f.openid is not null and status = 1 and state = 0')
+            ->where('f.openid is not null and l.status = 1 and l.state = 0')
+            ->fetchSql()
             ->select();
         foreach ($classes as $class) {
             $data = array(
                 'first' => array('value' => '今日未完成计划', 'color' => '#0000ff'),
                 'keyword1' => array('value' => $class['name'], 'color' => '#cc0000'),
-                'keyword2' => array('value' => $class['cname'], 'color' => '#cc0000'),
+                'keyword2' => array('value' => empty($class['cname']) ? 'TreesCamp' : $class['cname'], 'color' => '#cc0000'),
                 'keyword3' => array('value' => '馆中或家中', 'color' => '#0000ff'),
                 'remark' => array('value' => '请按时按标准完成动作', 'color' => '#cc0000'),
             );
@@ -52,6 +53,7 @@ class ClassWarn
                 $logdata['create_at'] = time();
                 $logdata['m_id'] = $class['m_id'];
                 $logdata['error'] = '发送成功';
+                $logdata['type'] = 2;
                 Db::table('motion_member_time_log')->insertGetId($logdata);
             } catch (Exception $exc) {
                 $logdata['byid'] = $class['id'];
@@ -61,6 +63,7 @@ class ClassWarn
                 $logdata['create_at'] = time();
                 $logdata['m_id'] = $class['m_id'];
                 $logdata['error'] = $exc->getMessage();
+                $logdata['type'] = 2;
                 Db::table('motion_member_time_log')->insertGetId($logdata);
             }
         }
