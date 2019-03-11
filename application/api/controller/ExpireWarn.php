@@ -2,7 +2,6 @@
 
 namespace app\api\controller;
 
-use controller\BasicAdmin;
 use think\Db;
 use app\wechat\controller\api\Template;
 
@@ -13,14 +12,18 @@ use app\wechat\controller\api\Template;
  * @author Anyon 
  * @date 2018-12-10
  */
-class Expire extends BasicAdmin
+class ExpireWarn
 {
 
     public function index()
     {
         //查询所有要到期的会员
-        $expire_time = sysconf('wechat_expire_time');
+        $expire_time = sysconf('wechat_expire_time') ? sysconf('wechat_expire_time') : 5;
         $wechat_expire_id = sysconf('wechat_expire_id');
+        if (empty($wechat_expire_id)) {
+            echo '无此模板信息';
+            return;
+        }
         $where[] = ['mt.end_time', '>', time()];
         $where[] = ['mt.status', '=', 1];
         $where[] = ['mi.is_wechat', '=', 1];
@@ -45,24 +48,24 @@ class Expire extends BasicAdmin
                 $templateId = $wechat_expire_id;
                 $url = '';
                 Template::sendTemplateMessage($data, $touser, $templateId, $url);
-                $logdata['mt_id'] = $time['id'];
+                $logdata['byid'] = $time['id'];
                 $logdata['data'] = json_encode($data);
                 $logdata['openid'] = $time['openid'];
                 $logdata['templateId'] = $wechat_expire_id;
                 $logdata['create_at'] = time();
                 $logdata['m_id'] = $time['m_id'];
                 $logdata['error'] = '发送成功';
-                Db::table('motion_member_time_log')->insertGetId($logdata);
+                Db::table('motion_template_log')->insertGetId($logdata);
             } catch (Exception $exc) {
-                $logdata['mt_id'] = $time['id'];
+                $logdata['byid'] = $time['id'];
                 $logdata['data'] = json_encode($data);
                 $logdata['openid'] = $time['openid'];
                 $logdata['templateId'] = $wechat_expire_id;
                 $logdata['create_at'] = time();
                 $logdata['m_id'] = $time['m_id'];
                 $logdata['error'] = $exc->getMessage();
-                Db::table('motion_member_time_log')->insertGetId($logdata);
-            } 
+                Db::table('motion_template_log')->insertGetId($logdata);
+            }
         }
     }
 }
