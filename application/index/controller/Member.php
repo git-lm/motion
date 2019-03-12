@@ -57,10 +57,12 @@ class Member extends MobileBase
             $list = $this->memberModel->get_member_info($where);
             if (empty($list['picture'])) {
                 if (empty($list['headimgurl'])) {
-                    $list['picture'] = sysconf('site_logo');
+                    $list['picture_show'] = sysconf('site_logo');
                 } else {
-                    $list['picture'] = $list['headimgurl'];
+                    $list['picture_show'] = $list['headimgurl'];
                 }
+            } else {
+                $list['picture_show'] = get_thumb($list['picture']);
             }
             $this->assign('list', $list);
             return $this->fetch();
