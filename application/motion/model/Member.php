@@ -31,6 +31,11 @@ class Member extends Model
         }
     }
 
+    public function getThumbPhotoAttr($val)
+    {
+        return get_thumb($val, 200, 150);
+    }
+
     /**
      * 状态获取器
      * @param type $val  转换数据
@@ -392,6 +397,9 @@ class Member extends Model
         $lists = DbService::queryALL('motion_member_photo', $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+            $list['thumb_front_photo'] = $this->getThumbPhotoAttr($list['front_photo']);
+            $list['thumb_back_photo'] = $this->getThumbPhotoAttr($list['back_photo']);
+            $list['thumb_side_photo'] = $this->getThumbPhotoAttr($list['side_photo']);
         }
         return $lists;
     }
@@ -407,6 +415,9 @@ class Member extends Model
         $list = DbService::queryOne('motion_member_photo', $where, $order);
         if (!empty($list)) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
+            $list['thumb_front_photo'] = $this->getThumbPhotoAttr($list['front_photo']);
+            $list['thumb_back_photo'] = $this->getThumbPhotoAttr($list['back_photo']);
+            $list['thumb_side_photo'] = $this->getThumbPhotoAttr($list['side_photo']);
         }
         return $list;
     }
