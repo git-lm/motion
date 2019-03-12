@@ -17,6 +17,11 @@ class ExpireWarn
 
     public function index()
     {
+        if($_SERVER['REMOTE_ADDR'] != request()->ip()){
+            echo '不是计划任务执行';
+            echo request()->ip();
+            return ;
+        }
         //查询所有要到期的会员
         $expire_time = sysconf('wechat_expire_time') ? sysconf('wechat_expire_time') : 5;
         $wechat_expire_id = sysconf('wechat_expire_id');

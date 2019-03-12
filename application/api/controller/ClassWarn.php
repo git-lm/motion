@@ -17,6 +17,11 @@ class ClassWarn
 
     public function index()
     {
+    	if($_SERVER['REMOTE_ADDR'] != request()->ip()){
+    		echo '不是计划任务执行';
+    		echo request()->ip();
+    		return ;
+    	}
         //查询所有要到期的会员
         $wechat_class_id = sysconf('wechat_class_id');
         if (empty($wechat_class_id)) {
