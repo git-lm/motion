@@ -174,67 +174,6 @@ function is_weixin()
     }
     return false;
 }
-/**
- * 图片生成缩略图
- */
-function imgthumb($file_url = '', $file_name = '', $ext = '', $width = 150, $height = 150)
-{
-    $types = str_replace(',', '|', sysconf('storage_local_exts'));
-    $file = "{$file_url}/{$file_name}.{$ext}";
-    dump($file);
-    dump(file_exists($file));
-    if (!empty($file) && file_exists($file)) {
-        if (stripos($types, $ext) !== false) {
-            $image = \think\Image::open($file);
-            !is_dir("{$file_url}/thumb/") && mkdir("{$file_url}/thumb/", 0777, true);
-            $image->thumb($width, $height)->save("{$file_url}/thumb/{$file_name}.{$ext}");
-        }
-    }
-}
-
-// /**
-//  * 获取图片的缩略图
-//  * @param  string $str 内容
-//  */
-function get_thumb1($str = '')
-{
-    $str = 'http://motion.com/static/upload/photo/45c48cce2e2d7fbdea1afc51c7c6ad26/5e7894d61a0f63fa.png';
-    $path_parts =  pathinfo($str);
-    dump(pathinfo($str, PATHINFO_DIRNAME));
-    $data = [];
-    $reg = '/((http|https):\/\/)+(\w+\.)+(\w+)[\w\/\.\-]*(jpg|gif|png)/';
-    $matches = array();
-    preg_match_all($reg, $str, $matches);
-    foreach ($matches[0] as $value) {
-        $data[] = $value;
-    }
-
-    dump($matches);
-    return $data;
-}
-/**
- * 获取图片的缩略图
- * @param  string $str 内容
- */
-function get_thumb2($str = '')
-{
-    $str = 'http://motion.com/static/upload/photo/45c48cce2e2d7fbdea1afc51c7c6ad26/5e7894d61a0f63fa.png';
-    $matches = array();
-    // preg_match("/\/(?P<name>\w+\.(?:" . str_replace(',', '|', sysconf('storage_local_exts')) . "))$/i", $str, $matches);
-    if (!empty($matches['name'])) {
-        $name = $matches['name'];
-        $thumb_str = str_replace($name, 'thumb/' . $name, $str);
-
-        if (!file_exists($str)) {
-            $path_parts =  pathinfo($str);
-            imgthumb($path_parts['dirname'], $path_parts['filename'], $path_parts['extension']);
-        }
-        dump($thumb_str);
-        return $str;
-    } else {
-        return $str;
-    }
-}
 function get_thumb($str = '')
 {
     $str = 'http://motion.com/static/upload/photo/45c48cce2e2d7fbdea1afc51c7c6ad26/5e7894d61a0f63fa.png';

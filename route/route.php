@@ -22,4 +22,6 @@ Route::alias('member', 'index/member');
 Route::alias('list', 'index/index');
 //绑定前台index 模块  Lesson 控制器 别名
 Route::alias('lesson', 'index/lesson');
+//缩略图    
+Route::rule('static/upload/thumb/:basename/:filename', 'admin/Plugs/imgthumb');
 return [];

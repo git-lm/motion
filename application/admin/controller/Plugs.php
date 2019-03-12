@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use controller\BasicAdmin;
 use service\FileService;
+use think\Response;
 
 /**
  * 插件助手控制器
@@ -61,6 +62,13 @@ class Plugs extends BasicAdmin
      */
     public function upload()
     {
+        if (!empty($_FILES['file'])) {
+            if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2) {
+                return json(['code' => 'ERROR', 'msg' => '文件上传大小受限']);
+            }
+        } else {
+            return json(['code' => 'ERROR', 'msg' => '请上传文件']);
+        }
         $file = $this->request->file('file');
         if (!$file->checkExt(strtolower(sysconf('storage_local_exts')))) {
             return json(['code' => 'ERROR', 'msg' => '文件上传类型受限']);
@@ -101,8 +109,7 @@ class Plugs extends BasicAdmin
         if (($info = $file->move("static/upload/{$pr}", "{$names[1]}.{$ext}", true))) {
             // if (($site_url = FileService::getFileUrl("{$pr}/{$filename}", 'local'))) {
             if (($site_url = FileService::getFileUrl("{$pr}/{$names[1]}.{$ext}", 'local'))) {
-
-                imgthumb("static/upload/{$pr}", "{$names[1]}", "{$ext}");
+                // imgthumb("static/upload/{$pr}", "{$names[1]}", "{$ext}");
                 // $this->imgthumb("static/upload/{$pr}/{$names[0]}", "{$names[1]}", "{$ext}");
                 return json(['data' => ['site_url' => $site_url], 'code' => 'SUCCESS', 'msg' => '文件上传成功']);
             }
@@ -177,6 +184,47 @@ class Plugs extends BasicAdmin
         ];
         $data = str_replace(['+', '/'], ['-', '_'], base64_encode(json_encode($params)));
         return $accessKey . ':' . str_replace(['+', '/'], ['-', '_'], base64_encode(hash_hmac('sha1', $data, $secretKey, true))) . ':' . $data;
+    }
+
+    /**
+     * 图片生成缩略图
+     */
+    public function imgthumb($basename = '', $filename = '')
+    {
+        // header('content-type:image/png');
+        $types = str_replace(',', '|', sysconf('storage_local_exts'));
+        $ext =  request()->ext();
+        if (!empty($basename) && !empty($filename) && stripos($types, $ext) !== false) {
+            $fileNameArr = explode('_', $filename);
+            if (empty($fileNameArr[0])) {
+                return;
+            }
+            $name = $fileNameArr[0];
+            if (empty($fileNameArr[1])) {
+                return;
+            } else {
+                $height = (int)$fileNameArr[1] > 100 ? 100 : (int)$fileNameArr[1];
+            }
+            if (empty($fileNameArr[2])) {
+                return;
+            } else {
+                $width = (int)$fileNameArr[2] > 100 ? 100 : (int)$fileNameArr[2];
+            }
+            $file = './static/upload/' . $basename . '/' . $name . '.' . $ext;
+            if (file_exists($file)) {
+                $thumb_path = "static/upload/thumb/" . $basename;
+                !is_dir($thumb_path) && mkdir($thumb_path, 0777, true);
+                $image = \think\Image::open($file);
+                $image->thumb($width, $height)->save($thumb_path . '/' . $name . '_' . $width . '_' . $height . '.' . $ext);
+                // return $thumb_path . '/' . $name . '_' . $width . '_' . $height . '.' . $ext;
+                $img = FileService::getBaseUriLocal() . "/" . $thumb_path . '/' . $name . '_' . $width . '_' . $height . '.' . $ext;
+                $imgType = $image->mime();
+                ob_start();
+                $image->save(null);
+                $out2 = ob_get_clean();
+                return new Response($out2, 200, ["content-type: {$imgType}"]);
+            }
+        }
     }
 
     /**
