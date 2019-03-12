@@ -204,10 +204,13 @@ class Member extends Model
      */
     public function edit($data = [], $where = [])
     {
-        $member = $this->get_member($where);
+        $mwhere['m.id'] = $where['id'];
+        $member = $this->get_member($mwhere);
+
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
+
         DbService::save_log('motion_log', json_encode($member), json_encode($data), json_encode($where), '编辑会员', $this->table);
         $code = DbService::update($this->table, $data, $where);
         return $code;
@@ -273,16 +276,14 @@ class Member extends Model
                 $emcwhere['id'] = $member_coach['id'];
                 $this->edit_member_coach($emcdata, $emcwhere);
             }
-
             if ($c_id) {
                 $amcdata['c_id'] = $c_id;
                 $amcdata['m_id'] = $mid;
-
                 $this->add_member_coach($amcdata);
             }
             $mdata['c_id'] = $c_id;
             $mwhere['id'] = $mid;
-            $this->edit($mdata, $mwhere);
+            $code = $this->edit($mdata, $mwhere);
             // 提交事务
             Db::commit();
             return 1;
