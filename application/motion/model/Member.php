@@ -130,7 +130,7 @@ class Member extends Model
             ->alias('mi')
             ->leftJoin(['motion_member' => 'm'], 'm.id = mi.m_id')
             ->leftJoin(['wechat_fans' => 'f'], 'f.id = mi.f_id')
-            ->field('mi.* , m.status mstatus , f.openid , f.nickname , f.sex fsex , f.country , f.province , f.city ,f.headimgurl');
+            ->field('mi.* , m.status mstatus ,m.name mname , f.openid , f.nickname , f.sex fsex , f.country , f.province , f.city ,f.headimgurl');
         $list = DbService::queryOne($db, $where, $order);
         return $list;
     }

@@ -59,6 +59,7 @@ class ClassWarn
                 $logdata['error'] = '发送成功';
                 $logdata['type'] = 2;
                 Db::table('motion_template_log')->insertGetId($logdata);
+                echo json_encode($logdata);
             } catch (Exception $exc) {
                 $logdata['byid'] = $class['id'];
                 $logdata['data'] = json_encode($data);
@@ -69,6 +70,7 @@ class ClassWarn
                 $logdata['error'] = $exc->getMessage();
                 $logdata['type'] = 2;
                 Db::table('motion_template_log')->insertGetId($logdata);
+                echo json_encode($logdata);
             }
         }
     }
