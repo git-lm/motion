@@ -323,6 +323,27 @@ class Lesson extends BasicAdmin
     }
 
     /**
+     * 上传计划
+     * @param $data 数据
+     * @param $id motion_batch_lesson 主键ID
+     */
+    public function upload()
+    {
+        if (request()->post()) {
+
+            return '11111111';
+        }
+        $mid = request()->has('mid', 'get') ? request()->get('mid/d') : 0;
+        // echo $mid;
+        $this->assign('mid', $mid);
+        return $this->fetch();
+    }
+
+
+
+
+
+    /**
      * 编辑批量计划
      * @param $data 数据
      * @param $id motion_batch_lesson 主键ID
@@ -394,7 +415,7 @@ class Lesson extends BasicAdmin
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $where[] = ['l_id', '=', $lid];
         $where[] = ['status', '=', 1];
-        $order['create_time'] = 'asc';
+        $order['sort'] = 'asc';
         $lists = $this->lessonModel->get_little_courses($where, $order, $page, $limit);
         $count = count($this->lessonModel->get_little_courses($where));
         echo $this->tableReturn($lists, $count);
@@ -530,6 +551,8 @@ class Lesson extends BasicAdmin
         return $this->fetch();
     }
 
+
+
     /**
      * 添加小动作信息
      */
@@ -575,6 +598,29 @@ class Lesson extends BasicAdmin
             $this->error('编辑失败');
         }
     }
+
+    /**
+     * 修改序号
+     */
+    public function edit_sort()
+    {
+        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
+        $sort = request()->has('sort', 'post') ? request()->post('sort/d') : 0;
+        if (!$id) {
+            $this->error('请选择要编辑的动作');
+        }
+        if (!$sort) {
+            $this->error('请填写序号');
+        }
+        $data['sort'] = $sort;
+        $where[] = ['id', '=', $id];
+        $code = $this->lessonModel->little_edit($data, $where);
+        if ($code) {
+            $this->success('编辑成功', '');
+        } else {
+            $this->error('编辑失败');
+        }
+    }
     /**
      * 编辑批量计划
      */
@@ -594,6 +640,26 @@ class Lesson extends BasicAdmin
             }
         }
         $this->success('修改成功', '');
+    }
+
+    public function edit_batch_little()
+    {
+        $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
+        $sort = request()->has('sort', 'post') ? request()->post('sort/d') : 0;
+        if (!$id) {
+            $this->error('请选择要编辑的动作');
+        }
+        if (!$sort) {
+            $this->error('请填写序号');
+        }
+        $data['sort'] = $sort;
+        $where[] = ['id', '=', $id];
+        $code = $this->lessonModel->batch_little_edit($data, $where);
+        if ($code) {
+            $this->success('编辑成功', '');
+        } else {
+            $this->error('编辑失败');
+        }
     }
 
     /**

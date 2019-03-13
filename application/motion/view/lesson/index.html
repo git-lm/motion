@@ -35,7 +35,7 @@
     $(function () {
         $.layuitable('memberTable');
         laydate.render({ range: true, elem: '#expire_time' });
-        $('body').on('mouseenter', '.end_time_show', function () {
+        $('body').on('mouseover', '.end_time_show', function () {
             var that = this;
             var mid = $(this).attr('data-itemid');
             $.post('{:url("/motion/member/get_member_times")}', { 'mid': mid }, function (data) {

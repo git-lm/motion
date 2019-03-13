@@ -77,7 +77,7 @@ class Lesson extends MobileBase
         //判断是否是登录人的记录
         $where[] = ['id', '=', $id];
         $where[] = ['m_id', '=', $this->m_id];
-        $order['create_time'] = 'asc';
+        $order['sort'] = 'asc';
         $list = $this->lessonModel->get_arrange_list($where);
         if (empty($list)) {
             $this->error('无权查看');
@@ -267,7 +267,7 @@ class Lesson extends MobileBase
     {
         $cwhere[] = ['l_id', '=', $lid];
         $cwhere[] = ['status', '=', 1];
-        $corder['create_time'] = 'asc';
+        $corder['sort'] = 'asc';
         $course = $this->lessonModel->get_little_courses($cwhere, $corder);
         foreach ($course as &$c) {
             //获取小动作的视频

@@ -1,6 +1,7 @@
 {extend name='admin@public/content'}
 {block name="button"}
-<button data-modal='{:url("$classuri/little_add")}?lid={$lid}' data-title="计划详情" class='layui-btn layui-btn-sm layui-btn-primary'>计划详情</button>
+<button data-modal='{:url("$classuri/little_add")}?lid={$lid}' data-title="计划详情"
+    class='layui-btn layui-btn-sm layui-btn-primary'>计划详情</button>
 {/block}
 
 {block name="content"}
@@ -22,6 +23,7 @@
 <script>
     $(function () {
         $.layuitable('littleTable');
+
     })
     table.render({
         elem: '#littleTable',
@@ -33,14 +35,15 @@
         title: '会员列表',
         cols: [[//表头
             { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'sort', title: '排序', edit: 'text' },
             { field: 'num', title: '动作编号' },
             { field: 'name', title: '动作名称' },
             // { field: 'status_show', title: '状态' },
             { field: 'state_show', title: '上课状态' },
             { field: 'create_time_show', title: '添加时间' },
-            { field: 'remark', title: '备注', templet: '#remark' , width:'25%' },
+            { field: 'remark', title: '备注', templet: '#remark', width: '25%' },
             { field: 'message', title: '情况', templet: '#message' },
-            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#coursehandle' , width:'7%' }
+            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#coursehandle', width: '7%' }
         ]],
         parseData: function (res) { //res 即为原始返回的数据
             return {
@@ -50,6 +53,23 @@
                 "data": res.data //解析数据列表
             };
         }
+    });
+    table.on('edit(littleTable)', function (obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+        console.log(obj.value); //得到修改后的值
+        console.log(obj.field); //当前编辑的字段名
+        console.log(obj.data); //所在行的所有相关数据  
+        var id = obj.data.id;
+        var sort = obj.value;
+        if (isNaN(sort)) {
+            $(this).val(0);
+            layer.msg('不是数字');
+            return false;
+        }
+        $.post('{:url("edit_sort")}', { 'id': id, 'sort': sort }, function (data) {
+            if (data.code == 0) {
+                layer.msg(data.msg);
+            }
+        }, 'json')
     });
     //搜索按钮绑定事件
     form.on('submit(little_search)', function () {

@@ -34,6 +34,7 @@
         title: '会员列表',
         cols: [[//表头
             { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'sort', title: '排序', edit: 'text' },
             { field: 'num', title: '动作编号' },
             { field: 'name', title: '动作名称' },
             { field: 'create_time_show', title: '添加时间' },
@@ -59,6 +60,23 @@
             page: { curr: 1 }
         })
     })
+    table.on('edit(littleTable)', function (obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+        console.log(obj.value); //得到修改后的值
+        console.log(obj.field); //当前编辑的字段名
+        console.log(obj.data); //所在行的所有相关数据  
+        var id = obj.data.id;
+        var sort = obj.value;
+        if (isNaN(sort)) {
+            $(this).val(0);
+            layer.msg('不是数字');
+            return false;
+        }
+        $.post('{:url("edit_sort")}', { 'id': id, 'sort': sort }, function (data) {
+            if (data.code == 0) {
+                layer.msg(data.msg);
+            }
+        }, 'json')
+    });
 </script>
 <script type="text/html" id="coursehandle">
     <!--{if auth("$classuri/batch_little_edit")}-->
