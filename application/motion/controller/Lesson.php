@@ -609,7 +609,7 @@ class Lesson extends BasicAdmin
         if (!$id) {
             $this->error('请选择要编辑的动作');
         }
-        if (!$sort) {
+        if (!$sort  && $sort != 0) {
             $this->error('请填写序号');
         }
         $data['sort'] = $sort;
@@ -649,7 +649,7 @@ class Lesson extends BasicAdmin
         if (!$id) {
             $this->error('请选择要编辑的动作');
         }
-        if (!$sort) {
+        if (!$sort && $sort != 0) {
             $this->error('请填写序号');
         }
         $data['sort'] = $sort;
