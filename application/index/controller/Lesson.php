@@ -268,6 +268,7 @@ class Lesson extends MobileBase
         $cwhere[] = ['l_id', '=', $lid];
         $cwhere[] = ['status', '=', 1];
         $corder['sort'] = 'asc';
+        $corder['create_time'] = 'asc';
         $course = $this->lessonModel->get_little_courses($cwhere, $corder);
         foreach ($course as &$c) {
             //获取小动作的视频
