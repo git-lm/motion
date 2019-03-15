@@ -1,6 +1,12 @@
 {extend name='admin@public/content'}
 {block name="button"}
-<button data-modal='{:url("$classuri/add")}?mid={$mid}' data-title="新建计划" class='layui-btn layui-btn-sm layui-btn-primary'>新建计划</button>
+<button data-modal='{:url("$classuri/add")}?mid={$mid}' data-title="新建计划"
+    class='layui-btn layui-btn-sm layui-btn-primary'>新建计划</button>
+    <button data-modal='{:url("$classuri/upload")}?mid={$mid}' data-title="上传计划"
+    class='layui-btn layui-btn-sm layui-btn-primary'>上传计划</button>
+    <button data-href='/static/upload/arrange/计划示例.xlsx' data-title="上传计划"
+    class='layui-btn layui-btn-sm layui-btn-primary'>下载示例</button>
+<!-- <button data-filetype="7" data-file="one" data-uptype="local" data-type="xlsx" data-field="arrangeFile" class='layui-btn layui-btn-sm layui-btn-primary'>上传计划</button> -->
 {/block}
 
 {block name="content"}
@@ -19,7 +25,8 @@
     </div>
 </div>
 <div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="arrange_search" lay-submit><i class="layui-icon">&#xe615;</i>
+    <button class="layui-btn layui-btn-primary" lay-filter="arrange_search" lay-submit><i
+            class="layui-icon">&#xe615;</i>
         搜 索</button>
 </div>
 <table id="arrangeTable" lay-filter="arrangeTable"></table>
@@ -88,7 +95,7 @@
 <script type="text/html" id="warmup">
     <a title="{{d.warmup}}"  class="layui-table-link">{{d.warmup}}</a>
   </script>
-  <script type="text/html" id="colldown">
+<script type="text/html" id="colldown">
     <a title="{{d.warmup}}"  class="layui-table-link">{{d.colldown}}</a>
   </script>
 {/block}

@@ -1,0 +1,51 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('lesson/upload')}" data-auto="true"
+    method="post">
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">计划名称</label>
+        <div class="layui-input-block">
+            <input type="text" id="upload" name="file" class="layui-input">
+            <a class="btn btn-link" data-filetype="7" data-file="one" data-uptype="local" data-type="xlsx"
+                data-field="file">上传计划</a>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">上传说明</label>
+        <div class="layui-input-block uploadmsg" style="color:red">
+
+        </div>
+    </div>
+
+    <input type='hidden' value='{$mid|default=0}' name='mid'>
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
+{block name="script"}
+<script>
+    $(function () {
+        $(document).on('change', '#upload', function () {
+            var file = $(this).val();
+            var mid = $('input[name="mid"]').val();
+            if (file != '') {
+                $.post('{:url("upload")}', { 'mid': mid, 'file': file , 'type' : 2 }, function (data) {
+                    if(data.code == 1 ){
+                        $('.uploadmsg').html(data.msg.replace(new RegExp("\n", "gm"), '<br/>'));
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                },'json')
+            }
+
+        })
+
+        form.render();
+        laydate.render({ elem: '#add_class_time', calendar: true, min: 0 });
+    })
+
+</script>
+{/block}

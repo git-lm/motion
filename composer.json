@@ -18,7 +18,8 @@
     "aliyuncs/oss-sdk-php": "^2.2",
     "topthink/think-captcha": "^2.0",
     "zoujingli/weopen-developer": "^1.1",
-    "topthink/think-image": "^1.0"
+    "topthink/think-image": "^1.0",
+    "phpoffice/phpspreadsheet": "^1.6"
   },
   "repositories": {
     "packagist": {
