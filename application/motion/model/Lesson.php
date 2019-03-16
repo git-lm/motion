@@ -307,7 +307,7 @@ class Lesson extends Model
     {
         //获取相同视频的课程
         $whereArr[] = ['lc.state', '=', 1];
-        $whereArr[] = ['l.class_time', '=', time()];
+        $whereArr[] = ['l.class_time', '<', time()];
         $whereArr[] = ['m_id', '=', $where['m_id']];
 
         if (!empty($where['m_ids']) && !empty($where['name'])) {
