@@ -48,6 +48,7 @@
     width: 35px;
     height: 35px;
     position: relative;
+    border-radius: 50%
 }
 
 .choose_nav{
