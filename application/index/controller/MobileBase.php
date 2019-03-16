@@ -18,6 +18,7 @@ class MobileBase extends Controller
     {
         $appid = empty(sysconf('wechat_appid')) ? '' : sysconf('wechat_appid');
         if (session('motion_member')) { //说明已经登录了直接返回
+            $this->headimg(session('motion_member.id'));
             return;
         }
         //微信浏览器
@@ -56,6 +57,7 @@ class MobileBase extends Controller
                 }
             }
             session('motion_member', $member);
+            $this->headimg(session('motion_member.id'));
             $memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id'], $openid);
             $this->redirect('/list');
         } else {
@@ -63,5 +65,22 @@ class MobileBase extends Controller
                 $this->redirect('/login');
             }
         }
+    }
+
+    public function headimg($m_id = 0)
+    {
+        $memberModel = new Member();
+        $where[] = ['m.id', '=', $m_id];
+        $list = $memberModel->get_member_info($where);
+        if (empty($list['picture'])) {
+            if (empty($list['headimgurl'])) {
+                $headimg = sysconf('site_logo');
+            } else {
+                $headimg = $list['headimgurl'];
+            }
+        } else {
+            $headimg = get_thumb($list['picture']);
+        }
+        $this->assign('heading', $headimg);
     }
 }
