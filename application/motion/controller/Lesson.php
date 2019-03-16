@@ -344,7 +344,7 @@ class Lesson extends BasicAdmin
                 $member = $this->check_member_data($mid);
                 $data = $req['data'];
                 $file_url = $file;
-                // Db::startTrans();
+                Db::startTrans();
                 try {
                     foreach ($data as $key => $vo) {
                         $lesson['class_time'] = strtotime(validate()->isDate($vo[0]) ? $vo[0] : date('Y-m-d'));  //上课时间
@@ -375,11 +375,11 @@ class Lesson extends BasicAdmin
                             }
                         }
                     }
-                    Db::rollback();
+                    Db::commit();
                     return ['code' => 1, 'msg' => '添加成功'];
                 } catch (\Exception $e) {
                     // 回滚事务
-                    // Db::rollback();
+                    Db::rollback();
                     $this->error('添加失败');
                 }
             }
@@ -447,7 +447,7 @@ class Lesson extends BasicAdmin
                     //记录日志
                     if ($row == 3 && empty($val)) {
                         $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，日期为空，不与保存\r\n";
-                        break;
+                        break 2;
                     } else if ($row == 4 && empty($val)) {
                         $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，计划名称为空，默认计划名称\r\n";
                         $val = '计划名称';
@@ -477,7 +477,7 @@ class Lesson extends BasicAdmin
 
     public function test()
     {
-        $url = 'http://motion.com/static/upload/arrange/45c48cce2e2d7fbdea1afc51c7c6ad26/7c8b06917c84b382.xlsx';
+        $url = 'http://motion.com/static/upload/arrange/45c48cce2e2d7fbdea1afc51c7c6ad26/967cab434c2d66ab.xlsx';
         dump($this->analysisExcel($url));
     }
 
