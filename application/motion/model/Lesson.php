@@ -311,7 +311,13 @@ class Lesson extends Model
         $whereArr[] = ['m_id', '=', $where['m_id']];
 
         if (!empty($where['m_ids']) && !empty($where['name'])) {
-            $whereArr[] = [['m_ids', 'in', $where['m_ids']], ['lc.name', 'like', $where['name']]];
+            $m_ids =  $where['m_ids'];
+            $name =  $where['name'];
+            // $whereArr[] = [['m_ids', 'in', $where['m_ids']], ['lc.name', 'like', $where['name']]];
+            $whereArr[] = function ($query) use ($name, $m_ids) {
+                $query->where('m_ids', 'in', $m_ids)
+                    ->whereOr('lc.name', 'like', $name);
+            };
         } else {
             if (!empty($where['m_ids'])) {
                 $whereArr[] = ['m_ids', 'in', $where['m_ids']];
@@ -321,11 +327,11 @@ class Lesson extends Model
             }
         }
         // $where = ' m_ids in ( ' . $m_ids . ') and lc.state = 1 and l.class_time < "' . time() . '" and m_id = ' . $m_id;
+        $order['class_time'] = 'desc';
         $db = Db::table('motion_lesson_course')
             ->alias('lc')
             ->leftJoin(['motion_lesson' => 'l'], 'l.id = lc.l_id')
             ->field('lc.* ,l.id lid ,  l.name lname , l.class_time');
-        $order['class_time'] = 'desc';
         $lists = DbService::queryALL($db, $whereArr, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
