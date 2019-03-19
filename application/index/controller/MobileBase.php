@@ -59,7 +59,7 @@ class MobileBase extends Controller
             session('motion_member', $member);
             $this->headimg(session('motion_member.id'));
             $memberModel->write('登录系统', '用户登录系统成功', $member['name'], $member['id'], $openid);
-            $this->redirect('/list');
+            //$this->redirect('/list');
         } else {
             if (request()->controller() != 'Login' && request()->action() != 'login') {
                 $this->redirect('/login');
