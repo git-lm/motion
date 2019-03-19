@@ -429,8 +429,19 @@ class Lesson extends BasicAdmin
                 //循环行，第一行 日期 第二行计划名称 第三行热身语  最后一行冷身语  其他为计划详情
                 $detail = array(); //动作详情
                 for ($row  = 3; $row <= $highestRow; $row++) {
-                    $colldown = (string)$worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    //把数字转成字母
+                    $columnString = Coordinate::stringFromColumnIndex($column);
+                    $columnNextString = Coordinate::stringFromColumnIndex($columnNext);
+
+
+                    $colldown = (string)$worksheet->getCellByColumnAndRow(1, $row + 1)->getValue();
                     if ($colldown == '结束计划') {
+                        $val = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                        $valArr[] = $val;
+                        if (empty($val)) {
+                            $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，冷身语为空##@@@##";
+                            $val = '';
+                        }
                         break;
                     }
                     //获取计划详情内容
@@ -445,9 +456,7 @@ class Lesson extends BasicAdmin
                         $val = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
                         $valArr[] = $val;
                     }
-                    //把数字转成字母
-                    $columnString = Coordinate::stringFromColumnIndex($column);
-                    $columnNextString = Coordinate::stringFromColumnIndex($columnNext);
+
                     //记录日志
                     if ($row == 3 && empty($val)) {
                         $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，日期为空，不与保存##@@@##";
@@ -458,10 +467,7 @@ class Lesson extends BasicAdmin
                     } else if ($row == 5 && empty($val)) {
                         $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，热身语为空##@@@##";
                         $val = '';
-                    } else if ($row == $highestRow - 1  && empty($val)) {
-                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，冷身语为空##@@@##";
-                        $val = '';
-                    }else {
+                    } else {
                         if ($row > 5 && $row  < $highestRow && empty($val1)) {
                             $msg .= "第{$row}行-{$columnString}列，标签为空##@@@##";
                         }
