@@ -40,13 +40,15 @@ class Lesson extends MobileBase
         $where[] = ['l.status', '=', 1];
         if ($type == 'upcomming') {
             //说明获取未到时间的
+            $order['l.class_time'] = 'asc';
             $where[] = ['l.class_time', '>', time()];
         } else {
+            $order['l.class_time'] = 'desc';
             //说明获取已过时间的
             $where[] = ['l.class_time', '<', time()];
         }
 
-        $order['l.class_time'] = 'desc';
+      
         $lists = $this->lessonModel->get_arrange_lists($where, $order, $page, $limit);
         $count = count($this->lessonModel->get_arrange_lists($where));
         //获取记录留言
