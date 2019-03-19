@@ -429,6 +429,10 @@ class Lesson extends BasicAdmin
                 //循环行，第一行 日期 第二行计划名称 第三行热身语  最后一行冷身语  其他为计划详情
                 $detail = array(); //动作详情
                 for ($row  = 3; $row <= $highestRow; $row++) {
+                    $colldown = (string)$worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    if ($colldown == '结束计划') {
+                        break;
+                    }
                     //获取计划详情内容
                     if ($row > 5 && $row  < $highestRow) {
                         $val1 = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
@@ -446,23 +450,23 @@ class Lesson extends BasicAdmin
                     $columnNextString = Coordinate::stringFromColumnIndex($columnNext);
                     //记录日志
                     if ($row == 3 && empty($val)) {
-                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，日期为空，不与保存----";
+                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，日期为空，不与保存##@@@##";
                         break 2;
                     } else if ($row == 4 && empty($val)) {
-                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，计划名称为空，默认计划名称----";
+                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，计划名称为空，默认计划名称##@@@##";
                         $val = '计划名称';
                     } else if ($row == 5 && empty($val)) {
-                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，热身语为空----";
+                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，热身语为空##@@@##";
                         $val = '';
-                    } else if ($row == $highestRow && empty($val)) {
-                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，冷身语为空----";
+                    } else if ($row == $highestRow - 1  && empty($val)) {
+                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，冷身语为空##@@@##";
                         $val = '';
-                    } else {
+                    }else {
                         if ($row > 5 && $row  < $highestRow && empty($val1)) {
-                            $msg .= "第{$row}行-{$columnString}列，标签为空----";
+                            $msg .= "第{$row}行-{$columnString}列，标签为空##@@@##";
                         }
                         if ($row > 5 && $row  < $highestRow && empty($val2)) {
-                            $msg .= "第{$row}行-{$columnNextString}列，动作详情和描述为空----";
+                            $msg .= "第{$row}行-{$columnNextString}列，动作详情和描述为空##@@@##";
                         }
                     }
                 }
@@ -478,7 +482,7 @@ class Lesson extends BasicAdmin
 
     public function test()
     {
-        $url = 'http://motion.com/static/upload/arrange/45c48cce2e2d7fbdea1afc51c7c6ad26/967cab434c2d66ab.xlsx';
+        $url = 'http://motion.com/static/upload/arrange/44f683a84163b3523afe57c2e008bc8c/885a3274be744048.xlsx';
         dump($this->analysisExcel($url));
     }
 
