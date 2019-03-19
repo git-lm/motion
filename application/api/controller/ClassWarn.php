@@ -17,11 +17,11 @@ class ClassWarn
 
     public function index()
     {
-    	if($_SERVER['REMOTE_ADDR'] != request()->ip()){
-    		echo '不是计划任务执行';
-    		echo request()->ip();
-    		return ;
-    	}
+        if ($_SERVER['REMOTE_ADDR'] != request()->ip()) {
+            echo '不是计划任务执行';
+            echo request()->ip();
+            return;
+        }
         //查询所有要到期的会员
         $wechat_class_id = sysconf('wechat_class_id');
         if (empty($wechat_class_id)) {
@@ -48,7 +48,7 @@ class ClassWarn
             try {
                 $touser = $class['openid'];
                 $templateId = $wechat_class_id;
-                $url = '';
+                $url = url('lesson/detile', ['id' => $class['id']]);
                 Template::sendTemplateMessage($data, $touser, $templateId, $url);
                 $logdata['byid'] = $class['id'];
                 $logdata['data'] = json_encode($data);

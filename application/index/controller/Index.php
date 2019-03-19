@@ -40,6 +40,6 @@ class Index extends MobileBase
 
     public function test()
     {
-        get_thumb();
+        echo url('lesson/detile' , ['id' => 1 ]);
     }
 }
