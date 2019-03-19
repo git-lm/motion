@@ -466,7 +466,7 @@ class Lesson extends BasicAdmin
                         }
                     }
                 }
-                $msg .= '\r\n';
+                $msg .= "\r\n";
                 $arr[]  = $valArr;
                 $column = $columnNext;
             }
