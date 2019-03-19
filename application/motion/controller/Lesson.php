@@ -446,26 +446,27 @@ class Lesson extends BasicAdmin
                     $columnNextString = Coordinate::stringFromColumnIndex($columnNext);
                     //记录日志
                     if ($row == 3 && empty($val)) {
-                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，日期为空，不与保存\r\n";
+                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，日期为空，不与保存----";
                         break 2;
                     } else if ($row == 4 && empty($val)) {
-                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，计划名称为空，默认计划名称\r\n";
+                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，计划名称为空，默认计划名称----";
                         $val = '计划名称';
                     } else if ($row == 5 && empty($val)) {
-                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，热身语为空\r\n";
+                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，热身语为空----";
                         $val = '';
                     } else if ($row == $highestRow && empty($val)) {
-                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，冷身语为空\r\n";
+                        $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，冷身语为空----";
                         $val = '';
                     } else {
                         if ($row > 5 && $row  < $highestRow && empty($val1)) {
-                            $msg .= "第{$row}行-{$columnString}列，标签为空\r\n";
+                            $msg .= "第{$row}行-{$columnString}列，标签为空----";
                         }
                         if ($row > 5 && $row  < $highestRow && empty($val2)) {
-                            $msg .= "第{$row}行-{$columnNextString}列，动作详情和描述为空\r\n";
+                            $msg .= "第{$row}行-{$columnNextString}列，动作详情和描述为空----";
                         }
                     }
                 }
+                $msg .= '\r\n';
                 $arr[]  = $valArr;
                 $column = $columnNext;
             }
