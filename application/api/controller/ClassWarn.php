@@ -48,7 +48,7 @@ class ClassWarn
             try {
                 $touser = $class['openid'];
                 $templateId = $wechat_class_id;
-                $url = url('lesson/detile', ['id' => $class['id']]);
+                $url = url('lesson/detile', ['id' => $class['id']] ,'html' ,true);
                 Template::sendTemplateMessage($data, $touser, $templateId, $url);
                 $logdata['byid'] = $class['id'];
                 $logdata['data'] = json_encode($data);
