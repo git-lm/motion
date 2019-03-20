@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use controller\BasicAdmin;
+use app\motion\model\LoginLog;
 use app\wechat\service\FansService;
 
 /**
@@ -15,11 +16,17 @@ use app\wechat\service\FansService;
 class Api extends BasicAdmin
 {
 
-    public function data_api()
+    public function fans_api()
     {
         $fans = FansService::getFansJson(30);
         $data['fans'] = $fans;
         echo json_encode($data);
     }
 
+    public function time_api()
+    {
+        $LoginLog = new LoginLog();
+        $times = $LoginLog->echarts();
+        echo json_encode($times);
+    }
 }
