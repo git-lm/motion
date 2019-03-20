@@ -485,4 +485,44 @@ class Lesson extends Model
         $res = $tem->sendTemplateMessage($data, $touser, $templateId, $url);
         return $res;
     }
+
+    public function echarts($num = 30)
+    {
+        if (session('user.is_admin') == 0) {
+            $where[]  = ['u_id', '=', session('user.id')];
+        }
+        //查看天数之前的所有数据
+        //先获取当前时间之前的num天数的时间
+        $before_time = strtotime("-{$num} day");
+        $where[] = ['class_time', '>=', $before_time];
+        $lists = Db::table('motion_lesson l ')
+            ->leftjoin('motion_coach c', 'c.id = l.coach_id')
+            ->where($where)
+            ->field(' count(CASE l.status WHEN 1 THEN 1 END) AS finish,count(CASE l.status WHEN 0 THEN 1 END) AS unfinish, count(0) count ,FROM_UNIXTIME(class_time , "%Y-%m-%d") class_time')
+            ->group('FROM_UNIXTIME(class_time , "%Y-%m-%d")')
+            ->select();
+        $xAxis = [];
+        $series = [];
+        //循环天数
+        for ($i = 30; $i >= 0; $i--) {
+            $less_time = date("Y-m-d", strtotime("-{$i} day"));
+            //查询值是否在数组中数组
+            $item = deep_in_array($less_time, $lists);
+
+            if ($item) {
+                $xAxis[] = $less_time;
+                $series['count'][] = $item['count'];
+                $series['finish'][] = $item['finish'];
+                $series['unfinish'][] = $item['unfinish'];
+            } else {
+                $xAxis[] = $less_time;
+                $series['count'][] = 0;
+                $series['finish'][] = 0;
+                $series['unfinish'][] = 0;
+            }
+        }
+        $arr['xAxis'] = $xAxis;
+        $arr['series'] = $series;
+        return $arr;
+    }
 }
