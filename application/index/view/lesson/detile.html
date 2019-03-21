@@ -85,7 +85,7 @@
                         <!--textarea_over 开始-->
                         <div class="textarea_over clearfix">
                             <input type="hidden" name="file{$c.id}" onchange="recordfile('{$c.id}', this)" class="layui-input" />
-                            <i class="layui-icon" data-field="file{$c.id}" data-file="one" data-type="jpg,png,jpeg,mp4"
+                            <i class="layui-icon" data-field="file{$c.id}" data-file="one" data-type="jpg,png,jpeg,mp4,mov"
                                 data-title="运动记录" data-filetype="4">&#xe65d;</i>
                             <textarea itemid="{$c.id|default=0}" placeholder="输入内容">{$c.message|default=''}</textarea>
                         </div>
@@ -93,7 +93,7 @@
                         <div class="uploadshow">
                             {if !empty($c.file.url)}
                             <div class="hasvideo">
-                                {if $c.pathinf == 'mp4'}
+                                {if $c.pathinf == 'mp4' || $c.pathinf == 'mov'}
                                 <video src="{$c.file.url}" controls="controls"></video>
                                 {else /}
                                 <img src='{$c.file.url}'>
@@ -168,7 +168,7 @@
     <!--sole_man  结束-->
     <!--chart 开始-->
     <div class="chart">
-        <textarea class="layui-textarea" name='message' data-type="png,jpg,gif,jpeg,mp4" data-filetype-textarea="3" id="LAY-msg-content"
+        <textarea class="layui-textarea" name='message' data-type="png,jpg,gif,jpeg,mp4,mov" data-filetype-textarea="3" id="LAY-msg-content"
             placeholder="请输入回复，一千字以内" maxlength="1000" style="resize:none"></textarea>
         <div class="chart_b">
             <!--            <i class="layui-icon">&#xe65d;</i>
