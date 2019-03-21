@@ -314,7 +314,7 @@
                 layer.msg(data.msg);
             } else {
                 var pathinfo = data.msg;
-                if (pathinfo == 'mp4') {
+                if (pathinfo == 'mp4' || pathinfo == 'mov') {
                     var html = '<div class="hasvideo">'
                         + '<video src="' + fileurl + '" controls="controls"></video>'
                         + '</div>'
