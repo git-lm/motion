@@ -5,7 +5,9 @@
     <div class="choose_nav_c Header-title width">
         <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" data-icon="calendar"
             data-prefix="fas" id="ember1202" class="mrxxs svg-inline--fa fa-calendar fa-w-14 mrxxs ember-view">
-            <path fill="currentColor" d="M12 192h424c6.6 0 12 5.4 12 12v260c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V204c0-6.6 5.4-12 12-12zm436-44v-36c0-26.5-21.5-48-48-48h-48V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H160V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H48C21.5 64 0 85.5 0 112v36c0 6.6 5.4 12 12 12h424c6.6 0 12-5.4 12-12z"></path>
+            <path fill="currentColor"
+                d="M12 192h424c6.6 0 12 5.4 12 12v260c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V204c0-6.6 5.4-12 12-12zm436-44v-36c0-26.5-21.5-48-48-48h-48V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H160V12c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v52H48C21.5 64 0 85.5 0 112v36c0 6.6 5.4 12 12 12h424c6.6 0 12-5.4 12-12z">
+            </path>
         </svg>
         {$list.class_time_show|default=''}
     </div>
@@ -68,7 +70,8 @@
                         <div class="videos">
                             {volist name="c.motions" id="motion"}
                             <div class="video_list">
-                                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$motion.name|default=''}</div>
+                                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$motion.name|default=''}
+                                </div>
                                 <div class="video_show_div">
                                     {$motion.url|raw|default=''}
                                 </div>
@@ -78,15 +81,17 @@
                         <!--视频 结束-->
 
                         <!--history 开始-->
-                        <div class="history"><i class="layui-icon">&#xe665;</i><a href='{:url("/lesson/history")}?id={$c.id}'
-                                target='_blank'>Exercise History 历史记录</a></div>
+                        <div class="history"><i class="layui-icon">&#xe665;</i><a
+                                href='{:url("/lesson/history")}?id={$c.id}' target='_blank'>Exercise History 历史记录</a>
+                        </div>
                         <!--history 结束-->
 
                         <!--textarea_over 开始-->
                         <div class="textarea_over clearfix">
-                            <input type="hidden" name="file{$c.id}" onchange="recordfile('{$c.id}', this)" class="layui-input" />
-                            <i class="layui-icon" data-field="file{$c.id}" data-file="one" data-type="jpg,png,jpeg,mp4,mov"
-                                data-title="运动记录" data-filetype="4">&#xe65d;</i>
+                            <input type="hidden" name="file{$c.id}" onchange="recordfile('{$c.id}', this)"
+                                class="layui-input" />
+                            <i class="layui-icon" data-field="file{$c.id}" data-file="one"
+                                data-type="jpg,png,jpeg,mp4,mov" data-title="运动记录" data-filetype="4">&#xe65d;</i>
                             <textarea itemid="{$c.id|default=0}" placeholder="输入内容">{$c.message|default=''}</textarea>
                         </div>
                         <!--textarea_over 结束-->
@@ -168,8 +173,8 @@
     <!--sole_man  结束-->
     <!--chart 开始-->
     <div class="chart">
-        <textarea class="layui-textarea" name='message' data-type="png,jpg,gif,jpeg,mp4,mov" data-filetype-textarea="3" id="LAY-msg-content"
-            placeholder="请输入回复，一千字以内" maxlength="1000" style="resize:none"></textarea>
+        <textarea class="layui-textarea" name='message' data-type="png,jpg,gif,jpeg,mp4,mov" data-filetype-textarea="3"
+            id="LAY-msg-content" placeholder="请输入回复，一千字以内" maxlength="1000" style="resize:none"></textarea>
         <div class="chart_b">
             <!--            <i class="layui-icon">&#xe65d;</i>
                         <i class="layui-icon">&#xe60c;</i>
@@ -296,10 +301,11 @@
         })
 
         $('.uploadshow').on('click', '.filedel', function () {
+            var _this = $(this);
             var id = $(this).attr('itemid');
             $.post('{:url("file_del")}', { 'id': id }, function (data) {
                 if (data.code == 1) {
-                    $('.uploadshow').html('');
+                    _this.parent().html('');
                 } else {
                     layer.msg(data.msg);
                 }
