@@ -5,6 +5,7 @@ namespace app\admin\controller;
 use controller\BasicAdmin;
 use service\FileService;
 use think\Response;
+use think\Validate;
 
 /**
  * 插件助手控制器
@@ -36,12 +37,101 @@ class Plugs extends BasicAdmin
         }
         $mode = $this->request->get('mode', 'one');
         $filetype = $this->request->get('filetype', '0');
-
+        $view = $this->request->get('view', '0');
         $types = $this->request->get('type', 'jpg,png');
         $this->assign('mimes', FileService::getFileMine($types));
         $this->assign('field', $this->request->get('field', 'file'));
+        if ($view == 'layui') {
+            return $this->fetch('upload', ['mode' => $mode, 'types' => $types, 'uptype' => $uptype, 'filetype' => $filetype]);
+        }
         return $this->fetch('', ['mode' => $mode, 'types' => $types, 'uptype' => $uptype, 'filetype' => $filetype]);
     }
+
+    public function upfileLayUi()
+    {
+        $uptype = request()->get('uptype');
+        if (!in_array($uptype, ['local', 'qiniu', 'oss'])) {
+            $uptype = sysconf('storage_type');
+        }
+        $data['mode'] = request()->get('mode', 'one');
+        $data['filetype'] = request()->get('filetype', '0');
+        $data['types'] = request()->get('type', 'jpg,png');
+        $data['mimes'] = FileService::getFileMine($data['types']);
+        $data['field'] = request()->get('field', 'file');
+        $data['token'] = request()->token();
+        $this->assign('info', $data);
+        return $this->fetch('upload');
+    }
+
+    public function uploadLayui()
+    {
+
+        if (!empty($_FILES['file'])) {
+            if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2) {
+                return json(['code' => 'ERROR', 'msg' => '文件上传大小受限']);
+            }
+        } else {
+            return json(['code' => 'ERROR', 'msg' => '请上传文件']);
+        }
+        $file = request()->file('file');
+        if (!$file->checkExt(strtolower(sysconf('storage_local_exts')))) {
+            return json(['code' => 'ERROR', 'msg' => '文件上传类型受限']);
+        }
+        echo  request()->post('token', 0);
+        $validate = Validate::make([
+            '__token__'  =>  'require|token',
+        ]);
+        $data = [
+            '__token__' => request()->post('token', 0)
+        ];
+        if (!$validate->check($data))  return json(['code' => 'ERROR', 'msg' => $validate->getError()]);
+
+        $menber = session('motion_member');
+        $filetype = request()->post('filetype', 0);
+        if (!empty($menber)) {
+            $uid = md5($menber['id']);
+        } else {
+            $uid = md5(0);
+            if ($filetype == 7) {
+                if (!empty(session('user.id'))) {
+                    $uid = md5(session('user.id'));
+                }
+            }
+        }
+        $dir = date('Ymd');
+        if ($filetype == 1) {
+            $pr = "{$dir}/{$uid}/sysconfig";
+        } else if ($filetype == 2) {
+            $pr = "{$dir}/{$uid}/store";
+        } else if ($filetype == 3) {
+            $pr = "{$dir}/{$uid}message";
+        } else if ($filetype == 4) {
+            $pr = "{$dir}/{$uid}/record";
+        } else if ($filetype == 5) {
+            $pr = "{$dir}/{$uid}/member";
+        } else if ($filetype == 6) {
+            $pr = "{$dir}/{$uid}/photo";
+        } else if ($filetype == 7) {
+            $pr = "{$dir}/{$uid}/arrange";
+        } else {
+            $pr = "{$dir}/{$uid}/others";
+        }
+        $names = substr(md5(date('Ymd') . rand(1000, 9999)), 0, 16);
+        $ext = strtolower(pathinfo($file->getInfo('name'), 4));
+        $ext = $ext ? $ext : 'tmp';
+        $filename = "{$names}.{$ext}";
+        if (($info = $file->move("static/upload/{$pr}", "{$filename}", true))) {
+            if (($site_url = FileService::getFileUrl("{$pr}/{$filename}", 'local'))) {
+                return json(['data' => ['site_url' => $site_url], 'code' => 'SUCCESS', 'msg' => '文件上传成功']);
+            }
+        }
+        return json(['code' => 'ERROR', 'msg' => '文件上传失败']);
+    }
+
+
+
+
+
 
     /**
      * 文件夹名称说明
