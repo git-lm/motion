@@ -58,9 +58,13 @@ class Plugs extends BasicAdmin
         $data['types'] = request()->get('type', 'jpg,png');
         $data['mimes'] = FileService::getFileMine($data['types']);
         $data['field'] = request()->get('field', 'file');
-        $data['token'] = request()->token();
+        // $data['token'] = request()->token();
         $this->assign('info', $data);
         return $this->fetch('upload');
+    }
+
+    public function uploadtest(){
+        dump($_FILES);
     }
 
     public function uploadLayui()

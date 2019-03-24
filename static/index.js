@@ -37,6 +37,10 @@ $(function () {
             $.form.iframe(url, title || '文件管理');
             return;
         })
+        $body.on('click', '[data-mobile-file]', function () {
+            var fileObj = $(this); // js 获取文件对象
+            return;
+        })
 
 
     });

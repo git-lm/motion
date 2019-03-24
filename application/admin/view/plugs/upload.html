@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=0">
     <link href="__STATIC__/plugs/layui/css/layui.css?v={:date('ymd')}" rel="stylesheet">
-    <script src="__STATIC__/plugs/layui/layui.all.js"></script>
+    <script type="text/javascript" src="__STATIC__/plugs/jquery/jquery.min.js"></script>
 
 <body>
     <div class="layui-tab layui-tab-card">
@@ -17,53 +17,31 @@
                 <i class="layui-icon"></i>
                 <p>点击上传</p>
             </div>
+            <form id="layui-upload" method="post" action="/admin/plugs/uploadtest" enctype="multipart/form-data">
+                <input type="file" name="file" id="layui-upload-file" style="display:none">
+                <input type="hidden" name="filetype" value="{$info.types}">
+                {:token()}
+            </form>
+
             <div class="">
                 <ul id="imgZmList"></ul>
             </div>
         </div>
-        <!-- <button class="layui-button" id="submit">shangchuan </button> -->
+        <button class="layui-btn" onclick="$('#layui-upload').submit()">开始上传</button>
 
     </div>
 </body>
 
 <script>
-    layui.use(['upload', 'jquery'], function () {
-        var layer = layui.layer;
-        var upload = layui.upload;
-        var $ = jquery = layui.$;
-        //执行实例
-        var uploadInst = upload.render({
-            elem: '#uploadFile', //绑定元素
-            url: '/admin/Plugs/uploadLayui', //上传接口
-            accept: 'file',
-            acceptMime: '{$info.mimes}',
-            /*{if $info.mode === 'one'}*/
-            auto: true,
-            multiple: false,
-            number: 1,
-            /*{else}*/
-            auto: false,
-            multiple: true,
-            number: 300,
-            /*{/if}*/
-            drag: false,
-            bindAction: '#submit',
-            size: 100 * 1024 * 1024, // 200 M
-            data: { 'token': '{$info.token}', 'filetype': '{$info.filetype}' },
-            done: function (res) {
-                console.log(res.data.site_url)
-                parent.$('input[name="{$info.field}"]').val(res.data.site_url).trigger('change')
-                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                parent.layer.close(index); //再执行关闭 
-            },
-            error: function () {
-                layer.msg('上传失败', function () {
-                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                    parent.layer.close(index); //再执行关闭 
-                });
-            }
-        });
-    });
+    $(function () {
+        $('#uploadFile').click(function () {
+            $('#layui-upload-file').trigger('click');
+        })
+        $(document).on('change', '#layui-upload-file', function () {
+
+        })
+
+    })
 </script>
 
 </html>
