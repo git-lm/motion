@@ -47,7 +47,7 @@ class Plugs extends BasicAdmin
         return $this->fetch('', ['mode' => $mode, 'types' => $types, 'uptype' => $uptype, 'filetype' => $filetype]);
     }
 
-    public function upfileLayUi()
+    public function upfileMobile()
     {
         $uptype = request()->get('uptype');
         if (!in_array($uptype, ['local', 'qiniu', 'oss'])) {
@@ -58,16 +58,17 @@ class Plugs extends BasicAdmin
         $data['types'] = request()->get('type', 'jpg,png');
         $data['mimes'] = FileService::getFileMine($data['types']);
         $data['field'] = request()->get('field', 'file');
-        // $data['token'] = request()->token();
+        $data['token'] = request()->token();
         $this->assign('info', $data);
         return $this->fetch('upload');
     }
 
-    public function uploadtest(){
-        dump($_FILES);
+    public function uploadtest()
+    {
+        return json(['code' => 'ERROR', 'msg' => $_FILES]);
     }
 
-    public function uploadLayui()
+    public function uploadMobile()
     {
 
         if (!empty($_FILES['file'])) {

@@ -28,20 +28,15 @@ $(function () {
             $.form.iframe(url, title || '文件管理');
         });
 
-        $body.on('click', '[data-layui-file]', function () {
+        $body.on('click', '[data-mobile-file]', function () {
             var method = $(this).attr('data-layui-file') === 'one' ? 'one' : 'mtl';
             var type = $(this).attr('data-type') || 'jpg,png', field = $(this).attr('data-field') || 'file';
             var title = $(this).attr('data-title') || '文件上传', uptype = $(this).attr('data-uptype') || '';
             var filetype = $(this).attr('data-filetype') || 0;
-            var url = '/index.php/admin/plugs/upfileLayUi.html?view=layui&mode=' + method + '&uptype=' + uptype + '&type=' + type + '&field=' + field + '&filetype=' + filetype;
+            var url = '/index.php/admin/plugs/upfileMobile.html?view=layui&mode=' + method + '&uptype=' + uptype + '&type=' + type + '&field=' + field + '&filetype=' + filetype;
             $.form.iframe(url, title || '文件管理');
             return;
         })
-        $body.on('click', '[data-mobile-file]', function () {
-            var fileObj = $(this); // js 获取文件对象
-            return;
-        })
-
 
     });
 
