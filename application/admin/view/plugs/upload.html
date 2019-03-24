@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>{:sysconf('app_name')} {:sysconf('app_version')}</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="../image/favicon.ico">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=0">
+    <link href="__STATIC__/plugs/layui/css/layui.css?v={:date('ymd')}" rel="stylesheet">
+    <script src="__STATIC__/plugs/layui/layui.all.js"></script>
+
+<body>
+    <div class="layui-tab layui-tab-card">
+        <div class="layui-form" style="padding: 20px 0 0 0;">
+            <div class="layui-upload-drag" id="uploadFile">
+                <i class="layui-icon"></i>
+                <p>点击上传</p>
+            </div>
+            <div class="">
+                <ul id="imgZmList"></ul>
+            </div>
+        </div>
+        <button class="layui-button" id="submit">shangchuan </button>
+
+    </div>
+</body>
+
+<script>
+    layui.use(['upload', 'jquery'], function () {
+        var upload = layui.upload;
+        var $ = jquery = layui.$;
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#uploadFile', //绑定元素
+            url: '/admin/Plugs/uploadLayui', //上传接口
+            accept: 'file',
+            acceptMime: '{$info.mimes}',
+            /*{if $info.mode === 'one'}*/
+            auto: true,
+            multiple: false,
+            number: 1,
+            /*{else}*/
+            auto: false,
+            multiple: true,
+            number: 300,
+            /*{/if}*/
+            drag: false,
+            bindAction: '#submit',
+            size: 100 * 1024 * 1024, // 200 M
+            data: { 'token': '{$info.token}', 'filetype': '{$info.filetype}' },
+            done: function (res) {
+                console.log(res)
+            },
+            error: function () {
+                //请求异常回调
+            }
+        });
+    });
+</script>
+
+</html>
