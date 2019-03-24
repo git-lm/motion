@@ -95,7 +95,7 @@ class Plugs extends BasicAdmin
         }
         $dir = date('Ym');
         if ($filetype == 1) {
-            $pr = "{$dir}/sysconfig/{$uid}";
+            $pr = "sysconfig";
         } else if ($filetype == 2) {
             $pr = "{$dir}/store/{$uid}";
         } else if ($filetype == 3) {
