@@ -21,13 +21,14 @@
                 <ul id="imgZmList"></ul>
             </div>
         </div>
-        <button class="layui-button" id="submit">shangchuan </button>
+        <!-- <button class="layui-button" id="submit">shangchuan </button> -->
 
     </div>
 </body>
 
 <script>
     layui.use(['upload', 'jquery'], function () {
+        var layer = layui.layer;
         var upload = layui.upload;
         var $ = jquery = layui.$;
         //执行实例
@@ -50,10 +51,16 @@
             size: 100 * 1024 * 1024, // 200 M
             data: { 'token': '{$info.token}', 'filetype': '{$info.filetype}' },
             done: function (res) {
-                console.log(res)
+                console.log(res.data.site_url)
+                parent.$('input[name="{$info.field}"]').val(res.data.site_url).trigger('change')
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index); //再执行关闭 
             },
             error: function () {
-                //请求异常回调
+                layer.msg('上传失败', function () {
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭 
+                });
             }
         });
     });

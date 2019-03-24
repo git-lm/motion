@@ -77,14 +77,16 @@ class Plugs extends BasicAdmin
         if (!$file->checkExt(strtolower(sysconf('storage_local_exts')))) {
             return json(['code' => 'ERROR', 'msg' => '文件上传类型受限']);
         }
-        echo  request()->post('token', 0);
+        if (!$file->checkSize(1024 * 1024 * 100)) {
+            return json(['code' => 'ERROR', 'msg' => '文件上传大小受限']);
+        }
         $validate = Validate::make([
             '__token__'  =>  'require|token',
         ]);
         $data = [
             '__token__' => request()->post('token', 0)
         ];
-        if (!$validate->check($data))  return json(['code' => 'ERROR', 'msg' => $validate->getError()]);
+        if (!$validate->check($data))  return json(['code' => 'ERROR', 'msg' => '请勿多次上传']);
 
         $menber = session('motion_member');
         $filetype = request()->post('filetype', 0);
