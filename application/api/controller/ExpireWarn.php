@@ -17,10 +17,10 @@ class ExpireWarn
 
     public function index()
     {
-        if($_SERVER['REMOTE_ADDR'] != request()->ip()){
+        if ($_SERVER['REMOTE_ADDR'] != request()->ip()) {
             echo '不是计划任务执行';
             echo request()->ip();
-            return ;
+            return;
         }
         //查询所有要到期的会员
         $expire_time = sysconf('wechat_expire_time') ? sysconf('wechat_expire_time') : 5;
@@ -41,6 +41,9 @@ class ExpireWarn
             ->leftJoin(['motion_member_info' => 'mi'], 'mi.m_id = mt.m_id')
             ->leftJoin(['wechat_fans' => ' f'], 'f.id = mi.f_id')
             ->select();
+        if (count($times) == 0) {
+            echo 'nodata';
+        }
         foreach ($times as $time) {
             $data = array(
                 'first' => array('value' => '时间到期提醒', 'color' => '#0000ff'),
