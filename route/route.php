@@ -23,5 +23,5 @@ Route::alias('list', 'index/index');
 //绑定前台index 模块  Lesson 控制器 别名
 Route::alias('lesson', 'index/lesson');
 //缩略图    
-Route::get('static/upload/thumb/:dir/:basename/:filename', 'admin/Plugs/imgthumb');
+Route::get('static/upload/thumb/:date/:dir/:basename/:filename', 'admin/Plugs/imgthumb');
 return [];

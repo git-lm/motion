@@ -204,13 +204,13 @@ class Plugs extends BasicAdmin
     /**
      * 图片生成缩略图
      */
-    public function imgthumb($dir = '', $basename = '', $filename = '')
+    public function imgthumb($date = '', $dir = '', $basename = '', $filename = '')
     {
         // header('content-type:image/png');
         $types = str_replace(',', '|', sysconf('storage_local_exts'));
         $ext =  request()->ext();
 
-        if (!empty($dir) && !empty($basename) && !empty($filename) && stripos($types, $ext) !== false) {
+        if (!empty($date) && !empty($dir) && !empty($basename) && !empty($filename) && stripos($types, $ext) !== false) {
 
             $fileNameArr = explode('_', $filename);
             if (empty($fileNameArr[0])) {
@@ -228,10 +228,10 @@ class Plugs extends BasicAdmin
                 $width = (int)$fileNameArr[2] > 100 ? 100 : (int)$fileNameArr[2];
             }
 
-            $file = './static/upload/' . $dir . '/' . $basename . '/' . $name . '.' . $ext;
+            $file = './static/upload/' . $date . '/' . $dir . '/' . $basename . '/' . $name . '.' . $ext;
             // $file = './static/upload/photo/642e92efb79421734881b53e1e1b18b6/22.png';
             if (file_exists($file)) {
-                $thumb_path = "static/upload/thumb/" . $dir . '/' . $basename;
+                $thumb_path = "static/upload/thumb/" . $date . '/' . $dir . '/' . $basename;
 
                 !is_dir($thumb_path) && mkdir($thumb_path, 0777, true);
                 $image = \think\Image::open($file);
