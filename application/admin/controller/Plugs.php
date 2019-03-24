@@ -70,7 +70,6 @@ class Plugs extends BasicAdmin
 
     public function uploadMobile()
     {
-
         if (!empty($_FILES['file'])) {
             if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2) {
                 return json(['code' => 'ERROR', 'msg' => '文件上传大小受限']);
@@ -91,7 +90,7 @@ class Plugs extends BasicAdmin
         $data = [
             '__token__' => request()->post('token', 0)
         ];
-        if (!$validate->check($data))  return json(['code' => 'ERROR', 'msg' => '请勿多次上传']);
+        // if (!$validate->check($data))  return json(['code' => 'ERROR', 'msg' => '请勿多次上传']);
 
         $menber = session('motion_member');
         $filetype = request()->post('filetype', 0);
