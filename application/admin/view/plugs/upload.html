@@ -18,12 +18,8 @@
                 <i class="layui-icon"></i>
                 <p>点击上传</p>
             </div>
-            <form action="/admin/plugs/uploadMobile" method="POST" id="mobile-upload" enctype="multipart/form-data">
-                <input type="file" {if $info.mode==='mlt' } multiple="multiple" {/if} accept="{$info.mimes}" name="file"
-                    id="mobile-upload-file" style="display:none">
-                <input type="hidden" name="filetype" value="{$info.filetype}">
-                <input type="hidden" name="__token__" value="{$info.token}">
-            </form>
+            <input type="file" name="file"
+                id="layui-upload-file" style="display:none">
             <div class="">
                 <ul id="imgZmList"></ul>
             </div>
@@ -37,10 +33,44 @@
         var layer = layui.layer;
         var $ = jquery = layui.$;
         $('#uploadFile').click(function () {
-            $('#mobile-upload-file').trigger('click');
+            $('#layui-upload-file').trigger('click');
         })
-        $(document).on('change', '#mobile-upload-file', function () {
-            $('#mobile-upload').submit();
+        $(document).on('change', '#layui-upload-file', function () {
+            var fileObj = $(this)[0].files[0]
+            var formFile = new FormData();
+            formFile.append("action", "/admin/plugs/uploadMobile");
+            formFile.append("file", fileObj); //加入文件对象
+            formFile.append("token", '{$info.token}'); //加入TOKEN 验证
+            formFile.append("filetype", '{$info.filetype}'); //加入类型 验证
+            var data = formFile;
+            $.ajax({
+                url: "/admin/plugs/uploadMobile",
+                data: data,
+                type: "Post",
+                dataType: "json",
+                cache: false,//上传文件无需缓存
+                processData: false,//用于对data参数进行序列化处理 这里必须false
+                contentType: false, //必须
+                success: function (result) {
+                    if (result.code == 'SUCCESS') {
+                        parent.$('input[name="{$info.field}"]').val(result.data.site_url).trigger('change')
+
+                    } else if (result.code == 'ERROR') {
+                        layer.msg(result.msg)
+                    } else {
+                        layer.msg('上传失败，请重新上传')
+                    }
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭 
+
+                },
+                error: function () {
+                    layer.msg('上传失败，请重新上传', function () {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭 
+                    });
+                }
+            })
         })
     })
 </script>
