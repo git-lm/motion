@@ -38,107 +38,17 @@ class Plugs extends BasicAdmin
         $mode = $this->request->get('mode', 'one');
         $filetype = $this->request->get('filetype', '0');
         $view = $this->request->get('view', '0');
-        $types = $this->request->get('type', 'jpg,png');
-        $this->assign('mimes', FileService::getFileMine($types));
-        $this->assign('field', $this->request->get('field', 'file'));
-        if ($view == 'layui') {
-            return $this->fetch('upload', ['mode' => $mode, 'types' => $types, 'uptype' => $uptype, 'filetype' => $filetype]);
+        if (is_weixin()) {
+            $types = '';
+            $this->assign('mimes', '');
+        } else {
+            $types = $this->request->get('type', 'jpg,png');
+            $this->assign('mimes', FileService::getFileMine($types));
         }
+
+        $this->assign('field', $this->request->get('field', 'file'));
         return $this->fetch('', ['mode' => $mode, 'types' => $types, 'uptype' => $uptype, 'filetype' => $filetype]);
     }
-
-    public function upfileMobile()
-    {
-        $uptype = request()->get('uptype');
-        if (!in_array($uptype, ['local', 'qiniu', 'oss'])) {
-            $uptype = sysconf('storage_type');
-        }
-        $data['mode'] = request()->get('mode', 'one');
-        $data['filetype'] = request()->get('filetype', '0');
-        $data['types'] = request()->get('type', 'jpg,png');
-        $data['mimes'] = FileService::getFileMine($data['types']);
-        $data['field'] = request()->get('field', 'file');
-        $data['token'] = request()->token();
-        $this->assign('info', $data);
-        return $this->fetch('upload');
-    }
-
-    public function uploadtest()
-    {
-        return json(['code' => 'ERROR', 'msg' => $_FILES]);
-    }
-
-    public function uploadMobile()
-    {
-        if (!empty($_FILES['file'])) {
-            if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2) {
-                return json(['code' => 'ERROR', 'msg' => '文件上传大小受限']);
-            }
-        } else {
-            return json(['code' => 'ERROR', 'msg' => '请上传文件']);
-        }
-        $file = request()->file('file');
-        if (!$file->checkExt(strtolower(sysconf('storage_local_exts')))) {
-            return json(['code' => 'ERROR', 'msg' => '文件上传类型受限']);
-        }
-        if (!$file->checkSize(1024 * 1024 * 100)) {
-            return json(['code' => 'ERROR', 'msg' => '文件上传大小受限']);
-        }
-        $validate = Validate::make([
-            '__token__'  =>  'require|token',
-        ]);
-        $data = [
-            '__token__' => request()->post('token', 0)
-        ];
-        // if (!$validate->check($data))  return json(['code' => 'ERROR', 'msg' => '请勿多次上传']);
-
-        $menber = session('motion_member');
-        $filetype = request()->post('filetype', 0);
-        if (!empty($menber)) {
-            $uid = md5($menber['id']);
-        } else {
-            $uid = md5(0);
-            if ($filetype == 7) {
-                if (!empty(session('user.id'))) {
-                    $uid = md5(session('user.id'));
-                }
-            }
-        }
-        $dir = date('Ymd');
-        if ($filetype == 1) {
-            $pr = "{$dir}/{$uid}/sysconfig";
-        } else if ($filetype == 2) {
-            $pr = "{$dir}/{$uid}/store";
-        } else if ($filetype == 3) {
-            $pr = "{$dir}/{$uid}message";
-        } else if ($filetype == 4) {
-            $pr = "{$dir}/{$uid}/record";
-        } else if ($filetype == 5) {
-            $pr = "{$dir}/{$uid}/member";
-        } else if ($filetype == 6) {
-            $pr = "{$dir}/{$uid}/photo";
-        } else if ($filetype == 7) {
-            $pr = "{$dir}/{$uid}/arrange";
-        } else {
-            $pr = "{$dir}/{$uid}/others";
-        }
-        $names = substr(md5(date('Ymd') . rand(1000, 9999)), 0, 16);
-        $ext = strtolower(pathinfo($file->getInfo('name'), 4));
-        $ext = $ext ? $ext : 'tmp';
-        $filename = "{$names}.{$ext}";
-        if (($info = $file->move("static/upload/{$pr}", "{$filename}", true))) {
-            if (($site_url = FileService::getFileUrl("{$pr}/{$filename}", 'local'))) {
-                return json(['data' => ['site_url' => $site_url], 'code' => 'SUCCESS', 'msg' => '文件上传成功']);
-            }
-        }
-        return json(['code' => 'ERROR', 'msg' => '文件上传失败']);
-    }
-
-
-
-
-
-
     /**
      * 文件夹名称说明
      * 1、说明是系统参数图片
@@ -183,22 +93,23 @@ class Plugs extends BasicAdmin
                 }
             }
         }
+        $dir = date('Ym');
         if ($filetype == 1) {
-            $pr = "sysconfig/{$uid}";
+            $pr = "{$dir}/sysconfig/{$uid}";
         } else if ($filetype == 2) {
-            $pr = "store/{$uid}";
+            $pr = "{$dir}/store/{$uid}";
         } else if ($filetype == 3) {
-            $pr = "message/{$uid}";
+            $pr = "{$dir}/message/{$uid}";
         } else if ($filetype == 4) {
-            $pr = "record/{$uid}";
+            $pr = "{$dir}/record/{$uid}";
         } else if ($filetype == 5) {
-            $pr = "member/{$uid}";
+            $pr = "{$dir}/member/{$uid}";
         } else if ($filetype == 6) {
-            $pr = "photo/{$uid}";
+            $pr = "{$dir}/photo/{$uid}";
         } else if ($filetype == 7) {
-            $pr = "arrange/{$uid}";
+            $pr = "{$dir}/arrange/{$uid}";
         } else {
-            $pr = "others/{$uid}";
+            $pr = "{$dir}/others/{$uid}";
         }
         $names = str_split($this->request->post('md5'), 16);
         $ext = strtolower(pathinfo($file->getInfo('name'), 4));
