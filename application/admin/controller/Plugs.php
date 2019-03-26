@@ -204,14 +204,20 @@ class Plugs extends BasicAdmin
     /**
      * 图片生成缩略图
      */
-    public function imgthumb($date = '', $dir = '', $basename = '', $filename = '')
+    public function imgthumb()
     {
-        // header('content-type:image/png');
+        $file = request()->url();
+        $pathinfo = pathinfo($file);
+        if (empty($pathinfo)) {
+            return;
+        };
+        $dirname = $pathinfo['dirname'];
+        $basename = $pathinfo['basename'];
+        $extension = $pathinfo['extension'];
+        $filename = $pathinfo['filename'];
         $types = str_replace(',', '|', sysconf('storage_local_exts'));
-        $ext =  request()->ext();
-
-        if (!empty($date) && !empty($dir) && !empty($basename) && !empty($filename) && stripos($types, $ext) !== false) {
-
+        if (!empty($dirname) && !empty($basename) && !empty($filename) && stripos($types, $extension) !== false) {
+            $dir = str_replace('thumb/', '', $dirname);
             $fileNameArr = explode('_', $filename);
             if (empty($fileNameArr[0])) {
                 return;
@@ -228,17 +234,12 @@ class Plugs extends BasicAdmin
                 $width = (int)$fileNameArr[2] > 100 ? 100 : (int)$fileNameArr[2];
             }
 
-            $file = './static/upload/' . $date . '/' . $dir . '/' . $basename . '/' . $name . '.' . $ext;
-            // $file = './static/upload/photo/642e92efb79421734881b53e1e1b18b6/22.png';
+            $file = ".{$dir}/" . $name . '.' . $extension;
             if (file_exists($file)) {
-                $thumb_path = "static/upload/thumb/" . $date . '/' . $dir . '/' . $basename;
-
-                !is_dir($thumb_path) && mkdir($thumb_path, 0777, true);
+                !is_dir(trim($dirname, '/')) && mkdir(trim($dirname, '/'), 0777, true);
                 $image = \think\Image::open($file);
-                // echo $file;exit;
-                $image->thumb($width, $height)->save($thumb_path . '/' . $name . '_' . $width . '_' . $height . '.' . $ext);
-                // return $thumb_path . '/' . $name . '_' . $width . '_' . $height . '.' . $ext;
-                $img = FileService::getBaseUriLocal() . "/" . $thumb_path . '/' . $name . '_' . $width . '_' . $height . '.' . $ext;
+                $image->thumb($width, $height)->save(trim($dirname, '/') . '/' . $name . '_' . $width . '_' . $height . '.' . $extension);
+                // $img = FileService::getBaseUriLocal() .  $dirname . '/' . $name . '_' . $width . '_' . $height . '.' . $extension;
                 $imgType = $image->mime();
                 ob_start();
                 $image->save(null);
