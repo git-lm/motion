@@ -48,7 +48,7 @@ class Lesson extends MobileBase
             $where[] = ['l.class_time', '<', time()];
         }
 
-      
+
         $lists = $this->lessonModel->get_arrange_lists($where, $order, $page, $limit);
         $count = count($this->lessonModel->get_arrange_lists($where));
         //获取记录留言
@@ -139,7 +139,7 @@ class Lesson extends MobileBase
             $m_ids = 0;
         }
         $where['m_ids'] = $m_ids;
-        $where['name'] = $little['name'];
+        $where['name'] = trim($little['name']);
         $where['m_id'] = $this->m_id;
 
         $lists = $this->lessonModel->get_history($where);

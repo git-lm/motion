@@ -316,14 +316,14 @@ class Lesson extends Model
             // $whereArr[] = [['m_ids', 'in', $where['m_ids']], ['lc.name', 'like', $where['name']]];
             $whereArr[] = function ($query) use ($name, $m_ids) {
                 $query->where('m_ids', 'in', $m_ids)
-                    ->whereOr('lc.name', 'like', $name);
+                    ->whereOr('lc.name', 'like', '%' . $name . '%');
             };
         } else {
             if (!empty($where['m_ids'])) {
                 $whereArr[] = ['m_ids', 'in', $where['m_ids']];
             }
             if (!empty($where['name'])) {
-                $whereArr[] = ['lc.name', 'like', $where['name']];
+                $whereArr[] = ['lc.name', 'like', '%' . $where['name'] . '%'];
             }
         }
         // $where = ' m_ids in ( ' . $m_ids . ') and lc.state = 1 and l.class_time < "' . time() . '" and m_id = ' . $m_id;
