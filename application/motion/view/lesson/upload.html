@@ -6,7 +6,7 @@
         <label class="layui-form-label">计划名称</label>
         <div class="layui-input-block">
             <input type="text" id="upload" name="file" class="layui-input">
-            <a class="btn btn-link" data-filetype="7" data-file="one" data-uptype="local" data-type="xlsx"
+            <a class="btn btn-link" data-filetype="7" required data-file="one" data-uptype="local" data-type="xlsx"
                 data-field="file">上传计划</a>
         </div>
     </div>
@@ -29,6 +29,7 @@
 <script>
     $(function () {
         $(document).on('change', '#upload', function () {
+            var _this = $(this);
             var file = $(this).val();
             var mid = $('input[name="mid"]').val();
             if (file != '') {
@@ -36,7 +37,9 @@
                     if(data.code == 1 ){
                         $('.uploadmsg').html(data.msg.replace(new RegExp("\n", "gm"), '<br/>'));
                     }else{
-                        layer.msg(data.msg);
+                        _this.val('');
+                        $.msg.error(data.msg);
+                        return false;
                     }
                 },'json')
             }

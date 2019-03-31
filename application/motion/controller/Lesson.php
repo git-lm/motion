@@ -340,6 +340,9 @@ class Lesson extends BasicAdmin
             if ($type == 2) {
                 return $req;
             } else {
+                if ($req['code'] != 1) {
+                    $this->error($req['msg']);
+                }
                 $mid = input('mid/d');
                 $member = $this->check_member_data($mid);
                 $data = $req['data'];
@@ -419,6 +422,11 @@ class Lesson extends BasicAdmin
             if ('计划任务-' . date('Y-m-d') != $title) {
                 unlink($path);
                 return ['code' => 0, 'msg' => '计划表错误', 'data' => array()];
+            }
+            $end_title = (string)$worksheet->getCellByColumnAndRow(1, $highestRow)->getValue();
+            if ('结束计划' != $end_title) {
+                unlink($path);
+                return ['code' => 0, 'msg' => '计划表错误，无--结束计划--标签，请重新下载', 'data' => array()];
             }
             //循环列 去掉说明列
             for ($column = 2; $column <= $highestColumnIndex - 1; $column++) { //$highestRow
