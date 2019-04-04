@@ -26,6 +26,12 @@
     </div>
 </div>
 <div class="layui-form-item layui-inline">
+    <label class="layui-form-label">添加时间</label>
+    <div class="layui-input-inline">
+        <input name="create_at" id="create_at" value="{$Think.get.create_at}" placeholder="请选择添加时间" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item layui-inline">
     <button class="layui-btn layui-btn-primary" lay-filter="motion_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
 </div>
 <table id="motionTable" lay-filter="motionTable"></table>
@@ -35,6 +41,7 @@
     $(function () {
         $.layuitable('motionTable');
         formSelects.render('mtname');
+        window.laydate.render({range: true, elem: '#create_at'});
     })
 
     table.render({
@@ -68,11 +75,12 @@
     form.on('submit(motion_search)', function () {
         var name = $('input[name="name"]').val();
         var mtid = formSelects.value('mtname' , 'valStr'); 
-//        var mtid = $('select[name="mtid"]').val();
+       var create_at = $('input[name="create_at"]').val();
         table.reload('motionTable', {
             where: {
                 name: name,
                 mtid :mtid,
+                create_at :create_at,
             },
             page: {curr: 1}
         })

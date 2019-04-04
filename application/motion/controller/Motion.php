@@ -45,20 +45,25 @@ class Motion extends BasicAdmin
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $mtid = request()->has('mtid', 'get') ? request()->get('mtid/s') : 0;
+        $create_at = request()->has('create_at', 'get') ? request()->get('create_at/s') : '';
         if ($name) {
-                $where[] = ['mb.name', 'like', '%' . $name . '%'];
-            }
+            $where[] = ['mb.name', 'like', '%' . $name . '%'];
+        }
         if ($mtid) {
-                $where[] = ['mb.tid', 'in', $mtid];
-            }
+            $where[] = ['mb.tid', 'in', $mtid];
+        }
+        if (isset($create_at) && $create_at !== '') {
+            list($start, $end) = explode(' - ', $create_at);
+            $where[] = ['create_time', 'between', [strtotime($start . ' 00:00:00'), strtotime($end . ' 23:59:59')]];
+        }
         $where[] = ['mb.status', '<>', 0];
         $order['mtsort'] = 'asc';
         $order['mb.create_time'] = 'desc';
         $lists = $this->motionModel->get_motions($where, $order, $page, $limit);
         foreach ($lists as &$list) {
-                preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $list['url'], $matched);
-                $list['url_show'] = $matched[1];
-            }
+            preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $list['url'], $matched);
+            $list['url_show'] = $matched[1];
+        }
         $count = count($this->motionModel->get_motions($where));
         echo $this->tableReturn($lists, $count);
     }
@@ -87,8 +92,8 @@ class Motion extends BasicAdmin
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
         $url = request()->has('url', 'post') ? request()->post('url/s') : '';
         if (!$tid) {
-                $this->error('请选择类型');
-            }
+            $this->error('请选择类型');
+        }
         preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $url, $matched);
         $src = $matched[1];
         //验证数据
@@ -97,16 +102,16 @@ class Motion extends BasicAdmin
         $data['src'] = $src;
         $validate = $this->motionModel->validate($data);
         if ($validate) {
-                $this->error($validate);
-            }
+            $this->error($validate);
+        }
         unset($data['src']);
         $data['url'] = $url;
         $code = $this->motionModel->add($data);
         if ($code) {
-                $this->success('保存成功', '');
-            } else {
-                $this->error('保存失败');
-            }
+            $this->success('保存成功', '');
+        } else {
+            $this->error('保存失败');
+        }
     }
 
     /**
@@ -116,8 +121,8 @@ class Motion extends BasicAdmin
     {
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         if (!$id) {
-                $this->error('请正确选择类型');
-            }
+            $this->error('请正确选择类型');
+        }
         //判断类型是否存在
         $list = $this->check_data($id);
         $where[] = ['status', '<>', 0];
@@ -141,11 +146,11 @@ class Motion extends BasicAdmin
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
         $url = request()->has('url', 'post') ? request()->post('url/s') : '';
         if (!$tid) {
-                $this->error('请选择类型');
-            }
+            $this->error('请选择类型');
+        }
         if (!$id) {
-                $this->error('请正确选择动作库');
-            }
+            $this->error('请正确选择动作库');
+        }
         preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $url, $matched);
         $src = $matched[1];
         //判断类型是否存在
@@ -156,17 +161,17 @@ class Motion extends BasicAdmin
         $data['src'] = $src;
         $validate = $this->motionModel->validate($data);
         if ($validate) {
-                $this->error($validate);
-            }
+            $this->error($validate);
+        }
         $where['id'] = $id;
         unset($data['src']);
         $data['url'] = $url;
         $code = $this->motionModel->edit($data, $where);
         if ($code) {
-                $this->success('编辑成功', '');
-            } else {
-                $this->error('编辑失败');
-            }
+            $this->success('编辑成功', '');
+        } else {
+            $this->error('编辑失败');
+        }
     }
 
     public function del()
@@ -174,17 +179,17 @@ class Motion extends BasicAdmin
         //获取数据
         $id = request()->has('id', 'post') ? request()->post('id/d') : 0;
         if (!$id) {
-                $this->error('请正确选择类型');
-            }
+            $this->error('请正确选择类型');
+        }
         $list = $this->check_data($id);
         $where['id'] = $id;
         $data['status'] = 0;
         $code = $this->motionModel->edit($data, $where);
         if ($code) {
-                $this->success('删除成功', '');
-            } else {
-                $this->error('删除失败');
-            }
+            $this->success('删除成功', '');
+        } else {
+            $this->error('删除失败');
+        }
     }
 
     /**
@@ -195,8 +200,8 @@ class Motion extends BasicAdmin
         $where['id'] = $tid;
         $list = $this->motionModel->get_motion($where);
         if (empty($list)) {
-                $this->error('无此动作库');
-            }
+            $this->error('无此动作库');
+        }
         return $list;
     }
 }
