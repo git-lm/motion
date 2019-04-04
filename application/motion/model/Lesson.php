@@ -96,6 +96,10 @@ class Lesson extends Model
             $list['class_time_show'] = $this->getDateAttr($list['class_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
             $list['state_show'] = $this->getStateAttr($list['state']);
+            $warmup_video = Db::table('motion_bank')->field('GROUP_CONCAT(name) bank_name')->whereIn('id', $list['warmup_mids'])->find();
+            $list['warmup_video']  = $warmup_video['bank_name'];
+            $colldown_video = Db::table('motion_bank')->field('GROUP_CONCAT(name) bank_name')->whereIn('id', $list['colldown_mids'])->find();
+            $list['colldown_video'] = $colldown_video['bank_name'];
         }
         return $lists;
     }
@@ -185,6 +189,8 @@ class Lesson extends Model
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
             $list['state_show'] = $this->getStateAttr($list['state']);
+            $video = Db::table('motion_bank')->field('GROUP_CONCAT(name) bank_name')->whereIn('id', $list['m_ids'])->find();
+            $list['video'] = $video['bank_name'];
         }
         return $lists;
     }

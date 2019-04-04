@@ -21,13 +21,14 @@
         <label class="layui-form-label">添加视频</label>
         <div class="layui-input-block">
             <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
-                xm-select="edit_m_ids" lay-verify="required" class="layui-select full-width block" name="m_ids"
-                lay-ignore="">
+                xm-select="edit_m_ids{:date('s')}" lay-verify="required" class="layui-select full-width block"
+                name="m_ids" lay-ignore="">
                 <option value=""> - 请选择视频 -</option>
                 <!--{volist name="types" id="type"}-->
                 <optgroup label="{$type.name}">
                     <!--{volist name="type.motion" id="m"}-->
-                    <option {in name="$m.id" value="$list.m_ids" }selected='selected'{/in} value="{$m.id}">{$m.name}</option>
+                    <option {in name="$m.id" value="$list.m_ids" }selected='selected' {/in} value="{$m.id}">
+                        {$m.id}-{$m.name} </option>
                     <!--{/volist}-->
                 </optgroup>
                 <!--{/volist}-->
@@ -55,7 +56,7 @@
 {block name="script"}
 <script>
     $(function () {
-        formSelects.render('edit_m_ids', {
+        formSelects.render("edit_m_ids{:date('s')}", {
             template: function (name, value, selected, disabled) {
                 var mid = value.value;
                 return value.name + '<a data-value="' + mid + '"  class="selecthref" style="position: absolute; right: 0; color: #A0A0A0; font-size: 12px;">点击查看</a>';
