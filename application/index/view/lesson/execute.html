@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-dns-prefetch-control" content="on" />
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <!-- windows phone 点击无高光 -->
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>{:sysconf('site_name')}</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/plugs/layui/css/layui.css?v={:date('his')}">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/index/css/pubilc.css?v={:date('his')}" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/index/css/index.css?v={:date('his')}" />
+    <link rel="stylesheet" href="__STATIC__/plugs/iosSelec/iosSelect.css?v={:date('his')}" type="text/css" />
+    <link rel="stylesheet" media="screen and (max-width:750px)" href="__STATIC__/index/css/mobile.css?v={:date('his')}"
+        type="text/css" />
+
+    {block name="style"}{/block}
+    <script>window.ROOT_URL = '__ROOT__';</script>
+    <!--js-->
+    <script type="text/javascript" src="__STATIC__/plugs/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/index/js/rem.js"></script>
+    <script type="text/javascript" src="__STATIC__/plugs/layui/layui.js"></script>
+    <script type="text/javascript" src="__STATIC__/index.js?v={:date('his')}"></script>
+    <script type="text/javascript" src="__STATIC__/plugs/iosSelec/iosSelect.js?v={:date('his')}"></script>
+    <script type="text/javascript" src="__STATIC__/plugs/iosSelec/data.js?v={:date('his')}"></script>
+</head>
+
+<body>
+    <div class="timer">
+        <div class="title">
+            <a class="layui-btn layui-btn-primary">
+                计时器
+            </a>
+        </div>
+        <form action='{:url("/lesson/timer")}' method="GET" id="timerStart">
+            <div>
+                <a class="layui-btn layui-btn-primary btn-click" id="btn-group">
+                    组
+                </a>
+                <a class="layui-btn layui-btn-primary">
+                    <span class="group">1</span>组
+                    <input type="hidden" name="group" value="1">
+                </a>
+            </div>
+            <div>
+                <a class="layui-btn layui-btn-primary btn-click" id="btn-motion">
+                    运动时间
+                </a>
+                <a class="layui-btn layui-btn-primary">
+                    <span class="motion_min"> 00 </span>分
+                    <input type="hidden" name="motion_min" value="00">
+                </a>
+                <a class="layui-btn layui-btn-primary">
+                    <span class="motion_sec"> 1 </span>秒
+                    <input type="hidden" name="motion_sec" value="01">
+                </a>
+            </div>
+            <div>
+                <a class="layui-btn layui-btn-primary btn-click" id="btn-rest">
+                    休息时间
+                </a>
+                <a class="layui-btn layui-btn-primary">
+                    <span class="rest_min"> 00</span>分
+                    <input type="hidden" name="rest_min" value="00">
+                </a>
+                <a class="layui-btn layui-btn-primary">
+                    <span class="rest_sec"> 1 </span>秒
+                    <input type="hidden" name="rest_sec" value="01">
+                </a>
+            </div>
+            <div>
+                <a class="layui-btn layui-btn-primary btn-click" id="btn-down">
+                    倒计时
+                </a>
+                <a class="layui-btn layui-btn-primary">
+                    <span class="down"> 00 </span>秒
+                    <input type="hidden" name="down" value="00">
+                </a>
+            </div>
+            <div>
+                <a class="layui-btn layui-btn-primary timerStart">
+                    开始
+                </a>
+                <a class="layui-btn layui-btn-primary timerClose">
+                    关闭
+                </a>
+            </div>
+
+            <input name="id" value="{$id}" type="hidden">
+        </form>
+    </div>
+    <div class="container"></div>
+    <div class="doweboktime" style="display:none">
+        <div class="dowebok">
+            <div class="minutes"></div>
+            <div class="seconds"></div>
+        </div>
+    </div>
+</body>
+<style>
+    .doweboktime {
+        height: 100%;
+        width: 100%;
+        background-color: #333;
+    }
+</style>
+<script>
+
+    $(function () {
+        $('.timerStart').click(function () {
+            var data = $('#timerStart').serialize();
+            $('#timerStart').submit();
+        })
+        $('.timerClose').click(function () {
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭  
+        })
+        $('.btn-click').click(function () {
+            $('.btn-click').removeClass('layui-bg-red');
+            $(this).addClass('layui-bg-red');
+        })
+        //组按钮
+        var btn_group = document.querySelector('#btn-group');
+        btn_group.addEventListener('click', function () {
+            var bankSelect = new IosSelect(1,
+                [execute_num],
+                {
+                    container: '.container',
+                    title: '选择组',
+                    itemHeight: 50,
+                    itemShowCount: 3,
+                    callback: function (selectOneObj) {
+                        $('.group').html(selectOneObj.id);
+                        $('input[name="group"]').val(selectOneObj.id);
+                    }
+                });
+        });
+        //运动按钮
+        var btn_motion = document.querySelector('#btn-motion');
+        btn_motion.addEventListener('click', function () {
+            var bankSelect = new IosSelect(2,
+                [execute_min, execute_sec],
+                {
+                    container: '.container',
+                    title: '选择运动时间',
+                    itemHeight: 50,
+                    itemShowCount: 3,
+                    callback: function (selectOneObj, selectTwoObj) {
+                        $('.motion_min').html(selectOneObj.id);
+                        $('input[name="motion_min"]').val(selectOneObj.id);
+                        $('.motion_sec').html(selectTwoObj.id);
+                        $('input[name="motion_sec"]').val(selectTwoObj.id);
+                    }
+                });
+        });
+        //休息按钮
+        var btn_rest = document.querySelector('#btn-rest');
+        btn_rest.addEventListener('click', function () {
+            var bankSelect = new IosSelect(2,
+                [execute_min, execute_sec],
+                {
+                    container: '.container',
+                    title: '选择休息时间',
+                    itemHeight: 50,
+                    itemShowCount: 3,
+                    callback: function (selectOneObj, selectTwoObj) {
+                        $('.rest_min').html(selectOneObj.id);
+                        $('input[name="rest_min"]').val(selectOneObj.id);
+                        $('.rest_sec').html(selectTwoObj.id);
+                        $('input[name="rest_sec"]').val(selectTwoObj.id);
+                    }
+                });
+        });
+        //倒计时按钮
+        var btn_down = document.querySelector('#btn-down');
+        btn_down.addEventListener('click', function () {
+            var bankSelect = new IosSelect(1,
+                [execute_num],
+                {
+                    container: '.container',
+                    title: '选择组',
+                    itemHeight: 50,
+                    itemShowCount: 3,
+                    callback: function (selectOneObj) {
+                        $('.down').html(selectOneObj.id);
+                        $('input[name="down"]').val(selectOneObj.id);
+                    }
+                });
+        });
+
+    })
+</script>

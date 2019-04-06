@@ -249,6 +249,23 @@ class Lesson extends MobileBase
         }
     }
 
+    public function execute()
+    {
+        $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
+        $this->assign('id', $id);
+        return $this->fetch();
+    }
+    public function timer()
+    {
+        $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
+        $where[] = ['id', '=', $id];
+        $course = $this->lessonModel->get_little_course($where);
+        $get = request()->get();
+        $this->assign('course', $course);
+        $this->assign('info', $get);
+        return $this->fetch();
+    }
+
     /**
      * 获取留言
      */

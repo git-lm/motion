@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-dns-prefetch-control" content="on" />
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <!-- windows phone 点击无高光 -->
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="__STATIC__/index/css/index.css?v={:date('his')}" />
+    <title>{:sysconf('site_name')}</title>
+    <!--js-->
+    <script type="text/javascript" src="__STATIC__/plugs/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/plugs/layui/layui.js"></script>
+</head>
+
+<body>
+    <div class="doweboktime">
+        <input type="hidden" value="{$info.group|default=0}" id="group">
+        <input type="hidden" value="{$info.motion_min|default=0}" id="motion_min">
+        <input type="hidden" value="{$info.motion_sec|default=0}" id="motion_sec">
+        <input type="hidden" value="{$info.rest_min|default=0}" id="rest_min">
+        <input type="hidden" value="{$info.rest_sec|default=0}" id="rest_sec">
+        <input type="hidden" value="{$info.down|default=0}" id="down">
+        <div id="title">计时器（<span id="status">倒计时</span>）</div>
+        <div class="wrap">
+            <div id="timer">
+                <span id="minute">{$info.motion_min|default=0}</span>
+                <span>:</span>
+                <span id="second">{$info.motion_sec|default=0}</span>
+            </div>
+            <div id="detile">
+                {:nl2br($course.remark)}
+            </div>
+            <div id="num">
+                <span class="already">0</span>/<span class="count">{$info.group|default=0}</span>
+            </div>
+            <div id="btn">
+                <button id="begin">开始</button>
+                <button id="pause">暂停</button>
+                <button id="end">结束</button>
+                <button id="close">关闭</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+</style>
+<script>
+    var group = $('#group').val();
+    var groupAdd = 1;
+    var motionFlag = false;
+    var restFlag = false;
+    var height = $(window).height();
+    $('.doweboktime').css('height', height);
+    $(function () {
+        var down = $('#down').val();
+        //读秒 倒计时
+        setTime = setInterval(function () {
+            if (down <= 0) {
+                motion();
+                $('#begin').css('display', 'none').html('开始');
+                $('#pause').css('display', 'inline');
+                clearInterval(setTime);
+                return;
+            }
+            $('#begin').html(down)
+            down--;
+        }, 1000);
+    })
+    $('#close').click(function () {
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭  
+    })
+    //运动开始
+    function motion() {
+        motionFlag = true;
+
+        console.log('运动开始');
+        $('.already').html(groupAdd);
+        groupAdd++;
+        group--;
+        var min = $('#motion_min').val();
+        var sec = $('#motion_sec').val();
+        motion_time(min, sec);
+    }
+    function motion_time(min, sec) {
+        $('#status').html('运动时间');
+        setTime1 = setInterval(function () {
+            if (min <= 0 && sec <= 0) {
+                motionFlag = false;
+                if (group > 0) {
+                    rest();
+                } else {
+                    $('#status').html('已结束');
+                    $('#begin').css('display', 'none');
+                    $('#pause').css('display', 'none');
+                    $('#end').css({ 'display': 'inline', 'background-color': 'red', 'border': 'red', 'color': '#FFFFFF' });
+                }
+                clearInterval(setTime1);
+                return;
+            }
+            if (sec <= 0) {
+                if (sec <= 10) {
+                    min--;
+                    min = "0" + min;
+
+                } else {
+                    min--;
+                }
+                sec = 60;
+            }
+
+            if (sec <= 10) {
+                sec--;
+                sec = "0" + sec;
+
+            } else {
+                sec--;
+            }
+            $('#minute').html(min)
+            $('#second').html(sec)
+        }, 1000);
+    }
+    //休息开始
+    function rest() {
+        restFlag = true;
+        console.log('休息开始');
+        var min = $('#rest_min').val();
+        var sec = $('#rest_sec').val();
+        rest_time(min, sec);
+    }
+    function rest_time(min, sec) {
+        $('#status').html('休息时间');
+        setTime2 = setInterval(function () {
+            if (min <= 0 && sec <= 0) {
+                restFlag = false;
+                motion();
+                clearInterval(setTime2);
+                return;
+            }
+            if (sec <= 0) {
+                if (sec <= 10) {
+                    min--;
+                    min = "0" + min;
+
+                } else {
+                    min--;
+                }
+                sec = 60;
+            }
+            if (sec <= 10) {
+                sec--;
+                sec = "0" + sec;
+
+            } else {
+                sec--;
+            }
+
+            $('#minute').html(min)
+            $('#second').html(sec)
+        }, 1000);
+    }
+    //暂停
+    $('#pause').click(function () {
+        $('#begin').css('display', 'inline');
+        $('#pause').css('display', 'none');
+        $('#status').html('暂停时间');
+        if (motionFlag) {
+            clearInterval(setTime1);
+        }
+        if (restFlag) {
+            clearInterval(setTime2);
+        }
+    })
+    $('#begin').click(function () {
+        var minute = $('#minute').html();
+        var second = $('#second').html();
+        $('#begin').css('display', 'none');
+        $('#pause').css('display', 'inline');
+        if (motionFlag) {
+            motion_time(minute, second);
+        }
+        if (restFlag) {
+            rest_time(minute, second);
+        }
+    })
+
+</script>

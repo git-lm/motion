@@ -66,6 +66,8 @@
                     <!--main_list_l_r_top_b start-->
                     <div class="main_list_l_r_top_b">
                         <p class="font_l">{:nl2br($c.remark)}</p>
+                        <p class="R layui-btn layui-btn-warm"
+                            data-modal='{:url("/lesson/execute")}?id={$c.id}' data-title="">开始</p>
                         <!--视频 开始-->
                         <div class="videos">
                             {volist name="c.motions" id="motion"}
