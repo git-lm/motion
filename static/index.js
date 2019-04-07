@@ -44,6 +44,7 @@ $(function () {
             var title = $(this).attr('data-title') || '';
             var index = layer.open({
                 type: 2,
+                closeBtn :0,
                 title: title,
                 content: [url, 'no'] //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以
             });
