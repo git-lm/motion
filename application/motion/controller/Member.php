@@ -451,6 +451,43 @@ class Member extends BasicAdmin
         $dataInfo = $this->memberDataModel->dataHandle($memberData);
         echo json_encode($dataInfo);
     }
+    /**
+     * 初始化课程
+     */
+    public function initializeClass()
+    {
+        $mid = request()->has('mid') ? request()->param('mid/d') : 0;
+        if (!$mid) {
+            $this->error('请正确选择会员');
+        }
+        $this->check_data($mid);
+        if (request()->isGet()) {
+            $this->assign('mid', $mid);
+            return $this->fetch();
+        }
+        $expire_time = request()->has('expire_time', 'post') ? request()->post('expire_time/s') : '';
+        if (!$expire_time) {
+            $this->error('请正确选择时间');
+        }
+        if (isset($expire_time) && $expire_time !== '') {
+            list($start, $end) = explode(' - ', $expire_time);
+        }
+        if (!$start || !$end) {
+            $this->error('请正确选择时间');
+        }
+        $where[] = ['is_system', '=', 1];
+        $where[] = ['m.status', '=', 1];
+        $systemMember = $this->memberModel->get_member($where);
+        if (empty($systemMember)) {
+            $this->error('无系统会员');
+        }
+        $code = $this->memberModel->initializeClass($mid,  $systemMember['id'], $start, $end);
+        if ($code) {
+            $this->success('添加成功', '');
+        } else {
+            $this->error('添加失败');
+        }
+    }
 
 
     /**

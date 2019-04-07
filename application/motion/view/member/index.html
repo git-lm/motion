@@ -1,7 +1,8 @@
 {extend name='admin@public/content'}
 {block name="button"}
 <!--{if auth("$classuri/add")}-->
-<button data-modal='{:url("$classuri/add")}' data-title="添加会员" class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>
+<button data-modal='{:url("$classuri/add")}' data-title="添加会员"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>
 {/block}
 
 {block name="content"}
@@ -26,7 +27,8 @@
     </div>
 </div>
 <div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="member_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
+    <button class="layui-btn layui-btn-primary" lay-filter="member_search" lay-submit><i class="layui-icon">&#xe615;</i>
+        搜 索</button>
 </div>
 <table id="memberTable" lay-filter="memberTable"></table>
 {/block}
@@ -34,11 +36,11 @@
 <script>
     $(function () {
         $.layuitable('memberTable');
-        laydate.render({range: true, elem: '#expire_time'});
+        laydate.render({ range: true, elem: '#expire_time' });
         $('body').on('mouseenter', '.end_time_show', function () {
             var that = this;
             var mid = $(this).attr('data-itemid');
-            $.post('{:url("get_member_times")}', {'mid': mid}, function (data) {
+            $.post('{:url("get_member_times")}', { 'mid': mid }, function (data) {
                 if (data.data.length != 0) {
                     var tipsHtml = '到期时间：<br />';
                     for (var i = 0; i < data.data.length; i++) {
@@ -58,16 +60,17 @@
         loading: true,
         title: '会员列表',
         cols: [[//表头
-                {title: '序号', fixed: 'left', type: 'numbers'},
-                {field: 'name', title: '会员名称'},
-                {field: 'phone', title: '手机号码'},
-                {field: 'cname', title: '教练'},
-                {field: 'status_show', title: '状态'},
-                {field: 'end_time_show', title: '到期时间', templet: '#end_time_show'},
-                {field: 'create_time_show', title: '添加时间'},
-                {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#memberhandle'
-                }
-            ]],
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'name', title: '会员名称' },
+            { field: 'phone', title: '手机号码' },
+            { field: 'cname', title: '教练' },
+            { field: 'status_show', title: '状态' },
+            { field: 'end_time_show', title: '到期时间', templet: '#end_time_show' },
+            { field: 'create_time_show', title: '添加时间' },
+            {
+                fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#memberhandle'
+            }
+        ]],
         parseData: function (res) { //res 即为原始返回的数据
             return {
                 "code": res.code, //解析接口状态
@@ -89,7 +92,7 @@
                 cname: cname,
                 expire_time: expire_time
             },
-            page: {curr: 1}
+            page: { curr: 1 }
         })
     })
 </script>
@@ -118,6 +121,9 @@
     {{#}}}
     <!--{if auth("$classuri/dis")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('dis')}" data-field="mid" lay-event="open">分配教练</a>
+    <!--{/if}-->
+    <!--{if auth("$classuri/initialize")}-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('initializeClass')}" data-field="mid" lay-event="open">初始化课程</a>
     <!--{/if}-->
 </script>
 <script type="text/html" id="end_time_show">

@@ -5,6 +5,7 @@ namespace app\motion\model;
 use think\Model;
 use think\Db;
 use service\DbService;
+use app\motion\model\Lesson as lessonModel;
 
 class Member extends Model
 {
@@ -468,6 +469,7 @@ class Member extends Model
         return $lists;
     }
 
+
     /**
      * 获取会员运动记录
      * @param type $where
@@ -596,6 +598,63 @@ class Member extends Model
         return $infoArr;
     }
 
+    /**
+     * 会员初始化
+     * @param string $mid               要添加的会员
+     * @param string $systemMid         系统会员
+     * @param string $start             开始时间
+     * @param string $end               结束时间
+     */
+    public function initializeClass($mid, $systemMid, $start, $end)
+    {
+        $mwhere[] = ['m.id', '=', $mid];
+        $member =   $this->get_member($mwhere);
+        $lessonModel = new lessonModel();
+        $lwhere['l.m_id'] = $systemMid;
+        $lorder['class_time'] = 'asc';
+        $courses = $lessonModel->get_arrange_lists($lwhere, $lorder);
+        //计算时差
+        $day = floor((strtotime($end) - strtotime($start)) / 86400);
+        Db::startTrans();
+        try {
+            for ($i = 0; $i < $day; $i++) {
+                if (!empty($courses[$i])) {
+                    $littleWhere['l_id'] = ['=', $courses[$i]['id']];
+                    $littleWhere['status'] = ['=', 1];
+                    //获取计划详情
+                    $littleOrder['sort'] = 'asc';
+                    $littleOrder['create_time'] = 'desc';
+                    $littles = $lessonModel->get_little_courses($littleWhere, $littleOrder);
+                    //添加计划
+                    unset($courses[$i]['id']);
+                    $courses[$i]['create_time'] = time();
+                    $courses[$i]['m_id'] = $mid;
+                    $courses[$i]['coach_id'] = $member['c_id'];
+                    $courses[$i]['class_time'] = strtotime('+' . $i . ' day', strtotime($start));
+                    //获取自增ID
+                    $course_id = $lessonModel->add($courses[$i]);
+                    if (!empty($littles)) {
+                        foreach ($littles as $little) {
+                            unset($little['id']);
+                            $little['l_id'] = $course_id;
+                            $little['create_time'] = time();
+                            $lessonModel->little_add($little);
+                        }
+                    }
+                }
+            }
+            $data['create_time'] = time();
+            $data['m_id'] = $mid;
+            $data['u_id'] = session('user.id');
+            Db::table('motion_lesson_sys')->insert($data);
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            return false;
+        }
+    }
 
 
     /**
