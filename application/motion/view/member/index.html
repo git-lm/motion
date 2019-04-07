@@ -123,7 +123,9 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('dis')}" data-field="mid" lay-event="open">分配教练</a>
     <!--{/if}-->
     <!--{if auth("$classuri/initialize")}-->
+    {{#if (!d.sid && !d.is_system){}}
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('initializeClass')}" data-field="mid" lay-event="open">初始化课程</a>
+    {{#}}}
     <!--{/if}-->
 </script>
 <script type="text/html" id="end_time_show">

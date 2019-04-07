@@ -82,8 +82,10 @@ class Member extends Model
     {
         $db = Db::table($this->table)
             ->alias('m')
-            ->field('m.* ,c.name cname ,t.end_time')
+            ->field('m.* ,c.name cname ,t.end_time ,s.id sid')
+            ->leftjoin(['motion_lesson_sys' => 's'], 's.m_id = m.id')
             ->leftJoin(['motion_coach' => 'c'], 'c.id = m.c_id');
+
         $buildSql = Db::table('motion_member_time')->field(['MAX(end_time)' => 'end_time', 'm_id'])->where('status', '=', 1)->group('m_id')->buildSql();
         $db->leftJoin([$buildSql => 't'], 't.m_id = m.id');
 
