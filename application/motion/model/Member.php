@@ -611,6 +611,7 @@ class Member extends Model
         $member =   $this->get_member($mwhere);
         $lessonModel = new lessonModel();
         $lwhere['l.m_id'] = $systemMid;
+        $lwhere['l.status'] = 1;
         $lorder['class_time'] = 'asc';
         $courses = $lessonModel->get_arrange_lists($lwhere, $lorder);
         //计算时差
