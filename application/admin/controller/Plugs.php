@@ -58,6 +58,7 @@ class Plugs extends BasicAdmin
      * 5、会员头像
      * 6、会员照片
      * 7、计划任务
+     * 8、音乐
      */
 
     /**
@@ -108,6 +109,8 @@ class Plugs extends BasicAdmin
             $pr = "{$dir}/photo/{$uid}";
         } else if ($filetype == 7) {
             $pr = "{$dir}/arrange/{$uid}";
+        } else if ($filetype == 8) {
+            $pr = "{$dir}/music/{$uid}";
         } else {
             $pr = "{$dir}/others/{$uid}";
         }

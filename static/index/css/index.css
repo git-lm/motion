@@ -1088,7 +1088,13 @@ body{
     top: calc(50% - 150px);
     left: calc(50% - 150px);
 }
-
+.doweboktime .wrap #music{
+    height: 50px;
+    width: 50px; 
+    position: absolute; 
+    bottom: 5% ;
+    right: 3%;
+}
 .doweboktime #title {
     position: absolute;
     top: 2%;
@@ -1142,3 +1148,24 @@ body{
 #pause ,#end {
     display: none;
 }
+
+.rotate {
+    -webkit-animation: rotating 1.2s linear infinite;
+     -moz-animation: rotating 1.2s linear infinite;
+     -o-animation: rotating 1.2s linear infinite;
+     animation: rotating 1.2s linear infinite
+ }
+  
+ @-webkit-keyframes rotating {
+     from { -webkit-transform: rotate(0) }
+     to { -webkit-transform: rotate(360deg) }
+ }
+  
+ @keyframes rotating {
+     from { transform: rotate(0) }
+     to { transform: rotate(360deg) }
+ }
+ @-moz-keyframes rotating {
+     from { -moz-transform: rotate(0) }
+     to { -moz-transform: rotate(360deg) }
+ }

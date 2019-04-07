@@ -257,10 +257,12 @@ class Lesson extends MobileBase
     }
     public function timer()
     {
+        $music = sysconf('timer_music');
         $id = request()->has('id', 'get') ? request()->get('id/d') : 0;
         $where[] = ['id', '=', $id];
         $course = $this->lessonModel->get_little_course($where);
         $get = request()->get();
+        $this->assign('music', $music);
         $this->assign('course', $course);
         $this->assign('info', $get);
         return $this->fetch();

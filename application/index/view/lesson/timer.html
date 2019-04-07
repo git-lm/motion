@@ -25,6 +25,9 @@
     <!--js-->
     <script type="text/javascript" src="__STATIC__/plugs/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="__STATIC__/plugs/layui/layui.js"></script>
+    {if !empty($music)}
+    <script src="https://y.gtimg.cn/music/h5/player/player.js?max_age=2592000"></script>
+    {/if}
 </head>
 
 <body>
@@ -55,12 +58,37 @@
                 <button id="end">结束</button>
                 <button id="close">关闭</button>
             </div>
+            {if !empty($music)}
+            <div id="music">
+                <img class="" src="__STATIC__/index/images/music.png">
+            </div>
+            {/if}
         </div>
-    </div>
-</body>
 
-<style>
-</style>
+    </div>
+
+</body>
+{if !empty($music)}
+<script>
+    var params = {
+        target: "auto",
+        filter: "true",
+        loop: "false",
+
+    };
+    var player = new QMplayer(params);
+    $('#music').click(function () {
+        console.log($(this).find('img').hasClass('rotate'))
+        if ($(this).find('img').hasClass('rotate')) {
+            $(this).find('img').removeClass('rotate');
+        } else {
+            $(this).find('img').addClass('rotate');
+        }
+        player.play(["{$music}"]);
+    })
+</script>
+{/if}
+
 <script>
     var group = $('#group').val();
     var groupAdd = 1;
@@ -91,7 +119,6 @@
     function motion() {
         motionFlag = true;
 
-        console.log('运动开始');
         $('.already').html(groupAdd);
         groupAdd++;
         group--;
@@ -140,7 +167,6 @@
     //休息开始
     function rest() {
         restFlag = true;
-        console.log('休息开始');
         var min = $('#rest_min').val();
         var sec = $('#rest_sec').val();
         rest_time(min, sec);
