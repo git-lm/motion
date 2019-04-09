@@ -350,7 +350,7 @@ class Lesson extends BasicAdmin
                 Db::startTrans();
                 try {
                     foreach ($data as $key => $value) {
-                        $mid = $value['m_id'];
+                        $mid = $key;
                         $member = $this->check_member_data($mid);
                         foreach ($value as $k => $vo) {
                             $lesson['class_time'] = strtotime(validate()->isDate($vo[0]) ? $vo[0] : date('Y-m-d'));  //上课时间
@@ -360,32 +360,30 @@ class Lesson extends BasicAdmin
                             $lesson['m_id'] = $mid;
                             $lesson['coach_id'] = $member['c_id'];
                             $lesson['file_url'] = $file_url;
-                            dump($lesson);
-
-                            // $lesson_id =  $this->lessonModel->add($lesson);
-                            // if (!$lesson_id) {
-                            //     continue;
-                            // }
-                            // foreach ($vo['detail'] as $k =>  $v) {
-                            //     if (empty($v[0]) && empty($v[1])) {
-                            //         continue;
-                            //     }
-                            //     $little['num'] = !empty($v[0]) ? $v[0] : ''; //动作编号
-                            //     $name_remark = trim($v[1]);
-                            //     $name =  substr($name_remark, 0, stripos($name_remark, "\n"));
-                            //     $remark =  substr($name_remark, stripos($name_remark, "\n"));
-                            //     $little['name'] = !empty($name) ? $name  : '';
-                            //     $little['remark'] = !empty($remark) ? $remark  : '';
-                            //     $little['l_id'] =  $lesson_id;
-                            //     $little_id = $this->lessonModel->little_add($little);
-                            //     if (!$little_id) {
-                            //         continue;
-                            //     }
-                            // }
+                            $lesson_id =  $this->lessonModel->add($lesson);
+                            if (!$lesson_id) {
+                                continue;
+                            }
+                            foreach ($vo['detail'] as $k =>  $v) {
+                                if (empty($v[0]) && empty($v[1])) {
+                                    continue;
+                                }
+                                $little['num'] = !empty($v[0]) ? $v[0] : ''; //动作编号
+                                $name_remark = trim($v[1]);
+                                $name =  substr($name_remark, 0, stripos($name_remark, "\n"));
+                                $remark =  substr($name_remark, stripos($name_remark, "\n"));
+                                $little['name'] = !empty($name) ? $name  : '';
+                                $little['remark'] = !empty($remark) ? $remark  : '';
+                                $little['l_id'] =  $lesson_id;
+                                $little_id = $this->lessonModel->little_add($little);
+                                if (!$little_id) {
+                                    continue;
+                                }
+                            }
                         }
                     }
 
-                    // Db::commit();
+                    Db::commit();
                     return ['code' => 1, 'msg' => '添加成功'];
                 } catch (\Exception $e) {
                     // 回滚事务
@@ -430,8 +428,8 @@ class Lesson extends BasicAdmin
                     unlink($path);
                     return ['code' => 0, 'msg' =>  "第{$sheetIndex}个工作表名错误", 'data' => array()];
                 }
-                $member_id = $sheetNameArr[0];
-                $member_name = $sheetNameArr[1];
+                $member_id = (int)$sheetNameArr[0];
+                $member_name = trim($sheetNameArr[1]);
                 $where['m.id'] = ['=', $member_id];
                 $where['m.name'] = ['=', $member_name];
                 $member = $this->memberModel->get_member($where);
@@ -513,91 +511,11 @@ class Lesson extends BasicAdmin
                     }
                     $msg .= "\r\n";
                     $sheet[]  = $valArr;
-                    $sheet['m_id'] = $member_id;
                     $column = $columnNext;
                 }
-                $excelArr[] = $sheet;
+                $excelArr[$member_id] = $sheet;
             }
-            return ['code' => 1, 'msg' => $msg, 'data' => $excelArr];
-            // return;
-            // // $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
-            // $worksheet = $spreadsheet->getActiveSheet();
-            // $highestRow = $worksheet->getHighestRow(); // 总行数
-            // $highestColumn = $worksheet->getHighestColumn(); // 总列数
-            // $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
-            // $arr = array();
-            // $msg = '';
-            // $title = (string)$worksheet->getCellByColumnAndRow(1, 2)->getValue();
-            // if ('计划任务-' . date('Y-m-d') != $title) {
-            //     unlink($path);
-            //     return ['code' => 0, 'msg' => '计划表错误', 'data' => array()];
-            // }
-            // $end_title = (string)$worksheet->getCellByColumnAndRow(1, $highestRow)->getValue();
-            // if ('结束计划' != $end_title) {
-            //     unlink($path);
-            //     return ['code' => 0, 'msg' => '计划表错误，无--结束计划--标签，请重新下载', 'data' => array()];
-            // }
-            // //循环列 去掉说明列
-            // for ($column = 2; $column <= $highestColumnIndex - 1; $column++) { //$highestRow
-            //     //每次循环 读取两列 生成一个计划
-            //     $columnNext = $column + 1;
-            //     //定义一个计划数组
-            //     $valArr = array();
-            //     //循环行，第一行 日期 第二行计划名称 第三行热身语  最后一行冷身语  其他为计划详情
-            //     $detail = array(); //动作详情
-            //     for ($row  = 3; $row <= $highestRow; $row++) {
-            //         //把数字转成字母
-            //         $columnString = Coordinate::stringFromColumnIndex($column);
-            //         $columnNextString = Coordinate::stringFromColumnIndex($columnNext);
-
-
-            //         $colldown = (string)$worksheet->getCellByColumnAndRow(1, $row + 1)->getValue();
-            //         if ($colldown == '结束计划') {
-            //             $val = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
-            //             $valArr[] = $val;
-            //             if (empty($val)) {
-            //                 $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，冷身语为空##@@@##";
-            //                 $val = '';
-            //             }
-            //             break;
-            //         }
-            //         //获取计划详情内容
-            //         if ($row > 5 && $row  < $highestRow) {
-            //             $val1 = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
-            //             $detail[$row][] = $val1;
-            //             $val2 = (string)$worksheet->getCellByColumnAndRow($columnNext, $row)->getValue();
-            //             $detail[$row][] = $val2;
-            //             $valArr['detail']  = $detail;
-            //         } else {
-            //             //获取除计划详情内容外 其他内容
-            //             $val = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
-            //             $valArr[] = $val;
-            //         }
-
-            //         //记录日志
-            //         if ($row == 3 && empty($val)) {
-            //             $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，日期为空，不与保存##@@@##";
-            //             break 2;
-            //         } else if ($row == 4 && empty($val)) {
-            //             $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，计划名称为空，默认计划名称##@@@##";
-            //             $val = '计划名称';
-            //         } else if ($row == 5 && empty($val)) {
-            //             $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，热身语为空##@@@##";
-            //             $val = '';
-            //         } else {
-            //             if ($row > 5 && $row  < $highestRow && empty($val1)) {
-            //                 $msg .= "第{$row}行-{$columnString}列，标签为空##@@@##";
-            //             }
-            //             if ($row > 5 && $row  < $highestRow && empty($val2)) {
-            //                 $msg .= "第{$row}行-{$columnNextString}列，动作详情和描述为空##@@@##";
-            //             }
-            //         }
-            //     }
-            //     $msg .= "\r\n";
-            //     $arr[]  = $valArr;
-            //     $column = $columnNext;
-            // }
-            // return ['code' => 1, 'msg' => $msg, 'data' => $arr];
+            return ['code' => 1, 'msg' => '', 'data' => $excelArr];
         } else {
             return ['code' => 0, 'msg' => '文件不存在', 'data' => array()];
         }

@@ -28,15 +28,17 @@
 {block name="script"}
 <script>
     $(function () {
-        $(document).on('change', '#upload', function () {
+        $(document).off('change','#upload').on('change', '#upload', function () {
             var _this = $(this);
             var file = $(this).val();
+            console.log(file);
             var mid = $('input[name="mid"]').val();
             if (file != '') {
                 $.post('{:url("upload")}', { 'mid': mid, 'file': file , 'type' : 2 }, function (data) {
                     if(data.code == 1 ){
                         $('.uploadmsg').html(data.msg.replace(new RegExp("\n", "gm"), '<br/>'));
                     }else{
+                        alert();
                         _this.val('');
                         $.msg.error(data.msg);
                         return false;
