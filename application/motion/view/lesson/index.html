@@ -1,6 +1,7 @@
 {extend name='admin@public/content'}
 {block name="button"}
-<!--<button data-modal='{:url("$classuri/add")}' data-title="添加会员" class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>-->
+<button data-modal='{:url("$classuri/upload")}' data-title="批量上传计划"
+    class='layui-btn layui-btn-sm layui-btn-primary'>批量上传计划</button>
 {/block}
 
 {block name="content"}
@@ -65,6 +66,7 @@
         title: '会员列表',
         cols: [[//表头
             { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'id', title: 'ID' },
             { field: 'name', title: '会员名称' },
             { field: 'phone', title: '手机号码' },
             { field: 'cname', title: '教练' },
