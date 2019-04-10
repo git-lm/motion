@@ -55,6 +55,7 @@
             <div id="btn">
                 <button id="begin">开始</button>
                 <button id="pause">暂停</button>
+                <button id="restoration">复位</button>
                 <button id="end">结束</button>
                 <button id="close">关闭</button>
             </div>
@@ -97,6 +98,10 @@
     var height = $(window).height();
     $('.doweboktime').css('height', height);
     $(function () {
+        down();
+    })
+
+    function down() {
         var down = $('#down').val();
         //读秒 倒计时
         setTime = setInterval(function () {
@@ -110,7 +115,7 @@
             $('#begin').html(down)
             down--;
         }, 1000);
-    })
+    }
     $('#close').click(function () {
         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
         parent.layer.close(index); //再执行关闭  
@@ -128,6 +133,7 @@
     }
     function motion_time(min, sec) {
         $('#status').html('运动时间');
+        $('#restoration').css('display', 'none');
         setTime1 = setInterval(function () {
             if (min <= 0 && sec <= 0) {
                 motionFlag = false;
@@ -176,7 +182,8 @@
         setTime2 = setInterval(function () {
             if (min <= 0 && sec <= 0) {
                 restFlag = false;
-                motion();
+                $('#restoration').css('display', 'inline');
+                $('#pause').css('display', 'none');
                 clearInterval(setTime2);
                 return;
             }
@@ -225,6 +232,12 @@
         if (restFlag) {
             rest_time(minute, second);
         }
+    })
+
+    $('#restoration').click(function () {
+        $('#begin').css('display', 'inline');
+        $('#restoration').css('display', 'none');
+        down();
     })
 
 </script>
