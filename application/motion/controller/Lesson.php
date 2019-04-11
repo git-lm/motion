@@ -969,7 +969,7 @@ class Lesson extends BasicAdmin
             $little = $this->lessonModel->get_little_courses($littleWhere);
             $lesson[$k]['little'] = $little;
             foreach ($little as $j => $v) {
-                $fwhere['lc_id'] = ['=', 557]; //$v['id']
+                $fwhere['lc_id'] = ['=', $v['id']]; 
                 $files =  $this->lessonModel->get_course_files($fwhere);
                 $lesson[$k]['little'][$j]['files'] = $files;
             }
