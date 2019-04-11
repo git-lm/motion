@@ -74,9 +74,9 @@
                                 {if !empty($file['url']) && (strpos($file['url'] , '.mp4') !== false ||
                                 strpos($file['url'] ,
                                 '.mov') !== false )}
-                                <a class="little_record" data-url="{$file.url}">播放视频</a>
+                                <a href="{$file.url}">播放视频</a>
                                 {else /}
-                                <a class="little_record" data-url="{$file.url}">查看图片</a>
+                                <a href="{$file.url}">查看图片</a>
                                 {/if}
                                 {/volist}
                                 <br> <br>
@@ -105,13 +105,7 @@
             photos: '#little_record_img'
 
         });
-        $('.little_record').click(function () {
-            var url = $(this).attr('data-url');
-            layer.open({
-                type: 2,
-                content: url
-            });
-        })
+        
 
     })
 </script>
