@@ -18,11 +18,6 @@ class Plugs extends BasicAdmin
 {
 
 
-    public function test()
-    {
-        get_thumb();
-    }
-
     /**
      * 文件上传
      * @return mixed
@@ -70,6 +65,7 @@ class Plugs extends BasicAdmin
      */
     public function upload()
     {
+
         if (!empty($_FILES['file'])) {
             if ($_FILES['file']['error'] == 1 || $_FILES['file']['error'] == 2) {
                 return json(['code' => 'ERROR', 'msg' => '文件上传大小受限']);
@@ -81,7 +77,9 @@ class Plugs extends BasicAdmin
         if (!$file->checkExt(strtolower(sysconf('storage_local_exts')))) {
             return json(['code' => 'ERROR', 'msg' => '文件上传类型受限']);
         }
+
         $filetype = $this->request->post('filetype', 0);
+        $uptype = $this->request->post('uptype', 'local');
         $menber = session('motion_member');
 
         if (!empty($menber)) {
@@ -123,8 +121,15 @@ class Plugs extends BasicAdmin
             return json(['code' => 'ERROR', 'msg' => '文件上传验证失败']);
         }
         // 文件上传处理
-        // if (($info = $file->move("static/upload/{$pr}/{$names[0]}", "{$names[1]}.{$ext}", true))) {
-        if (($info = $file->move("static/upload/{$pr}", "{$names[1]}.{$ext}", true))) {
+        if ($uptype == 'oss' ) {
+            $filePath = $file->getInfo('tmp_name');
+            $filename = $pr . "/{$names[1]}.{$ext}";
+            $res =  FileService::ossUploadFile($filename, $filePath);
+            if (!empty($res['url'])) {
+                return json(['data' => ['site_url' => $res['url']], 'code' => 'SUCCESS', 'msg' => '文件上传成功']);
+            }
+        } else if (($info = $file->move("static/upload/{$pr}", "{$names[1]}.{$ext}", true))) {
+            // if (($info = $file->move("static/upload/{$pr}/{$names[0]}", "{$names[1]}.{$ext}", true))) {
             // if (($site_url = FileService::getFileUrl("{$pr}/{$filename}", 'local'))) {
             if (($site_url = FileService::getFileUrl("{$pr}/{$names[1]}.{$ext}", 'local'))) {
                 // imgthumb("static/upload/{$pr}", "{$names[1]}", "{$ext}");

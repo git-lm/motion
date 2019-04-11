@@ -345,6 +345,34 @@ class FileService
         }
         return null;
     }
+    /**
+     * 阿里云OSS
+     * @param string $filename
+     * @param string $content
+     * @return array|null
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public static function ossUploadFile($filename, $filePath)
+    {
+        try {
+            $endpoint = 'http://' . sysconf('storage_oss_domain');
+            $ossClient = new OssClient(sysconf('storage_oss_keyid'), sysconf('storage_oss_secret'), $endpoint, true);
+            $result = $ossClient->uploadFile(sysconf('storage_oss_bucket'), $filename, $filePath);
+            $baseUrl = explode('://', $result['oss-request-url'])[1];
+            if (strtolower(sysconf('storage_oss_is_https')) === 'http') {
+                $site_url = "http://{$baseUrl}";
+            } elseif (strtolower(sysconf('storage_oss_is_https')) === 'https') {
+                $site_url = "https://{$baseUrl}";
+            } else {
+                $site_url = "//{$baseUrl}";
+            }
+            return ['file' => $filename, 'hash' => $result['content-md5'], 'key' => $filename, 'url' => $site_url];
+        } catch (OssException $err) {
+            Log::error('阿里云OSS文件上传失败, ' . $err->getMessage());
+        }
+        return null;
+    }
 
     /**
      * 下载文件到本地

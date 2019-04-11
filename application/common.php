@@ -161,9 +161,9 @@ function deep_in_array($value, $array)
 
 
 /**
-     * 判断是否微信
-     * @return boolean
-     */
+ * 判断是否微信
+ * @return boolean
+ */
 function is_weixin()
 {
     if (strpos(
@@ -176,13 +176,17 @@ function is_weixin()
 }
 function get_thumb($str = '', $width = 100, $height = 100)
 {
-    $parse_url = parse_url($str);
-    if (!empty($parse_url['path'])) {
-        $path = $parse_url['path'];
-        $pathinfo =  pathinfo($path);
-        $filename = $pathinfo['filename'];
-        $str = str_replace(['static/upload', $filename], ['static/upload/thumb', $filename . "_{$width}" . "_{$height}"], $str);
-        return $str;
+    if (strpos($str, 'aliyuncs.com')) {
+        return $str . '?x-oss-process=image/resize,m_lfit,h_100,w_100';
+    } else {
+        $parse_url = parse_url($str);
+        if (!empty($parse_url['path'])) {
+            $path = $parse_url['path'];
+            $pathinfo =  pathinfo($path);
+            $filename = $pathinfo['filename'];
+            $str = str_replace(['static/upload', $filename], ['static/upload/thumb', $filename . "_{$width}" . "_{$height}"], $str);
+            return $str;
+        }
     }
 }
 
