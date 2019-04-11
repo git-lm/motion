@@ -121,7 +121,7 @@ class Plugs extends BasicAdmin
             return json(['code' => 'ERROR', 'msg' => '文件上传验证失败']);
         }
         // 文件上传处理
-        if ($uptype == 'oss' ) {
+        if ($uptype == 'oss') {
             $filePath = $file->getInfo('tmp_name');
             $filename = $pr . "/{$names[1]}.{$ext}";
             $res =  FileService::ossUploadFile($filename, $filePath);
@@ -173,16 +173,19 @@ class Plugs extends BasicAdmin
                 $data['server'] = FileService::getUploadQiniuUrl(true);
                 break;
             case 'oss':
-                $time = time() + 3600;
-                $policyText = [
-                    'expiration' => date('Y-m-d', $time) . 'T' . date('H:i:s', $time) . '.000Z',
-                    'conditions' => [['content-length-range', 0, 1048576000]],
-                ];
-                $data['server'] = FileService::getUploadOssUrl();
-                $data['policy'] = base64_encode(json_encode($policyText));
-                $data['site_url'] = FileService::getBaseUriOss() . $filename;
-                $data['signature'] = base64_encode(hash_hmac('sha1', $data['policy'], sysconf('storage_oss_secret'), true));
-                $data['OSSAccessKeyId'] = sysconf('storage_oss_keyid');
+                $data['token'] = md5($filename . session_id());
+                $data['server'] = FileService::getUploadLocalUrl();
+                $data['session_id'] = session_id();
+                // $time = time() + 3600;
+                // $policyText = [
+                //     'expiration' => date('Y-m-d', $time) . 'T' . date('H:i:s', $time) . '.000Z',
+                //     'conditions' => [['content-length-range', 0, 1048576000]],
+                // ];
+                // $data['server'] = FileService::getUploadOssUrl();
+                // $data['policy'] = base64_encode(json_encode($policyText));
+                // $data['site_url'] = FileService::getBaseUriOss() . $filename;
+                // $data['signature'] = base64_encode(hash_hmac('sha1', $data['policy'], sysconf('storage_oss_secret'), true));
+                // $data['OSSAccessKeyId'] = sysconf('storage_oss_keyid');
                 break;
         }
         return json(['data' => $data, 'code' => "NOT_FOUND"]);

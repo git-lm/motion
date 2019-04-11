@@ -103,7 +103,7 @@
                                 {if $c.pathinf == 'mp4' || $c.pathinf == 'mov'}
                                 <video src="{$c.file.url}" controls="controls"></video>
                                 {else /}
-                                <img src='{$c.file.url}'>
+                                <img src='{:get_thumb($c.file.url)}'>
                                 {/if}
                             </div>
 
