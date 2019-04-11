@@ -74,9 +74,9 @@
                                 {if !empty($file['url']) && (strpos($file['url'] , '.mp4') !== false ||
                                 strpos($file['url'] ,
                                 '.mov') !== false )}
-                                <a href="{$file.url}">播放视频</a>
+                                <a target="_blank" href="{$file.url}">播放视频</a>
                                 {else /}
-                                <a href="{$file.url}">查看图片</a>
+                                <a target="_blank" href="{$file.url}">查看图片</a>
                                 {/if}
                                 {/volist}
                                 <br> <br>
