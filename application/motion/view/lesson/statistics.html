@@ -75,7 +75,7 @@
                                     {if !empty($file['url']) && (strpos($file['url'] , '.mp4') !== false ||
                                     strpos($file['url'] ,
                                     '.mov') !== false )}
-                                    <video src="{$file.url}" controls="controls"></video>
+                                    <a class="little_record_video" data-url="{$file.url}">播放视频</a>
                                     {else /}
                                     <img src='{$file.url}' layer-src="{$file.url}" style="width:50px; height:50px">
                                     {/if}
@@ -107,6 +107,14 @@
             photos: '#little_record_img'
 
         });
+        $('.little_record_video').click(function () {
+            var url = $(this).attr('data-url');
+            layer.open({
+                type: 2,
+                content: url 
+            });
+        })
+
     })
 </script>
 {/block}
