@@ -70,17 +70,15 @@
                                 备注：{$little.remark}<br>
                                 完成情况：{$little.message}<br>
                                 动作记录 :
-                                <div id="little_record_img">
-                                    {volist name="little.files" id="file"}
-                                    {if !empty($file['url']) && (strpos($file['url'] , '.mp4') !== false ||
-                                    strpos($file['url'] ,
-                                    '.mov') !== false )}
-                                    <a class="little_record_video" data-url="{$file.url}">播放视频</a>
-                                    {else /}
-                                    <img src='{$file.url}' layer-src="{$file.url}" style="width:50px; height:50px">
-                                    {/if}
-                                    {/volist}
-                                </div>
+                                {volist name="little.files" id="file"}
+                                {if !empty($file['url']) && (strpos($file['url'] , '.mp4') !== false ||
+                                strpos($file['url'] ,
+                                '.mov') !== false )}
+                                <a class="little_record" data-url="{$file.url}">播放视频</a>
+                                {else /}
+                                <a class="little_record" data-url="{$file.url}">查看图片</a>
+                                {/if}
+                                {/volist}
                                 <br> <br>
                         </li>
                         {/volist}
@@ -111,7 +109,7 @@
             var url = $(this).attr('data-url');
             layer.open({
                 type: 2,
-                content: url 
+                content: url
             });
         })
 
