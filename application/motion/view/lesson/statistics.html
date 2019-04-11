@@ -6,11 +6,19 @@
 {block name="content"}
 
 <!-- 表单搜索 开始 -->
-<form autocomplete="off" class="layui-form layui-form-pane form-search" action="{:request()->url()}" onsubmit="return false" method="get">
+<form autocomplete="off" class="layui-form layui-form-pane form-search" action="{:request()->url()}"
+    onsubmit="return false" method="get">
     <div class="layui-form-item layui-inline">
-        <label class="layui-form-label">搜索时间{:strtotime($Think.get.search_time)}</label>
+        <label class="layui-form-label">搜索时间</label>
         <div class="layui-input-inline">
-            <input name="search_time" id="search_time" value="{$Think.get.search_time}" placeholder="请选择到期时间" class="layui-input">
+            <input name="search_time" id="search_time" value="{$Think.get.search_time}" placeholder="请选择到期时间"
+                class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">计划名称</label>
+        <div class="layui-input-inline">
+            <input name="name" value="{$Think.get.name}" placeholder="请输入计划名称" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item layui-inline">
@@ -55,10 +63,25 @@
                 <td>
                     <ul>
                         {volist name="list.little" id="little"}
-                        <li style="color: {if $little.state==0}#FFB800{/if}">{$little.num} ：{$little.name}<br>
-                            备注：{$little.remark}<br>
-                            完成情况：{$little.message}
-                            <br>  <br>  
+
+                        <li style="color: {if $little.state==0}#FFB800{/if}">{$little.num} ： <span {if
+                                !empty($Think.get.name) && strpos($little.name , $Think.get.name)
+                                !==false}style="color:red" {/if}>{$little.name} </span> <br>
+                                备注：{$little.remark}<br>
+                                完成情况：{$little.message}<br>
+                                动作记录 :
+                                <div id="little_record_img">
+                                    {volist name="little.files" id="file"}
+                                    {if !empty($file['url']) && (strpos($file['url'] , '.mp4') !== false ||
+                                    strpos($file['url'] ,
+                                    '.mov') !== false )}
+                                    <video src="{$file.url}" controls="controls"></video>
+                                    {else /}
+                                    <img src='{$file.url}' layer-src="{$file.url}" style="width:50px; height:50px">
+                                    {/if}
+                                    {/volist}
+                                </div>
+                                <br> <br>
                         </li>
                         {/volist}
                     </ul>
@@ -80,6 +103,10 @@
 <script>
     $(function () {
         laydate.render({ elem: '#search_time' });
+        layer.photos({
+            photos: '#little_record_img'
+
+        });
     })
 </script>
 {/block}

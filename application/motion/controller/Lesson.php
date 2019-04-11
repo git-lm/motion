@@ -954,23 +954,29 @@ class Lesson extends BasicAdmin
         $mid = request()->has('id', 'get') ? request()->get('id/d') : 0;
         $end_time = request()->has('search_time', 'get') ? strtotime(request()->get('search_time/s') . ' 23:59:59') : time();
         $begin_time =  strtotime('-7 day', $end_time);
-
+        $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $where[] = ['m.id', '=', $mid];
         $where[] = ['l.status', '=', 1];
         $where[] = ['class_time', '>=', $begin_time];
         $where[] = ['class_time', '<=', $end_time];
+        $where['name'] = $name;
         $order['class_time'] =  'asc';
         $lesson = $this->lessonModel->get_arrange_lists($where, $order);
-
         // $little_array = array();
         foreach ($lesson as $k => $l) {
-            $littleWhere  = array();
-            $littleWhere[] = ['status', '=', 1];
-            $littleWhere[] = ['l_id', '=', $l['id']];
+            $littleWhere['status'] = ['=', 1];
+            $littleWhere['l_id'] = ['=', $l['id']];
             $little = $this->lessonModel->get_little_courses($littleWhere);
             $lesson[$k]['little'] = $little;
+            foreach ($little as $j => $v) {
+                $fwhere['lc_id'] = ['=', 557]; //$v['id']
+                $files =  $this->lessonModel->get_course_files($fwhere);
+                $lesson[$k]['little'][$j]['files'] = $files;
+            }
+
             // $little_array[$l['id']] = $little;
         }
+// dump($lesson);exit;
         // $this->assign('little', $little_array);
         $this->assign('lesson', $lesson);
         return $this->fetch();
