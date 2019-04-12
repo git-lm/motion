@@ -952,16 +952,24 @@ class Lesson extends BasicAdmin
     public function statistics()
     {
         $mid = request()->has('id', 'get') ? request()->get('id/d') : 0;
-        $end_time = request()->has('search_time', 'get') ? strtotime(request()->get('search_time/s') . ' 23:59:59') : time();
-        $begin_time =  strtotime('-7 day', $end_time);
+        $search_time = request()->get('search_time/s');
+        if (!empty($search_time)) {
+            $end_time = request()->has('search_time', 'get') ? strtotime(request()->get('search_time/s') . ' 23:59:59') : time();
+            $begin_time =  strtotime('-7 day', $end_time);
+            $where[] = ['class_time', '>=', $begin_time];
+            $where[] = ['class_time', '<=', $end_time];
+            $page = 0;
+            $limit = 0;
+        } else {
+            $page = 1;
+            $limit = 10;
+        }
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $where[] = ['m.id', '=', $mid];
         $where[] = ['l.status', '=', 1];
-        $where[] = ['class_time', '>=', $begin_time];
-        $where[] = ['class_time', '<=', $end_time];
         $where['name'] = $name;
         $order['class_time'] =  'asc';
-        $lesson = $this->lessonModel->get_arrange_lists($where, $order);
+        $lesson = $this->lessonModel->get_arrange_lists($where, $order, $page, $limit);
         // $little_array = array();
         foreach ($lesson as $k => $l) {
             $littleWhere['status'] = ['=', 1];
@@ -969,14 +977,14 @@ class Lesson extends BasicAdmin
             $little = $this->lessonModel->get_little_courses($littleWhere);
             $lesson[$k]['little'] = $little;
             foreach ($little as $j => $v) {
-                $fwhere['lc_id'] = ['=', $v['id']]; 
+                $fwhere['lc_id'] = ['=', $v['id']];
                 $files =  $this->lessonModel->get_course_files($fwhere);
                 $lesson[$k]['little'][$j]['files'] = $files;
             }
 
             // $little_array[$l['id']] = $little;
         }
-// dump($lesson);exit;
+        // dump($lesson);exit;
         // $this->assign('little', $little_array);
         $this->assign('lesson', $lesson);
         return $this->fetch();
