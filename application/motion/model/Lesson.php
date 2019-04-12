@@ -90,9 +90,10 @@ class Lesson extends Model
         $db->field(['l.*', 'm.name' => 'mname', 'coach.name' => 'coach_name', 'ifnull(t.count ,0)' => 'count']);
         $buildSql = Db::table('motion_message')->field(['count(0)' => 'count', 'p_id'])->where('is_check', '=', 0)->group('p_id')->buildSql();
         $db->leftJoin([$buildSql => 't'], 't.p_id = l.id');
-        $course_name = trim($where['name']);
-        unset($where['name']);
-        if (!empty($course_name)) {
+
+
+        if (!empty($where['name'])) {
+            $course_name = trim($where['name']);
             $where[] = function ($db) use ($course_name) {
                 $lwhere[] = ['name', 'like', "%{$course_name}%"];
                 $little_courses  = $this->get_little_courses($lwhere);
@@ -100,6 +101,7 @@ class Lesson extends Model
                 $db->whereIn('l.id', $little_course_ids);
             };
         }
+        unset($where['name']);
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
