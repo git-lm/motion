@@ -5,21 +5,21 @@ namespace app\pt\model;
 use think\Model;
 use think\Db;
 
-class MemberModel extends Model
+class CourseExpensesModel extends Model
 {
     public $error;
     protected $autoWriteTimestamp = 'timestamp';
     // 定义时间戳字段名
     protected $createTime = 'create_at';
-    protected $table = 'pt_member';
+    protected $updateTime = 'update_at';
+    protected $table = 'pt_course_expenses';
 
     /**
-     * 获取单个会员
+     * 获取单个支出
      */
     public function list($param)
     {
         $where['status'] = ['=', 0];
-        if (!empty($param['phone'])) $where['phone'] = ['=', $param['phone']];
         if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
         $list =  self::where($where)->find();
 
@@ -34,13 +34,14 @@ class MemberModel extends Model
     public function lists($param)
     {
         $where['status'] = ['=', 0];
+        if (!empty($param['course_id']))  $where['course_id'] = ['=', $param['course_id']];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
         $lists =  self::where($where)->paginate($limit);
         return $lists;
     }
 
     /**
-     * 新增会员
+     * 新增支出
      */
     public function add($param)
     {
@@ -49,14 +50,7 @@ class MemberModel extends Model
             $this->error = $validate;
             return;
         }
-        $list = $this->list(array('phone' => $param['phone']));
-        if (!empty($list)) {
-            $this->error = '该手机号码已存在';
-            return;
-        }
-        $this->name = $param['name'];
-        $this->phone = $param['phone'];
-        $code = $this->save();
+        $code = $this->save($param);
         if ($code) {
             return;
         } else {
@@ -65,7 +59,7 @@ class MemberModel extends Model
     }
 
     /**
-     * 编辑会员
+     * 编辑产品
      */
     public function edit($param)
     {
@@ -74,29 +68,23 @@ class MemberModel extends Model
             $this->error = $validate;
             return;
         }
-        $list = self::where(array('phone' => $param['phone']))->where('id', '<>', $param['id'])->find();
-        if (!empty($list)) {
-            $this->error = '该手机号码已存在';
-            return;
-        }
-        $this->updateMember($param, $param['id']);
+        $this->updateCourse($param, $param['id']);
     }
     /**
-     * 更新会员信息
+     * 更新支出信息
      */
-    public function updateMember($param, $member_id)
+    public function updateCourse($param, $course_id)
     {
-        if(empty($member_id)){
-            $this->error = '请正确选择操作数据';
+        if (empty($course_id)) {
+            $this->error = '请选择要操作的数据！';
         }
-        $code =  $this->where(array('id' => $member_id))->update($param);
+        $code =  $this->where(array('id' => $course_id))->update($param);
         if ($code) {
             return true;
         } else {
             $this->error = '操作失败';
         }
     }
-
 
     /**
      * 验证类型数据有效性
@@ -106,15 +94,12 @@ class MemberModel extends Model
     {
         $rule = [
             'name' => 'require|max:5|min:2|chsAlpha',
-            'phone' => 'require|mobile',
         ];
         $message = [
-            'name.require' => '会员名称必填',
-            'name.min' => '会员名称最少两个字',
-            'name.max' => '会员名称最多五个字',
-            'name.chsAlpha' => '会员名称只能汉子和字母',
-            'phone.require' => '手机号码必填',
-            'phone.mobile' => '手机号码格式不正确',
+            'name.require' => '产品名称必填',
+            'name.min' => '产品名称最少两个字',
+            'name.max' => '产品名称最多五个字',
+            'name.chsAlpha' => '产品名称只能汉子和字母',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

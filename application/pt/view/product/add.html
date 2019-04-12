@@ -1,0 +1,27 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('add')}" data-auto="true"
+    method="post">
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">产品名称</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="name" required lay-verify="required" value='' maxlength="5" minlength="2"
+                title="请输入产品名称" placeholder="请输入产品名称" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">产品价格</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="price" required lay-verify="required|number" value='' maxlength="11"
+                title="请输入产品价格" placeholder="请输入产品价格" class="layui-input">
+        </div>
+    </div>
+
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
