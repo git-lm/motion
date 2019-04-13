@@ -515,6 +515,8 @@ class Lesson extends BasicAdmin
                 }
                 $excelArr[$member_id] = $sheet;
             }
+            // $logpath = './runtime/arrange/' . date('YmdHis') . '.txt';
+            // write_log($msg, $logpath);
             return ['code' => 1, 'msg' => '', 'data' => $excelArr];
         } else {
             return ['code' => 0, 'msg' => '文件不存在', 'data' => array()];
@@ -524,7 +526,9 @@ class Lesson extends BasicAdmin
     public function test()
     {
         $url = 'http://motion.WJ/static/upload/AAAAAAA.xlsx';
-        dump($this->analysisExcel($url));
+        $logpath = './runtime/arrange/' . date('YmdHis') . '.txt';
+        echo $logpath;exit;
+        write_log($url, $logpath);
     }
 
 

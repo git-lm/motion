@@ -1,6 +1,0 @@
-2019-03-07 21:28:02'说明已经登录了直接返回'
-2019-03-07 21:28:02'说明已经登录了直接返回'
-2019-03-07 21:28:24'说明已经登录了直接返回'
-2019-03-07 21:28:25'说明已经登录了直接返回'
-2019-03-07 21:28:26'说明已经登录了直接返回'
-2019-03-07 21:28:58'访问地址：https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4e9186be622ada2a&redirect_uri=http%3A%2F%2Fmotion.com%2F%3Frcode%3D2w3838341m1b1b3133382x33321a2r33311b&response_type=code&scope=snsapi_base&state=wx4e9186be622ada2a#wechat_redirect'
