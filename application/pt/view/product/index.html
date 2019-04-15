@@ -53,10 +53,9 @@
         page: true, //开启分页
         toolbar: '<div>产品列表</div>',
         loading: true,
-        title: '会员列表',
+        title: '产品列表',
         cols: [[//表头
             { title: '序号', fixed: 'left', type: 'numbers' },
-            { field: 'id', title: 'ID' },
             { field: 'name', title: '产品名称' },
             { field: 'price', title: '产品价格' },
             {
@@ -87,7 +86,7 @@
     })
 </script>
 <script type="text/html" id="productHandle">
-   
+
     <!--{if auth("$classuri/edit")}-->
     <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="pid" data-title="编辑产品" lay-event="open">编辑</a>
     <!--{/if}-->

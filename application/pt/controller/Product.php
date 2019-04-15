@@ -16,7 +16,7 @@ class Product extends BasicAdmin
      */
     public function index()
     {
-        $this->assign('title', '产品列表');
+        $this->assign('title', '项目列表');
         return $this->fetch();
     }
 

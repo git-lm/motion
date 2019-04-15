@@ -1,8 +1,8 @@
 {extend name='admin@public/content'}
 {block name="button"}
 <!--{if auth("$classuri/add")}-->
-<button data-modal='{:url("$classuri/add")}' data-title="添加团课"
-    class='layui-btn layui-btn-sm layui-btn-primary'>添加团课</button>
+<button data-modal='{:url("$classuri/add")}?coach_id={$coach_id}' data-title="添加分成"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加分成</button>
 {/block}
 
 {block name="content"}
@@ -16,17 +16,20 @@
     })
     table.render({
         elem: '#table',
-        url: '{:url("$classuri/get_lists")}', //数据接口 
+        url: '{:url("$classuri/get_lists")}?coach_id={$coach_id}', //数据接口 
         page: true, //开启分页
         toolbar: '<div>团课列表</div>',
         loading: true,
         title: '团课列表',
         cols: [[//表头
             { title: '序号', fixed: 'left', type: 'numbers' },
-            { field: 'id', title: 'ID' },
-            { field: 'name', title: '团课名称' },
+            { field: 'name', title: '团课名称', templet: '<div>{{d.course.name}}</div>' },
+            { field: 'floor_num', title: '下限人数' },
+            { field: 'upper_num', title: '上限人数' },
+            { field: 'expenses', title: '分成比例', templet: '<div>{{d.expenses}}%</div>' },
+            { field: 'award', title: '奖励费用' },
             {
-                fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#courseHandle'
+                fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#courseExpensesHandle'
             }
         ]],
         parseData: function (res) { //res 即为原始返回的数据
@@ -41,13 +44,13 @@
     );
 
 </script>
-<script type="text/html" id="courseHandle">
+<script type="text/html" id="courseExpensesHandle">
 
     <!--{if auth("$classuri/edit")}-->
-    <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="cid" data-title="编辑产品" lay-event="open">编辑</a>
+    <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="id" data-title="编辑分成" lay-event="open">编辑</a>
     <!--{/if}-->
     <!--{if auth("$classuri/del")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="cid" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="id" lay-event="del">删除</a>
     <!--{/if}-->
 </script>
 

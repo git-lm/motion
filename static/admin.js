@@ -7,10 +7,10 @@
  */
 if (typeof layui !== 'undefined') {
     var form = layui.form,
-            layer = layui.layer,
-            table = layui.table,
-            formSelects = layui.formSelects,
-            laydate = layui.laydate;
+        layer = layui.layer,
+        table = layui.table,
+        formSelects = layui.formSelects,
+        laydate = layui.laydate;
     if (typeof jQuery === 'undefined') {
         var $ = jQuery = layui.$;
     }
@@ -27,9 +27,9 @@ $(function () {
             if (!('placeholder' in document.createElement('input'))) {
                 $(':input[placeholder]').map(function () {
                     var self = $(this), txt = self.attr('placeholder');
-                    self.wrap($('<div></div>').css({zoom: '1', margin: 'none', border: 'none', padding: 'none', background: 'none', position: 'relative'}));
+                    self.wrap($('<div></div>').css({ zoom: '1', margin: 'none', border: 'none', padding: 'none', background: 'none', position: 'relative' }));
                     var pos = self.position(), h = self.outerHeight(true), paddingleft = self.css('padding-left');
-                    var holder = $('<span></span>').text(txt).css({position: 'absolute', left: pos.left, top: pos.top, height: h, lineHeight: h + 'px', paddingLeft: paddingleft, color: '#aaa', zIndex: '999'}).appendTo(self.parent());
+                    var holder = $('<span></span>').text(txt).css({ position: 'absolute', left: pos.left, top: pos.top, height: h, lineHeight: h + 'px', paddingLeft: paddingleft, color: '#aaa', zIndex: '999' }).appendTo(self.parent());
                     self.on('focusin focusout change keyup', function () {
                         self.val() ? holder.hide() : holder.show();
                     });
@@ -54,12 +54,12 @@ $(function () {
         };
         // 弹出警告消息框
         this.alert = function (msg, callback) {
-            var index = layer.alert(msg, {end: callback, scrollbar: false});
+            var index = layer.alert(msg, { end: callback, scrollbar: false });
             return this.dialogIndexs.push(index), index;
         };
         // 确认对话框
         this.confirm = function (msg, ok, no) {
-            var index = layer.confirm(msg, {title: '操作确认', btn: ['确认', '取消']}, function () {
+            var index = layer.confirm(msg, { title: '操作确认', btn: ['确认', '取消'] }, function () {
                 typeof ok === 'function' && ok.call(this);
             }, function () {
                 typeof no === 'function' && no.call(this);
@@ -69,22 +69,22 @@ $(function () {
         };
         // 显示成功类型的消息
         this.success = function (msg, time, callback) {
-            var index = layer.msg(msg, {icon: 1, shade: this.shade, scrollbar: false, end: callback, time: (time || 2) * 1000, shadeClose: true});
+            var index = layer.msg(msg, { icon: 1, shade: this.shade, scrollbar: false, end: callback, time: (time || 2) * 1000, shadeClose: true });
             return this.dialogIndexs.push(index), index;
         };
         // 显示失败类型的消息
         this.error = function (msg, time, callback) {
-            var index = layer.msg(msg, {icon: 2, shade: this.shade, scrollbar: false, time: (time || 3) * 1000, end: callback, shadeClose: true});
+            var index = layer.msg(msg, { icon: 2, shade: this.shade, scrollbar: false, time: (time || 3) * 1000, end: callback, shadeClose: true });
             return this.dialogIndexs.push(index), index;
         };
         // 状态消息提示
         this.tips = function (msg, time, callback) {
-            var index = layer.msg(msg, {time: (time || 3) * 1000, shade: this.shade, end: callback, shadeClose: true});
+            var index = layer.msg(msg, { time: (time || 3) * 1000, shade: this.shade, end: callback, shadeClose: true });
             return this.dialogIndexs.push(index), index;
         };
         // 显示正在加载中的提示
         this.loading = function (msg, callback) {
-            var index = msg ? layer.msg(msg, {icon: 16, scrollbar: false, shade: this.shade, time: 0, end: callback}) : layer.load(2, {time: 0, scrollbar: false, shade: this.shade, end: callback});
+            var index = msg ? layer.msg(msg, { icon: 16, scrollbar: false, shade: this.shade, time: 0, end: callback }) : layer.load(2, { time: 0, scrollbar: false, shade: this.shade, end: callback });
             return this.dialogIndexs.push(index), index;
         };
         // 自动处理显示Think返回的Json数据
@@ -134,8 +134,8 @@ $(function () {
         this.reload = function () {
             window.onhashchange.call(this);
         };
-         // 返回上一步
-         this.back = function () {
+        // 返回上一步
+        this.back = function () {
             window.history.back(-1);
         };
         // 异步加载的数据
@@ -187,7 +187,7 @@ $(function () {
             } else {
                 var area = ['90%', '90%'];
             }
-            return layer.open({title: title || '窗口', type: 2, area: area, fix: true, maxmin: false, content: url});
+            return layer.open({ title: title || '窗口', type: 2, area: area, fix: true, maxmin: false, content: url });
         };
         // 加载HTML到弹出层
         this.modal = function (url, data, title, callback, loading, tips) {
@@ -269,7 +269,7 @@ $(function () {
                     var node = $(this).attr('data-submenu-layout');
                     if (mode === 1) {
                         var type = (this.className || '').indexOf('open') > -1 ? 2 : 1;
-                        layui.data('menu', {key: node, value: type});
+                        layui.data('menu', { key: node, value: type });
                     } else {
                         var type = layui.data('menu')[node] || 2;
                         (type === 2) && $(this).addClass('open');
@@ -316,7 +316,7 @@ $(function () {
             // 表单元素
             this.tags = 'input,textarea,select';
             // 检测元素事件
-            this.checkEvent = {change: true, blur: true, keyup: false};
+            this.checkEvent = { change: true, blur: true, keyup: false };
             // 去除字符串两头的空格
             this.trim = function (str) {
                 return str.replace(/(^\s*)|(\s*$)/g, '');
@@ -406,17 +406,17 @@ $(function () {
             // 错误消息显示
             this.showError = function (ele, content) {
                 $(ele).addClass('validate-error'), this.insertError(ele);
-                $($(ele).data('input-info')).addClass('fadeInRight animated').css({width: 'auto'}).html(content);
+                $($(ele).data('input-info')).addClass('fadeInRight animated').css({ width: 'auto' }).html(content);
             };
             // 错误消息消除
             this.hideError = function (ele) {
                 $(ele).removeClass('validate-error'), this.insertError(ele);
-                $($(ele).data('input-info')).removeClass('fadeInRight').css({width: '30px'}).html('');
+                $($(ele).data('input-info')).removeClass('fadeInRight').css({ width: '30px' }).html('');
             };
             // 错误消息标签插入
             this.insertError = function (ele) {
                 var $html = $('<span style="-webkit-animation-duration:.2s;animation-duration:.2s;padding-right:20px;color:#a94442;position:absolute;right:0;font-size:12px;z-index:2;display:block;width:34px;text-align:center;pointer-events:none"></span>');
-                $html.css({top: $(ele).position().top + 'px', paddingBottom: $(ele).css('paddingBottom'), lineHeight: $(ele).css('height')});
+                $html.css({ top: $(ele).position().top + 'px', paddingBottom: $(ele).css('paddingBottom'), lineHeight: $(ele).css('height') });
                 $(ele).data('input-info') || $(ele).data('input-info', $html.insertAfter(ele));
             };
             // 表单验证入口
@@ -493,13 +493,13 @@ $(function () {
                 var url = $(this).attr('data-action');
                 var value = $(this).attr('data-value');
                 $.msg.confirm('确定要操作这些数据吗？', function () {
-                    $.form.load(url, {value: value, [field]: data.id}, 'post');
+                    $.form.load(url, { value: value, [field]: data.id }, 'post');
                 });
             } else if (layEvent === 'del') { //编辑
                 var field = $(this).attr('data-field') || 'id';
                 var url = $(this).attr('data-action');
                 $.msg.confirm('确定要操作这些数据吗？', function () {
-                    $.form.load(url, {value: value, [field]: data.id}, 'post');
+                    $.form.load(url, { value: value, [field]: data.id }, 'post');
                 });
             }
         });
@@ -594,8 +594,8 @@ $(function () {
     $body.on('click', '[data-reload]', function () {
         $.form.reload();
     });
-     /*! 注册 data-back 事件行为 */
-     $body.on('click', '[data-back]', function () {
+    /*! 注册 data-back 事件行为 */
+    $body.on('click', '[data-back]', function () {
         $.form.back();
     });
 
@@ -621,7 +621,7 @@ $(function () {
         var action = $(this).attr('data-action') || $(this).parents('[data-location]').attr('data-location');
         var value = $(this).attr('data-value') || 0, field = $(this).attr('data-field') || 'status';
         $.msg.confirm('确定要操作这些数据吗？', function () {
-            $.form.load(action, {field: field, value: value, id: id}, 'post');
+            $.form.load(action, { field: field, value: value, id: id }, 'post');
         });
     });
 
@@ -663,7 +663,7 @@ $(function () {
         var img = new Image(), index = $.msg.loading();
         var imgWidth = this.getAttribute('data-width') || '480px';
         img.onload = function () {
-            var $content = $(img).appendTo('body').css({background: '#fff', width: imgWidth, height: 'auto'});
+            var $content = $(img).appendTo('body').css({ background: '#fff', width: imgWidth, height: 'auto' });
             layer.open({
                 type: 1, area: imgWidth, title: false, closeBtn: 1,
                 skin: 'layui-layer-nobg', shadeClose: true, content: $content,
@@ -684,7 +684,7 @@ $(function () {
     /*! 注册 data-tips-text 事件行为 */
     $body.on('mouseenter', '[data-tips-text]', function () {
         var text = $(this).attr('data-tips-text'), placement = $(this).attr('data-tips-placement') || 'auto';
-        $(this).tooltip({title: text, placement: placement}).tooltip('show');
+        $(this).tooltip({ title: text, placement: placement }).tooltip('show');
     });
 
     /*! 注册 data-phone-view 事件行为 */
@@ -697,7 +697,7 @@ $(function () {
             end: function () {
                 $container.remove();
             }
-        }), {boxShadow: 'none'});
+        }), { boxShadow: 'none' });
     });
 
     /*! 分页事件切换处理 */

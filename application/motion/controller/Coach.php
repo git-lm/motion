@@ -5,6 +5,8 @@ namespace app\motion\controller;
 use controller\BasicAdmin;
 use app\motion\model\Coach as coachModel;
 use app\motion\model\Lesson as lessonModel;
+use app\pt\model\CourseModel;
+use app\pt\model\CourseExpensesModel;
 
 class Coach extends BasicAdmin
 {

@@ -1,0 +1,59 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('add')}" data-auto="true"
+    method="post">
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择团课</label>
+        <div class="layui-input-block">
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select-radio
+                xm-select="pt_course{:time()}" lay-verify="required" class="layui-select full-width block"
+                name="course_id" lay-ignore="">
+                <option value=""> - 请选择团课 -</option>
+                <!--{volist name="courses" id="course"}-->
+                <option value="{$course.id}">{$course.name}</option>
+                <!--{/volist}-->
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">下限人数</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="floor_num" required lay-verify="required|number" value='' maxlength="5"
+                minlength="2" title="请输入下限人数" placeholder="请输入下限人数" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">上限人数</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="upper_num" required lay-verify="required|number" value='' maxlength="11"
+                title="请输入上限人数" placeholder="请输入上限人数" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">佣金比例</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="expenses" required lay-verify="required|number" value='' maxlength="11"
+                title="请输入佣金比例" placeholder="请输入佣金比例" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">奖励金额</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="award" required lay-verify="number" value='0' maxlength="11"
+                title="请输入奖励金额" placeholder="请输入奖励金额" class="layui-input">
+        </div>
+    </div>
+    {if isset($coach_id)}<input type='hidden' value='{$coach_id}' name='coach_id'>{/if}
+
+
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
+<script>
+    formSelects.render('pt_course{:time()}');
+</script>

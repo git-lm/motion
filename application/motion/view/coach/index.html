@@ -84,5 +84,8 @@
     <!--{if auth("$classuri/auth")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('auth')}" data-title="授权账号" lay-event="open">授权账号</a>
     <!--{/if}-->
+     <!--{if auth("pt/course_expense/lists")}-->
+     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('pt/course_expense/lists')}" data-title="团课分成" lay-event="href">团课分成</a>
+     <!--{/if}-->
 </script>
 {/block}

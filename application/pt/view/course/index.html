@@ -41,8 +41,8 @@
         title: '团课列表',
         cols: [[//表头
             { title: '序号', fixed: 'left', type: 'numbers' },
-            { field: 'id', title: 'ID' },
             { field: 'name', title: '团课名称' },
+            { field: 'create_at', title: '添加时间' },
             {
                 fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#courseHandle'
             }
@@ -77,9 +77,6 @@
     <!--{/if}-->
     <!--{if auth("$classuri/del")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="cid" lay-event="del">删除</a>
-    <!--{/if}-->
-    <!--{if auth("$classuri/expense")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('expense')}" data-field="cid" lay-event="del">删除</a>
     <!--{/if}-->
 </script>
 

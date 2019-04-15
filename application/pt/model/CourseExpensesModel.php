@@ -14,6 +14,11 @@ class CourseExpensesModel extends Model
     protected $updateTime = 'update_at';
     protected $table = 'pt_course_expenses';
 
+    public function course()
+    {
+        return $this->belongsTo('courseModel', 'course_id', 'id');
+    }
+
     /**
      * 获取单个支出
      */
@@ -34,9 +39,9 @@ class CourseExpensesModel extends Model
     public function lists($param)
     {
         $where['status'] = ['=', 0];
-        if (!empty($param['course_id']))  $where['course_id'] = ['=', $param['course_id']];
+        if (!empty($param['coach_id']))  $where['coach_id'] = ['=', $param['coach_id']];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $lists =  self::where($where)->paginate($limit);
+        $lists =  self::where($where)->with('course')->order('course_id')->paginate($limit);
         return $lists;
     }
 
@@ -45,7 +50,7 @@ class CourseExpensesModel extends Model
      */
     public function add($param)
     {
-        $validate = $this->validateMember($param);
+        $validate = $this->validateCourse($param);
         if ($validate) {
             $this->error = $validate;
             return;
@@ -63,22 +68,22 @@ class CourseExpensesModel extends Model
      */
     public function edit($param)
     {
-        $validate = $this->validateMember($param);
+        $validate = $this->validateCourse($param);
         if ($validate) {
             $this->error = $validate;
             return;
         }
-        $this->updateCourse($param, $param['id']);
+        $this->updateCourseExpenses($param, $param['id']);
     }
     /**
      * 更新支出信息
      */
-    public function updateCourse($param, $course_id)
+    public function updateCourseExpenses($param, $ce_id)
     {
-        if (empty($course_id)) {
+        if (empty($ce_id)) {
             $this->error = '请选择要操作的数据！';
         }
-        $code =  $this->where(array('id' => $course_id))->update($param);
+        $code =  $this->where(array('id' => $ce_id))->update($param);
         if ($code) {
             return true;
         } else {
@@ -90,16 +95,29 @@ class CourseExpensesModel extends Model
      * 验证类型数据有效性
      * @param type $data 需要验证的数据
      */
-    public function validateMember($data)
+    public function validateCourse($data)
     {
         $rule = [
-            'name' => 'require|max:5|min:2|chsAlpha',
+            'coach_id' => 'require|number',
+            'course_id' => 'require|number',
+            'floor_num' => 'require|number',
+            'upper_num' => 'require|number',
+            'expenses' => 'require|number|elt:100',
+            // 'award' => 'number',
         ];
         $message = [
-            'name.require' => '产品名称必填',
-            'name.min' => '产品名称最少两个字',
-            'name.max' => '产品名称最多五个字',
-            'name.chsAlpha' => '产品名称只能汉子和字母',
+            'coach_id.require' => '教练必选',
+            'coach_id.number' => '请正确选择教练',
+            'course_id.require' => '团课必选',
+            'course_id.number' => '请正确选择团课',
+            'floor_num.require' => '下限人数必填',
+            'floor_num.number' => '请正确填写下限人数',
+            'upper_num.require' => '上限人数必填',
+            'upper_num.number' => '请正确填写上限人数',
+            'expenses.require' => '佣金比例必填',
+            'expenses.number' => '请正确填写上佣金比例',
+            'expenses.elt' => '佣金比例小于100',
+            // 'award.number' => '请正确填写上奖励金额',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);
