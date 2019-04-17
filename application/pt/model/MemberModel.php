@@ -18,7 +18,7 @@ class MemberModel extends Model
      */
     public function list($param)
     {
-        $where['status'] = ['=', 0];
+        $where['status'] = ['=', 1];
         if (!empty($param['phone'])) $where['phone'] = ['=', $param['phone']];
         if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
         $list =  self::where($where)->find();
@@ -33,7 +33,7 @@ class MemberModel extends Model
      */
     public function lists($param)
     {
-        $where['status'] = ['=', 0];
+        $where['status'] = ['=', 1];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
         $lists =  self::where($where)->paginate($limit);
         return $lists;
@@ -86,7 +86,7 @@ class MemberModel extends Model
      */
     public function updateMember($param, $member_id)
     {
-        if(empty($member_id)){
+        if (empty($member_id)) {
             $this->error = '请正确选择操作数据';
         }
         $code =  $this->where(array('id' => $member_id))->update($param);

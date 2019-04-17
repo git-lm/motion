@@ -234,7 +234,6 @@ $(function () {
         };
         // URL转URI
         this.parseUri = function (uri, obj) {
-            console.log()
             var params = {};
             if (uri.indexOf('?') > -1) {
                 var serach = uri.split('?')[1].split('&');

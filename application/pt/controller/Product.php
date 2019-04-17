@@ -76,7 +76,7 @@ class Product extends BasicAdmin
     public function del()
     {
         $pid = input('post.pid/s');
-        $param['status'] = 1;
+        $param['status'] = 0;
         $this->pm->updateProduct($param, $pid);
         if ($this->pm->error) {
             $this->error($this->pm->error);

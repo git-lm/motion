@@ -40,7 +40,7 @@ class CourseExpense extends BasicAdmin
     {
         if (request()->isGet()) {
             $cm = new CourseModel();
-            $courses = $cm->where('status', 0)->select();
+            $courses = $cm->where('status', 1)->select();
             $coach_id = input('get.coach_id/d');
             $this->assign('coach_id', $coach_id);
             $this->assign('courses', $courses);
@@ -62,7 +62,7 @@ class CourseExpense extends BasicAdmin
     {
         if (request()->isGet()) {
             $cm = new CourseModel();
-            $courses = $cm->where('status', 0)->select();
+            $courses = $cm->where('status', 1)->select();
             $this->assign('courses', $courses);
             $ce_id = input('get.id/d', 0);
             $list = $this->cem->list(array('id' => $ce_id));
@@ -85,7 +85,7 @@ class CourseExpense extends BasicAdmin
     public function del()
     {
         $ceid = input('post.id/s');
-        $param['status'] = 1;
+        $param['status'] = 0;
         $this->cem->updateCourseExpenses($param, $ceid);
         if ($this->cem->error) {
             $this->error($this->cem->error);

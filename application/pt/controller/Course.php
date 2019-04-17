@@ -83,4 +83,5 @@ class Course extends BasicAdmin
             $this->success('删除成功', '');
         }
     }
+   
 }

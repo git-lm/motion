@@ -1,0 +1,136 @@
+{extend name='admin@public/content'}
+{block name="button"}
+<!--{if auth("$classuri/addGroup")}-->
+<button data-modal='{:url("$classuri/addGroup")}' data-title="添加团课"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加团课</button>
+<!-- {/if} -->
+<!--{if auth("$classuri/addPrivate")}-->
+<button data-modal='{:url("$classuri/addPrivate")}' data-title="添加私教"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加私教</button>
+<!-- {/if} -->
+{/block}
+
+{block name="content"}
+
+<!-- 表单搜索 开始 -->
+<form autocomplete="off" class="layui-form layui-form-pane form-search" action="{:request()->url()}"
+    onsubmit="return false" method="get">
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">搜索时间</label>
+        <div class="layui-input-inline">
+            <input name="search_time" id="search_time" value="{$Think.get.search_time}" placeholder="请选择到期时间"
+                class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">计划名称</label>
+        <div class="layui-input-inline">
+            <input name="name" value="{$Think.get.name}" placeholder="请输入计划名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-inline">
+        <button class="layui-btn layui-btn-primary" id="search" lay-submit><i class="layui-icon">&#xe615;</i>
+            搜 索</button>
+    </div>
+</form>
+<div id="calendar">
+
+</div>
+
+{/block}
+{block name="script"}
+
+<script>
+    $(function () {
+        laydate.render({ elem: '#search_time' });
+
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['interaction', 'dayGrid', 'timeGrid'],
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            locale: "zh-cn",
+            buttonText: {
+                today: '今天',
+                month: '月',
+                week: '周',
+                day: '日',
+            },
+            eventLimit: true,
+            // dateClick: function (info) {
+            //     addClass()
+            //     console.log('Date: ' + info.dateStr);
+            //     console.log(info)
+            //     calendar.addEvent({
+            //         title: '测试2',
+            //         start: '2019-04-17 09:00:00',
+            //         end: ''
+            //     });
+            // },
+            eventClick: function (info) {
+                var group_id = info.event.extendedProps.group_id;
+                editClass(group_id);
+                // info.event.remove()
+                // console.log(info)
+                // console.log(info.event.extendedProps.group_id)
+            },
+            events: function (fetchInfo, successCallback, failureCallback) {
+                // var date = this.getDate().format('YYYY-MM');
+                var endStr = fetchInfo.endStr;
+                var startStr = fetchInfo.startStr;
+                $.ajax({
+                    url: "{:url('get_group_lists')}",
+                    dataType: 'json',
+                    type: 'POST',
+                    data: {
+                        endStr: endStr,
+                        startStr: startStr,
+                    },
+                    success: function (json) { // 获取当前月的数据
+                        var events = [];
+                        $.each(json, function (i, c) {
+                            if (c.classes.type == 1) {
+                                var color = '#ff0099';
+                            } else {
+                                var color = '#6600ff';
+                            }
+                            events.push({
+                                title: '\n 教练：' + c.coach.name + ' \n ' + '团课：' + c.course.name,
+                                group_id: c.id,
+                                start: c.begin_at, // will be parsed
+                                color: color
+                            });
+
+
+                        });
+                        console.log(events)
+                        successCallback(events);
+                    }
+                });
+            }
+        });
+
+        calendar.render();
+    })
+
+    function editClass(group_id) {
+        layer.open({
+            type: 2,
+            content: "{:url('editGroup')}?group_id=" + group_id,
+            btn: ['按钮一', '按钮二', '按钮三'],
+            yes: function (index, layero) {
+            },
+            btn2: function (index, layero) {
+            },
+            btn3: function (index, layero) {
+            }
+
+        })
+    }
+
+
+</script>
+{/block}

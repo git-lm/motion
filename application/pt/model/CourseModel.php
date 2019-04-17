@@ -25,7 +25,7 @@ class CourseModel extends Model
      */
     public function list($param)
     {
-        $where['status'] = ['=', 0];
+        $where['status'] = ['=', 1];
         if (!empty($param['phone'])) $where['phone'] = ['=', $param['phone']];
         if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
         $list =  self::where($where)->find();
@@ -40,7 +40,7 @@ class CourseModel extends Model
      */
     public function lists($param)
     {
-        $where['status'] = ['=', 0];
+        $where['status'] = ['=', 1];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
         $lists =  self::where($where)->paginate($limit);
         return $lists;

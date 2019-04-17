@@ -76,7 +76,7 @@ class Member extends BasicAdmin
     public function del()
     {
         $mid = input('post.mid/s');
-        $param['status'] = 1;
+        $param['status'] = 0;
         $this->mm->updateMember($param, $mid);
         if ($this->mm->error) {
             $this->error($this->mm->error);
