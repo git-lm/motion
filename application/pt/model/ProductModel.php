@@ -46,13 +46,14 @@ class ProductModel extends Model
         $validate = $this->validateMember($param);
         if ($validate) {
             $this->error = $validate;
-            return;
+            return false;
         }
         $code = $this->save($param);
         if ($code) {
-            return;
+            return true;
         } else {
             $this->error = '新增失败';
+            return false;
         }
     }
 
@@ -64,7 +65,7 @@ class ProductModel extends Model
         $validate = $this->validateMember($param);
         if ($validate) {
             $this->error = $validate;
-            return;
+            return false;
         }
         $this->updateProduct($param, $param['id']);
     }
@@ -75,12 +76,14 @@ class ProductModel extends Model
     {
         if (empty($product_id)) {
             $this->error = '请选择要操作的数据！';
+            return false;
         }
         $code =  $this->where(array('id' => $product_id))->update($param);
         if ($code) {
             return true;
         } else {
             $this->error = '操作失败';
+            return false;
         }
     }
 

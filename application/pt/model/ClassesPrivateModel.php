@@ -6,7 +6,7 @@ use think\Model;
 use think\Db;
 use app\motion\model\Coach;
 
-class ClassesGroupModel extends Model
+class ClassesPrivateModel extends Model
 {
     public $error;
     protected $autoWriteTimestamp = 'timestamp';
@@ -22,13 +22,6 @@ class ClassesGroupModel extends Model
         return $this->hasOne('classesModel', 'id', 'class_id');
     }
     /**
-     * 关联团课
-     */
-    public  function  course()
-    {
-        return $this->belongsTo('courseModel', 'course_id', 'id');
-    }
-    /**
      * 关联教练
      */
     public  function  coach()
@@ -36,7 +29,7 @@ class ClassesGroupModel extends Model
         return $this->belongsTo('app\motion\model\Coach', 'coach_id', 'id');
     }
     /**
-     * 获取单个团课
+     * 获取单个私教
      */
     public function list($param)
     {
@@ -64,7 +57,7 @@ class ClassesGroupModel extends Model
     }
 
     /**
-     * 新增团课
+     * 新增私教
      */
     public function add($param)
     {
@@ -83,7 +76,7 @@ class ClassesGroupModel extends Model
     }
 
     /**
-     * 删除团课
+     * 删除私教
      */
     public function del($id)
     {
@@ -109,24 +102,24 @@ class ClassesGroupModel extends Model
     {
         $classesGroup = $this->list(array('id' => $group_id));
         if ($classesGroup['begin_at'] < date('Y-m-d H:i:s')) {
-            $this->error = '该团课已开始不能操作';
+            $this->error = '该私教已开始不能操作';
             return false;
         }
         if (empty($classesGroup)) {
-            $this->error = '团课记录不存在';
+            $this->error = '私教记录不存在';
             return false;
         }
         $cm = new ClassesModel();
         $class = $cm->list(array('id' => $classesGroup['class_id']));
         if (empty($class)) {
-            $this->error = '团课不存在';
+            $this->error = '私教不存在';
             return false;
         }
         return $class;
     }
 
     /**
-     * 编辑团课
+     * 编辑私教
      */
     public function edit($param)
     {
@@ -139,7 +132,6 @@ class ClassesGroupModel extends Model
         $class_at = $param['class_date'];
         $classParam['class_at'] = $class_at;
         $classParam['type'] = 2;
-        $classParam['coach_id'] = $param['coach_id'];
         $cm = new ClassesModel();
         $validate = $cm->validate($classParam);
         if ($validate) {
@@ -166,7 +158,7 @@ class ClassesGroupModel extends Model
         }
     }
     /**
-     * 更新团课信息
+     * 更新私教信息
      */
     public function updateTable($param, $id)
     {
@@ -200,8 +192,8 @@ class ClassesGroupModel extends Model
         $message = [
             'class_id.require' => '添加失败',
             'class_id.number' => '添加失败',
-            'course_id.require' => '团课必选',
-            'course_id.number' => '请正确选择团课',
+            'course_id.require' => '私教必选',
+            'course_id.number' => '请正确选择私教',
             'coach_id.require' => '教练必选',
             'coach_id.number' => '请正确选择教练',
             'begin_at.require' => '上课时间必选',

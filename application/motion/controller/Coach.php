@@ -40,8 +40,7 @@ class Coach extends BasicAdmin
         }
 
         $where[] = ['c.status', '<>', 0];
-        $order['create_time'] = 'desc';
-        $lists = $this->coachModel->get_coachs($where, $order, $page, $limit);
+        $lists = $this->coachModel->get_coachs($where, [], $page, $limit);
         $count = count($this->coachModel->get_coachs($where));
         echo $this->tableReturn($lists, $count);
     }

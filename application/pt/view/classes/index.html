@@ -72,10 +72,12 @@
             // },
             eventClick: function (info) {
                 var group_id = info.event.extendedProps.group_id;
-                editClass(group_id);
-                // info.event.remove()
-                // console.log(info)
-                // console.log(info.event.extendedProps.group_id)
+                var class_type = info.event.extendedProps.class_type;
+                if (class_type == 2) {
+                    $.form.modal("{:url('editGroup')}?group_id=" + group_id, '', '编辑团课')
+                } else {
+
+                }
             },
             events: function (fetchInfo, successCallback, failureCallback) {
                 // var date = this.getDate().format('YYYY-MM');
@@ -96,17 +98,16 @@
                                 var color = '#ff0099';
                             } else {
                                 var color = '#6600ff';
+                                var title = '\n 教练：' + c.coach.name + ' \n ' + '团课：' + c.course.name + '\n' + '时间：' + c.begin_at.substr(10) + '-' + c.end_at.substr(10);
                             }
                             events.push({
-                                title: '\n 教练：' + c.coach.name + ' \n ' + '团课：' + c.course.name,
+                                title: title,
                                 group_id: c.id,
+                                class_type: c.classes.type,
                                 start: c.begin_at, // will be parsed
                                 color: color
                             });
-
-
                         });
-                        console.log(events)
                         successCallback(events);
                     }
                 });
@@ -115,22 +116,6 @@
 
         calendar.render();
     })
-
-    function editClass(group_id) {
-        layer.open({
-            type: 2,
-            content: "{:url('editGroup')}?group_id=" + group_id,
-            btn: ['按钮一', '按钮二', '按钮三'],
-            yes: function (index, layero) {
-            },
-            btn2: function (index, layero) {
-            },
-            btn3: function (index, layero) {
-            }
-
-        })
-    }
-
 
 </script>
 {/block}

@@ -47,20 +47,21 @@ class MemberModel extends Model
         $validate = $this->validateMember($param);
         if ($validate) {
             $this->error = $validate;
-            return;
+            return false;
         }
         $list = $this->list(array('phone' => $param['phone']));
         if (!empty($list)) {
             $this->error = '该手机号码已存在';
-            return;
+            return false;
         }
         $this->name = $param['name'];
         $this->phone = $param['phone'];
         $code = $this->save();
         if ($code) {
-            return;
+            return true;
         } else {
             $this->error = '新增失败';
+            return false;
         }
     }
 
@@ -72,12 +73,12 @@ class MemberModel extends Model
         $validate = $this->validateMember($param);
         if ($validate) {
             $this->error = $validate;
-            return;
+            return false;
         }
         $list = self::where(array('phone' => $param['phone']))->where('id', '<>', $param['id'])->find();
         if (!empty($list)) {
             $this->error = '该手机号码已存在';
-            return;
+            return false;
         }
         $this->updateMember($param, $param['id']);
     }
@@ -88,12 +89,14 @@ class MemberModel extends Model
     {
         if (empty($member_id)) {
             $this->error = '请正确选择操作数据';
+            return false;
         }
         $code =  $this->where(array('id' => $member_id))->update($param);
         if ($code) {
             return true;
         } else {
             $this->error = '操作失败';
+            return false;
         }
     }
 

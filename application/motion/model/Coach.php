@@ -62,8 +62,10 @@ class Coach extends Model
         $db = Db::table($this->table);
         $db->alias('c');
         $db->leftJoin(['system_user' => 'u'], 'u.id=c.u_id');
-        $db->leftJoin(['motion_member' => 'm'] , 'm.coach_id = c.id');
+        $db->leftJoin(['motion_member' => 'm'], 'm.coach_id = c.id');
         $db->field('c.* , u.id uid , u.username , m.id member_id');
+        if (empty($order)) $order['c.create_time'] = 'desc';
+        if (!isset($where['c.status'])) $where['c.status'] = ['=', 1];
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
@@ -115,7 +117,7 @@ class Coach extends Model
         if (empty($data['password'])) {
             $data['password'] = md5('123456');
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增教练' , $this->table);
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增教练', $this->table);
         $code = DbService::save($this->table, $data);
 
         return $code;
@@ -132,7 +134,7 @@ class Coach extends Model
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($coach), json_encode($data), json_encode($where), '编辑教练' , $this->table);
+        DbService::save_log('motion_log', json_encode($coach), json_encode($data), json_encode($where), '编辑教练', $this->table);
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }

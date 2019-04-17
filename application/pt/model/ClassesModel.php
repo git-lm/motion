@@ -17,17 +17,23 @@ class ClassesModel extends Model
     /**
      * 关联团课上课记录
      */
-    public  function  classesGroup()
+    public function  classesGroup()
     {
         return $this->hasOne('classesGroupModel', 'class_id', 'id');
+    }
+    /**
+     * 关联教练
+     */
+    public  function  coach()
+    {
+        return $this->belongsTo('app\motion\model\Coach', 'coach_id', 'id');
     }
     /**
      * 获取单个会员
      */
     public function list($param)
     {
-        $where['status'] = ['=', 0];
-        if (!empty($param['phone'])) $where['phone'] = ['=', $param['phone']];
+        $where['status'] = ['=', 1];
         if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
         $list =  self::where($where)->find();
 
@@ -58,13 +64,14 @@ class ClassesModel extends Model
         $validate = $this->validate($param);
         if ($validate) {
             $this->error = $validate;
-            return;
+            return false;
         }
         $code = $this->save($param);
         if ($code) {
             return;
         } else {
             $this->error = '新增失败';
+            return false;
         }
     }
 
@@ -76,23 +83,26 @@ class ClassesModel extends Model
         $validate = $this->validate($param);
         if ($validate) {
             $this->error = $validate;
-            return;
+            return false;
         }
         $this->updateCourse($param, $param['id']);
     }
     /**
      * 更新会员信息
      */
-    public function updateCourse($param, $course_id)
+    public function updateTable($param, $id)
     {
-        if (empty($course_id)) {
+        if (empty($id)) {
             $this->error = '请选择要操作的数据！';
+            return false;
         }
-        $code =  $this->where(array('id' => $course_id))->update($param);
+        $param['update_at'] = date('Y-m-d H:i:s');
+        $code =  $this->where(array('id' => $id))->update($param);
         if ($code) {
             return true;
         } else {
             $this->error = '操作失败';
+            return false;
         }
     }
 

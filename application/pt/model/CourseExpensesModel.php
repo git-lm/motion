@@ -53,13 +53,14 @@ class CourseExpensesModel extends Model
         $validate = $this->validateCourse($param);
         if ($validate) {
             $this->error = $validate;
-            return;
+            return false;
         }
         $code = $this->save($param);
         if ($code) {
-            return;
+            return true;
         } else {
             $this->error = '新增失败';
+            return false;
         }
     }
 
@@ -71,7 +72,7 @@ class CourseExpensesModel extends Model
         $validate = $this->validateCourse($param);
         if ($validate) {
             $this->error = $validate;
-            return;
+            return false;
         }
         $this->updateCourseExpenses($param, $param['id']);
     }
@@ -82,12 +83,14 @@ class CourseExpensesModel extends Model
     {
         if (empty($ce_id)) {
             $this->error = '请选择要操作的数据！';
+            return false;
         }
         $code =  $this->where(array('id' => $ce_id))->update($param);
         if ($code) {
             return true;
         } else {
             $this->error = '操作失败';
+            return false;
         }
     }
 

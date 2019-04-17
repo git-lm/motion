@@ -97,9 +97,7 @@ class Member extends BasicAdmin
             }
             $list = $this->mm->list(array('id' => $mid));
             $coachModel = new \app\motion\model\Coach;
-            $where['c.status'] = 1;
-            $oders['c.create_time'] = 'desc';
-            $coachs = $coachModel->get_coachs($where, $oders);
+            $coachs = $coachModel->get_coachs();
             $this->assign('list', $list);
             $this->assign('coachs', $coachs);
             return $this->fetch();
