@@ -1,0 +1,17 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('classNumber')}" data-auto="true"
+    method="post">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">上课人数</label>
+        <div class="layui-input-block">
+            <input type="text" required lay-verify="required|number" value='{$list.classes_group.number|default=0}'
+                maxlength="11" name="number" title="请填写上课人数" placeholder="请填写上课人数" class="layui-input">
+        </div>
+    </div>
+    <div class="hr-line-dashed"></div>
+    {if isset($list.id)} <input type="hidden" name="class_id" value="{$list.id}">{/if}
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>

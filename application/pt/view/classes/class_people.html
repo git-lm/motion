@@ -1,0 +1,20 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">会员名称</label>
+    <div class="layui-input-block">
+        <input type="text" required value='{$list.classesPrivate.member.name|default=""}' disabled maxlength="11"
+            class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">上课时间</label>
+    <div class="layui-input-block">
+        <input type="text" required value='{$list.classesPrivate.create_at|default=""}' disabled maxlength="11"
+            class="layui-input">
+    </div>
+</div>
+
+<div class="hr-line-dashed"></div>
+
+<div class="layui-form-item text-center">
+    <button class="layui-btn layui-btn-danger" type='button' data-close>关闭</button>
+</div>
