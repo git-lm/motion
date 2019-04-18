@@ -86,7 +86,7 @@ class CourseExpense extends BasicAdmin
     {
         $ceid = input('post.id/s');
         $param['status'] = 0;
-        $this->cem->updateCourseExpenses($param, $ceid);
+        $this->cem->updateTable($param, $ceid);
         if ($this->cem->error) {
             $this->error($this->cem->error);
         } else {

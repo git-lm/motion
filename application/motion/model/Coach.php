@@ -65,7 +65,7 @@ class Coach extends Model
         $db->leftJoin(['motion_member' => 'm'], 'm.coach_id = c.id');
         $db->field('c.* , u.id uid , u.username , m.id member_id');
         if (empty($order)) $order['c.create_time'] = 'desc';
-        if (!isset($where['c.status'])) $where['c.status'] = ['=', 1];
+        if (!isset($where['c.status'])) $where[] = ['c.status', '=', 1];
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);

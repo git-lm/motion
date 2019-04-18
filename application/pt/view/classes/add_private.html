@@ -1,7 +1,8 @@
-<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('addGroup')}" data-auto="true"
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('addPrivate')}" data-auto="true"
     method="post">
+    <!-- {if isset($coaches)} -->
     <div class="layui-form-item">
-        <label class="layui-form-label">所属教练</label>
+        <label class="layui-form-label">教练信息</label>
         <div class="layui-input-block">
             <select required="" lay-verify="required" class="layui-select full-width block" name="coach_id"
                 lay-ignore="">
@@ -12,23 +13,16 @@
             </select>
         </div>
     </div>
-
+    <!-- {elseif isset($coach)} -->
     <div class="layui-form-item">
-        <label class="layui-form-label">选择团课</label>
+        <label class="layui-form-label">教练信息</label>
         <div class="layui-input-block">
-            <select required="" lay-verify="required" class="layui-select full-width block" name="course_id"
-                lay-ignore="">
-                <option value=""> - 请选择团课 -</option>
-                <!--{volist name="courses" id="course"}-->
-                <option value="{$course.id}"> -
-                    {$course.name}
-                    -
-                </option>
-                <!--{/volist}-->
-
-            </select>
+            <input type="text" disabled value='{$coach.name}' class="layui-input">
+            <input type="hidden" value='{$coach.id}' name="coach_id" class="layui-input">
         </div>
     </div>
+    <!-- {/if} -->
+
     <div class="layui-form-item">
         <label class="layui-form-label">上课日期</label>
         <div class="layui-input-block">
@@ -44,7 +38,6 @@
         </div>
     </div>
 
-    <input type="text" name="type" value="2">
     <div class="hr-line-dashed"></div>
 
     <div class="layui-form-item text-center">

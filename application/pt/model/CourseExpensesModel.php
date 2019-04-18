@@ -26,7 +26,7 @@ class CourseExpensesModel extends Model
     {
         $where['status'] = ['=', 1];
         if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
-        $list =  self::where($where)->find();
+        $list =  $this->where($where)->find();
 
         return $list;
     }
@@ -41,7 +41,7 @@ class CourseExpensesModel extends Model
         $where['status'] = ['=', 1];
         if (!empty($param['coach_id']))  $where['coach_id'] = ['=', $param['coach_id']];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $lists =  self::where($where)->with('course')->order('course_id')->paginate($limit);
+        $lists =  $this->where($where)->with('course')->order('course_id')->paginate($limit);
         return $lists;
     }
 
@@ -50,7 +50,7 @@ class CourseExpensesModel extends Model
      */
     public function add($param)
     {
-        $validate = $this->validateCourse($param);
+        $validate = $this->validate($param);
         if ($validate) {
             $this->error = $validate;
             return false;
@@ -69,23 +69,24 @@ class CourseExpensesModel extends Model
      */
     public function edit($param)
     {
-        $validate = $this->validateCourse($param);
+        $validate = $this->validate($param);
         if ($validate) {
             $this->error = $validate;
             return false;
         }
-        $this->updateCourseExpenses($param, $param['id']);
+        $this->updateTable($param, $param['id']);
     }
     /**
      * 更新支出信息
      */
-    public function updateCourseExpenses($param, $ce_id)
+    public function updateTable($param, $id)
     {
-        if (empty($ce_id)) {
+        if (empty($id)) {
             $this->error = '请选择要操作的数据！';
             return false;
         }
-        $code =  $this->where(array('id' => $ce_id))->update($param);
+        $courseExpenses = $this->get($id);
+        $code = $courseExpenses->save($param);
         if ($code) {
             return true;
         } else {
@@ -98,7 +99,7 @@ class CourseExpensesModel extends Model
      * 验证类型数据有效性
      * @param type $data 需要验证的数据
      */
-    public function validateCourse($data)
+    public function validate($data)
     {
         $rule = [
             'coach_id' => 'require|number',

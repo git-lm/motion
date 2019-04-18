@@ -76,7 +76,7 @@ class Course extends BasicAdmin
     {
         $cid = input('post.cid/s');
         $param['status'] = 1;
-        $this->cm->updateCourse($param, $cid);
+        $this->cm->updateTable($param, $cid);
         if ($this->cm->error) {
             $this->error($this->cm->error);
         } else {

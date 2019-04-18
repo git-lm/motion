@@ -77,7 +77,7 @@ class Product extends BasicAdmin
     {
         $pid = input('post.pid/s');
         $param['status'] = 0;
-        $this->pm->updateProduct($param, $pid);
+        $this->pm->updateTable($param, $pid);
         if ($this->pm->error) {
             $this->error($this->pm->error);
         } else {

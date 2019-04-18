@@ -14,6 +14,12 @@ class ClassesModel extends Model
     protected $updateTime = 'update_at';
     protected $table = 'pt_classes';
 
+    public function getTypeTextAttr($value, $data)
+    {
+        $type = [1 => '私教', 2 => '团课'];
+        return $type[$data['type']];
+    }
+
     /**
      * 关联团课上课记录
      */
@@ -22,20 +28,44 @@ class ClassesModel extends Model
         return $this->hasOne('classesGroupModel', 'class_id', 'id');
     }
     /**
+     * 关联团课上课记录
+     */
+    public function  classesPrivate()
+    {
+        return $this->hasOne('classesPrivateModel', 'class_id', 'id');
+    }
+
+    /**
      * 关联教练
      */
-    public  function  coach()
+    public function coach()
     {
         return $this->belongsTo('app\motion\model\Coach', 'coach_id', 'id');
     }
     /**
-     * 获取单个会员
+     * 关联团课
+     */
+    public function course()
+    {
+        return $this->belongsTo('courseModel', 'course_id', 'id');
+    }
+
+    /**
+     * 
+     */
+
+    /**
+     * 获取单个课程
      */
     public function list($param)
     {
-        $where['status'] = ['=', 1];
+        if (empty($param['status'])) {
+            $where['status'] = ['=', 1];
+        } else {
+            $where['status'] = ['=', $param['status']];
+        }
         if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
-        $list =  self::where($where)->find();
+        $list =  $this->with(['coach', 'course'])->where($where)->find();
 
         return $list;
     }
@@ -47,20 +77,28 @@ class ClassesModel extends Model
      */
     public function lists($param)
     {
-        $where['status'] = ['=', 1];
-        if (!empty($param['begin_time']))  $where['class_at'] = ['>', $param['begin_time']];
-        if (!empty($param['end_time']))  $where['class_at'] = ['<', $param['end_time']];
+        if (empty($param['status'])) {
+            $where['status'] = ['=', 1];
+        } else {
+            $where['status'] = ['=', $param['status']];
+        }
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $query = self::where($where);
+        $query = $this->with(['coach', 'course'])->where($where);
         $lists =  $query->paginate($limit);
+        
         return $lists;
     }
 
     /**
-     * 新增会员
+     * 新增课程
      */
     public function add($param)
     {
+        list($start, $end) = explode('-', $param['class_time']);
+        $class_at = $param['class_date'];
+        $param['class_at'] = $param['class_date'];
+        $param['begin_at'] = $class_at . ' ' . trim($start);
+        $param['end_at'] = $class_at . ' ' . trim($end);
         $validate = $this->validate($param);
         if ($validate) {
             $this->error = $validate;
@@ -80,15 +118,20 @@ class ClassesModel extends Model
      */
     public function edit($param)
     {
+        list($start, $end) = explode('-', $param['class_time']);
+        $class_at = $param['class_date'];
+        $param['class_at'] = $param['class_date'];
+        $param['begin_at'] = $class_at . ' ' . trim($start);
+        $param['end_at'] = $class_at . ' ' . trim($end);
         $validate = $this->validate($param);
         if ($validate) {
             $this->error = $validate;
             return false;
         }
-        $this->updateCourse($param, $param['id']);
+        $this->updateTable($param, $param['id']);
     }
     /**
-     * 更新会员信息
+     * 更新课程信息
      */
     public function updateTable($param, $id)
     {
@@ -96,8 +139,8 @@ class ClassesModel extends Model
             $this->error = '请选择要操作的数据！';
             return false;
         }
-        $param['update_at'] = date('Y-m-d H:i:s');
-        $code =  $this->where(array('id' => $id))->update($param);
+        $class = $this->get($id);
+        $code = $class->save($param);
         if ($code) {
             return true;
         } else {
@@ -114,13 +157,24 @@ class ClassesModel extends Model
     {
         $rule = [
             'class_at' => 'require|date',
+            'begin_at' => 'require|date',
+            'end_at' => 'require|date',
             'type' => 'require|in:1,2',
+            'coach_id' => 'require|number',
+            'course_id' => 'number',
         ];
         $message = [
             'class_at.require' => '课程日期必填',
             'class_at.date' => '请正确选择课程日期',
+            'begin_at.require' => '上课时间必填',
+            'begin_at.date' => '请正确选择上课时间',
+            'end_at.require' => '下课时间必填',
+            'end_at.date' => '请正确选择下课时间',
             'type.require' => '请选择团课或者私教',
-            'type.in' => '请选择团课或者私教'
+            'type.in' => '请选择团课或者私教',
+            'coach_id.require' => '教练必选',
+            'coach_id.number' => '请正确选择教练',
+            'course_id.number' => '请正确选择课程',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

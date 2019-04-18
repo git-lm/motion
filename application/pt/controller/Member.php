@@ -77,7 +77,7 @@ class Member extends BasicAdmin
     {
         $mid = input('post.mid/s');
         $param['status'] = 0;
-        $this->mm->updateMember($param, $mid);
+        $this->mm->updateTable($param, $mid);
         if ($this->mm->error) {
             $this->error($this->mm->error);
         } else {
@@ -104,7 +104,7 @@ class Member extends BasicAdmin
         } else {
             $mid =  input('post.mid/d');
             $param['coach_id'] =  input('post.coach_id/d');
-            $this->mm->updateMember($param, $mid);
+            $this->mm->updateTable($param, $mid);
             if ($this->mm->error) {
                 $this->error($this->mm->error);
             } else {

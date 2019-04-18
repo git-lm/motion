@@ -28,7 +28,7 @@ class CourseModel extends Model
         $where['status'] = ['=', 1];
         if (!empty($param['phone'])) $where['phone'] = ['=', $param['phone']];
         if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
-        $list =  self::where($where)->find();
+        $list =  $this->where($where)->find();
 
         return $list;
     }
@@ -42,7 +42,7 @@ class CourseModel extends Model
     {
         $where['status'] = ['=', 1];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $lists =  self::where($where)->paginate($limit);
+        $lists =  $this->where($where)->paginate($limit);
         return $lists;
     }
 
@@ -51,7 +51,7 @@ class CourseModel extends Model
      */
     public function add($param)
     {
-        $validate = $this->validateMember($param);
+        $validate = $this->validate($param);
         if ($validate) {
             $this->error = $validate;
             return false;
@@ -70,23 +70,24 @@ class CourseModel extends Model
      */
     public function edit($param)
     {
-        $validate = $this->validateMember($param);
+        $validate = $this->validate($param);
         if ($validate) {
             $this->error = $validate;
             return false;
         }
-        $this->updateCourse($param, $param['id']);
+        $this->updateTable($param, $param['id']);
     }
     /**
      * 更新会员信息
      */
-    public function updateCourse($param, $course_id)
+    public function updateTable($param, $id)
     {
-        if (empty($course_id)) {
+        if (empty($id)) {
             $this->error = '请选择要操作的数据！';
             return false;
         }
-        $code =  $this->where(array('id' => $course_id))->update($param);
+        $course =  $this->get($id);
+        $code =  $course->save($param);
         if ($code) {
             return true;
         } else {
@@ -99,7 +100,7 @@ class CourseModel extends Model
      * 验证类型数据有效性
      * @param type $data 需要验证的数据
      */
-    public function validateMember($data)
+    public function validate($data)
     {
         $rule = [
             'name' => 'require|max:5|min:2|chsAlpha',

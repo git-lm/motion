@@ -1,121 +1,112 @@
 {extend name='admin@public/content'}
 {block name="button"}
-<!--{if auth("$classuri/addGroup")}-->
-<button data-modal='{:url("$classuri/addGroup")}' data-title="添加团课"
-    class='layui-btn layui-btn-sm layui-btn-primary'>添加团课</button>
-<!-- {/if} -->
-<!--{if auth("$classuri/addPrivate")}-->
-<button data-modal='{:url("$classuri/addPrivate")}' data-title="添加私教"
-    class='layui-btn layui-btn-sm layui-btn-primary'>添加私教</button>
-<!-- {/if} -->
+<!--{if auth("$classuri/add")}-->
+<button data-modal='{:url("$classuri/add")}' data-title="添加会员"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>
 {/block}
 
 {block name="content"}
 
 <!-- 表单搜索 开始 -->
-<form autocomplete="off" class="layui-form layui-form-pane form-search" action="{:request()->url()}"
-    onsubmit="return false" method="get">
-    <div class="layui-form-item layui-inline">
-        <label class="layui-form-label">搜索时间</label>
-        <div class="layui-input-inline">
-            <input name="search_time" id="search_time" value="{$Think.get.search_time}" placeholder="请选择到期时间"
-                class="layui-input">
-        </div>
+<div class="layui-form-item layui-inline">
+    <label class="layui-form-label">会员名称</label>
+    <div class="layui-input-inline">
+        <input name="name" value="" placeholder="请输入会员名称" class="layui-input">
     </div>
-    <div class="layui-form-item layui-inline">
-        <label class="layui-form-label">计划名称</label>
-        <div class="layui-input-inline">
-            <input name="name" value="{$Think.get.name}" placeholder="请输入计划名称" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item layui-inline">
-        <button class="layui-btn layui-btn-primary" id="search" lay-submit><i class="layui-icon">&#xe615;</i>
-            搜 索</button>
-    </div>
-</form>
-<div id="calendar">
-
 </div>
-
+<div class="layui-form-item layui-inline">
+    <label class="layui-form-label">教练名称</label>
+    <div class="layui-input-inline">
+        <input name="cname" value="" placeholder="请输入教练名称" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item layui-inline">
+    <label class="layui-form-label">到期时间</label>
+    <div class="layui-input-inline">
+        <input name="expire_time" id="expire_time" value="" placeholder="请选择到期时间" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item layui-inline">
+    <button class="layui-btn layui-btn-primary" lay-filter="search" lay-submit><i class="layui-icon">&#xe615;</i>
+        搜 索</button>
+</div>
+<table id="Table" lay-filter="Table"></table>
 {/block}
 {block name="script"}
-
 <script>
     $(function () {
-        laydate.render({ elem: '#search_time' });
+        $.layuitable('Table');
+        laydate.render({ range: true, elem: '#expire_time' });
+        $('body').off('mouseenter', '.end_time_show').on('mouseenter', '.end_time_show', function () {
+            var that = this;
+            var mid = $(this).attr('data-itemid');
+            $.post('{:url("get_member_times")}', { 'mid': mid }, function (data) {
+                if (data.data.length != 0) {
+                    var tipsHtml = '到期时间：<br />';
+                    for (var i = 0; i < data.data.length; i++) {
+                        tipsHtml += data.data[i].begin_time_show + ' - ' + data.data[i].end_time_show + '<br />';
+                    }
+                    layer.tips(tipsHtml, that);
+                }
+            }, 'json')
 
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            plugins: ['interaction', 'dayGrid', 'timeGrid'],
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            locale: "zh-cn",
-            buttonText: {
-                today: '今天',
-                month: '月',
-                week: '周',
-                day: '日',
-            },
-            eventLimit: true,
-            // dateClick: function (info) {
-            //     addClass()
-            //     console.log('Date: ' + info.dateStr);
-            //     console.log(info)
-            //     calendar.addEvent({
-            //         title: '测试2',
-            //         start: '2019-04-17 09:00:00',
-            //         end: ''
-            //     });
-            // },
-            eventClick: function (info) {
-                var group_id = info.event.extendedProps.group_id;
-                var class_type = info.event.extendedProps.class_type;
-                if (class_type == 2) {
-                    $.form.modal("{:url('editGroup')}?group_id=" + group_id, '', '编辑团课')
-                } else {
-
+        })
+    })
+    table.render({
+        elem: '#Table',
+        url: '{:url("$classuri/get_lists")}', //数据接口 
+        page: true, //开启分页
+        toolbar: '<div>课程列表</div>',
+        loading: true,
+        title: '课程列表',
+        cols: [[//表头
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            {
+                title: '课程类型', templet: function (d) {
+                    return d.type == 1 ? '私教' : '团课';
                 }
             },
-            events: function (fetchInfo, successCallback, failureCallback) {
-                // var date = this.getDate().format('YYYY-MM');
-                var endStr = fetchInfo.endStr;
-                var startStr = fetchInfo.startStr;
-                $.ajax({
-                    url: "{:url('get_group_lists')}",
-                    dataType: 'json',
-                    type: 'POST',
-                    data: {
-                        endStr: endStr,
-                        startStr: startStr,
-                    },
-                    success: function (json) { // 获取当前月的数据
-                        var events = [];
-                        $.each(json, function (i, c) {
-                            if (c.classes.type == 1) {
-                                var color = '#ff0099';
-                            } else {
-                                var color = '#6600ff';
-                                var title = '\n 教练：' + c.coach.name + ' \n ' + '团课：' + c.course.name + '\n' + '时间：' + c.begin_at.substr(10) + '-' + c.end_at.substr(10);
-                            }
-                            events.push({
-                                title: title,
-                                group_id: c.id,
-                                class_type: c.classes.type,
-                                start: c.begin_at, // will be parsed
-                                color: color
-                            });
-                        });
-                        successCallback(events);
+            { field: 'class_at', title: '上课日期' },
+            {
+                title: '上课时间', templet: function (d) {
+                    return d.begin_at.substr(10) + ' - ' + d.end_at.substr(10);
+                }
+            },
+            { title: '教练名称', templet: '<div>{{d.coach.name}}</div>' },
+            {
+                fixed: 'right', title: '详情', width: '30%', align: 'center', templet: function (d) {
+                    if (d.type == 1) {
+                        return '<a data-modal=\'{:url("$classuri/classPeople")}?class_id=' + d.id + '\' data-title="上课会员">上课会员</a>';
+                    } else {
+                        return '<a data-modal=\'{:url("$classuri/classNumber")}?class_id=' + d.id + '\' data-title="上课人数">上课人数</a>';
                     }
-                });
+                }
             }
-        });
-
-        calendar.render();
+        ]],
+        parseData: function (res) { //res 即为原始返回的数据
+            return {
+                "code": res.code, //解析接口状态
+                "msg": res.msg, //解析提示文本
+                "count": res.count, //解析数据长度
+                "data": res.data //解析数据列表
+            };
+        }
+    }
+    );
+    //搜索按钮绑定事件
+    form.on('submit(search)', function () {
+        var name = $('input[name="name"]').val();
+        var cname = $('input[name="cname"]').val();
+        var expire_time = $('input[name="expire_time"]').val();
+        table.reload('Table', {
+            where: {
+                name: name,
+                cname: cname,
+                expire_time: expire_time
+            },
+            page: { curr: 1 }
+        })
     })
-
 </script>
+
 {/block}
