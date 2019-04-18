@@ -10,7 +10,20 @@ class Coach extends Model
 {
 
     protected $table = 'motion_coach';
-
+    /**
+     * 关联私教支出
+     */
+    public function  productExpenses()
+    {
+        return $this->hasMany('app\pt\model\ProductExpensesModel', 'coach_id', 'id');
+    }
+    /**
+     * 关联团课支出
+     */
+    public function  groupExpenses()
+    {
+        return $this->hasMany('app\pt\model\CourseExpensesModel', 'coach_id', 'id');
+    }
     /**
      * 时间获取器
      * @param type $val  转换数据

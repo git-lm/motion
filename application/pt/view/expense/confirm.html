@@ -1,0 +1,106 @@
+<style>
+    .layui-form-info {
+        width: 150px;
+        text-align: center;
+    }
+</style>
+<div class="layui-row">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>教练信息</legend>
+    </fieldset>
+    <div class=" layui-col-md4">
+        <label class="layui-form-label">教练名称 ：</label>
+        <div class="">
+            <label class="layui-form-label">{$list.coach.name}</label>
+        </div>
+    </div>
+</div>
+<div class="hr-line-dashed"></div>
+<div class="layui-row">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>课程信息</legend>
+    </fieldset>
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">课程日期 ：</label>
+        <label class="layui-form-label layui-form-info">{$list.class_at|substr=0,10}</label>
+    </div>
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">课程时间 ：</label>
+        <label class="layui-form-label layui-form-info">{$list.begin_at|substr=10} - {$list.end_at|substr=10}</label>
+    </div>
+    <!-- {if $list.type == 1 } -->
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">会员信息 ：</label>
+        <label class="layui-form-label layui-form-info">{$list.classesPrivate.member.name}</label>
+    </div>
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">上课时间 ：</label>
+        <label class="layui-form-label layui-form-info">{$list.classesPrivate.create_at}</label>
+    </div>
+    <!-- {elseif $list.type == 2 /} -->
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">课程名称 ：</label>
+        <label class="layui-form-label layui-form-info">{$list.course.name}</label>
+    </div>
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">上课人数 ：</label>
+        <label class="layui-form-label layui-form-info">{$list.classesGroup.number|default=0}</label>
+    </div>
+    <!-- {/if} -->
+
+
+</div>
+<div class="hr-line-dashed"></div>
+<div class="layui-row">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>佣金信息</legend>
+    </fieldset>
+    {if $list.type == 1 }
+    <div class=" layui-col-md4">
+        <label class="layui-form-label">教练名称 ：</label>
+        <div class="">
+            <label class="layui-form-label">{$list.coach.name}</label>
+        </div>
+    </div>
+    {elseif $list.type == 2 /}
+    {foreach $list.coach.groupExpenses as $expenses}
+    {if $list.course_id == $expenses.course_id}
+    {between name="list.classesGroup.number" value="$expenses.floor_num .','. $expenses.upper_num" }
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">课程下限 ：</label>
+        <div class="">
+            <label class="layui-form-label">{$expenses.floor_num}</label>
+        </div>
+    </div>
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">课程上限 ：</label>
+        <div class="">
+            <label class="layui-form-label">{$expenses.upper_num}</label>
+        </div>
+    </div>
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">课程费用 ：</label>
+        <div class="">
+            <label class="layui-form-label">{$expenses.expenses}</label>
+        </div>
+    </div>
+    <div class=" layui-col-md6">
+        <label class="layui-form-label">课程奖金 ：</label>
+        <div class="">
+            <label class="layui-form-label">{$expenses.award}</label>
+        </div>
+    </div>
+    <?php break;?>
+    {/between}
+    {/if}
+
+    {/foreach}
+    {/if}
+
+</div>
+<div class="hr-line-dashed"></div>
+<div class=" layui-form-item text-center">
+    <input type='hidden' value='2' name='id' /> <button class="layui-btn" lay-submit type='submit'
+        lay-filter="refund_submit">确认佣金</button>
+    <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+</div>

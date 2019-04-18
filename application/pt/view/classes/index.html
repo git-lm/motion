@@ -63,10 +63,14 @@
             { title: '序号', fixed: 'left', type: 'numbers' },
             {
                 title: '课程类型', templet: function (d) {
-                    return d.type == 1 ? '私教' : '团课';
+                    return d.type == 1 ? '私教' : '团课'+'-'+d.course.name;
                 }
             },
-            { field: 'class_at', title: '上课日期' },
+            {
+                title: '上课日期', templet: function (d) {
+                    return d.class_at.substr(0, 10);
+                }
+            },
             {
                 title: '上课时间', templet: function (d) {
                     return d.begin_at.substr(10) + ' - ' + d.end_at.substr(10);
@@ -74,13 +78,16 @@
             },
             { title: '教练名称', templet: '<div>{{d.coach.name}}</div>' },
             {
-                fixed: 'right', title: '详情', width: '30%', align: 'center', templet: function (d) {
+                fixed: 'right', title: '详情', width: '10%', align: 'center', templet: function (d) {
                     if (d.type == 1) {
                         return '<a data-modal=\'{:url("$classuri/classPeople")}?class_id=' + d.id + '\' data-title="上课会员">上课会员</a>';
                     } else {
                         return '<a data-modal=\'{:url("$classuri/classNumber")}?class_id=' + d.id + '\' data-title="上课人数">上课人数</a>';
                     }
                 }
+            },
+            {
+                fixed: 'right', title: '操作', width: '20%', align: 'center', toolbar: '#Handle'
             }
         ]],
         parseData: function (res) { //res 即为原始返回的数据
@@ -108,5 +115,10 @@
         })
     })
 </script>
+<script type="text/html" id="Handle">
 
+    <!--{if auth("$classuri/confirm")}-->
+    <a class="layui-btn layui-btn-xs" data-action="{:url('expense/confirm')}" data-field="cid" data-title="确认信息" lay-event="open">确认信息</a>
+    <!--{/if}-->
+</script>
 {/block}

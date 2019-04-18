@@ -1,0 +1,55 @@
+{extend name='admin@public/content'}
+{block name="button"}
+<!--{if auth("$classuri/addProduct")}-->
+<button data-modal='{:url("$classuri/addProduct")}?coach_id={$coach_id}' data-title="添加分成"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加分成</button>
+{/block}
+
+{block name="content"}
+<table id="table" lay-filter="table"></table>
+{/block}
+{block name="script"}
+<script>
+    $(function () {
+        $.layuitable('table');
+        laydate.render({ range: true, elem: '#expire_time' });
+    })
+    table.render({
+        elem: '#table',
+        url: '{:url("$classuri/get_product_lists")}?coach_id={$coach_id}', //数据接口 
+        page: true, //开启分页
+        toolbar: '<div>私教支出列表</div>',
+        loading: true,
+        title: '私教支出列表',
+        cols: [[//表头
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'name', title: '项目名称', templet: '<div>{{d.product.name}}</div>' },
+            { field: 'expenses', title: '私教费用' },
+            { field: 'award', title: '奖励费用' },
+            {
+                fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#Handle'
+            }
+        ]],
+        parseData: function (res) { //res 即为原始返回的数据
+            return {
+                "code": res.code, //解析接口状态
+                "msg": res.msg, //解析提示文本
+                "count": res.count, //解析数据长度
+                "data": res.data //解析数据列表
+            };
+        }
+    }
+    );
+
+</script>
+<script type="text/html" id="Handle">
+
+    <!--{if auth("$classuri/editProduct")}-->
+    <a class="layui-btn layui-btn-xs" data-action="{:url('editProduct')}" data-field="id" data-title="编辑分成" lay-event="open">编辑</a>
+    <!--{/if}-->
+    <!--{if auth("$classuri/delProduct")}-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('delProduct')}" data-field="id" lay-event="del">删除</a>
+    <!--{/if}-->
+</script>
+
+{/block}
