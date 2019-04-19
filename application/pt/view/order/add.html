@@ -1,0 +1,61 @@
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('add')}?member_id={$member_id}"
+    data-auto="true" method="post">
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择教练</label>
+        <div class="layui-input-block">
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select-radio
+                xm-select="coach{:time()}" lay-verify="required" class="layui-select full-width block" name="coach_id"
+                lay-ignore="">
+                <option value=""> - 请选择教练 -</option>
+                <!--{volist name="coaches" id="coach"}-->
+                <option value="{$coach.id}">{$coach.name}</option>
+                <!--{/volist}-->
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择项目</label>
+        <div class="layui-input-block">
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select-radio
+                xm-select="product{:time()}" lay-verify="required" class="layui-select full-width block"
+                name="product_id" lay-ignore="">
+                <option value=""> - 请选择项目 -</option>
+                <!--{volist name="products" id="product"}-->
+                <option value="{$product.id}">{$product.name}-{$product.duration}天</option>
+                <!--{/volist}-->
+            </select>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">开始日期</label>
+        <div class="layui-input-block">
+            <input type="text" required lay-verify="required" value='' id="begin_at" maxlength="11" name="begin_at"
+                title="请选择开始日期" placeholder="请选择开始日期" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">赠送时长</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="give_time" required lay-verify="required|number" value='0' maxlength="5"
+                minlength="2" title="请输入赠送时间" placeholder="请输入赠送时间" class="layui-input">
+        </div>
+    </div>
+    {if isset($member_id)}<input type='hidden' value='{$member_id}' name='member_id'>{/if}
+
+
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" type='submit'>保存数据</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
+<script>
+    formSelects.render('coach{:time()}');
+    formSelects.render('product{:time()}');
+    laydate.render({ elem: '#begin_at' });
+</script>

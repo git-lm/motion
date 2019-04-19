@@ -84,32 +84,4 @@ class Member extends BasicAdmin
             $this->success('删除成功', '');
         }
     }
-    /**
-     * 分配会员-教练
-     */
-    public function dis()
-    {
-        if (request()->isGet()) {
-            //获取数据
-            $mid = input('get.mid/s');
-            if (!$mid) {
-                $this->error('请正确选择会员');
-            }
-            $list = $this->mm->list(array('id' => $mid));
-            $coachModel = new \app\motion\model\Coach;
-            $coachs = $coachModel->get_coachs();
-            $this->assign('list', $list);
-            $this->assign('coachs', $coachs);
-            return $this->fetch();
-        } else {
-            $mid =  input('post.mid/d');
-            $param['coach_id'] =  input('post.coach_id/d');
-            $this->mm->updateTable($param, $mid);
-            if ($this->mm->error) {
-                $this->error($this->mm->error);
-            } else {
-                $this->success('分配成功', '');
-            }
-        }
-    }
 }

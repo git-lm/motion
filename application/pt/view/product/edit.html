@@ -18,6 +18,14 @@
                 class="layui-input">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">产品时长</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="duration" required lay-verify="required|number"
+                value='{$list.duration|default=""}' maxlength="11" title="请输入产品时长" placeholder="请输入产品时长"
+                class="layui-input">
+        </div>
+    </div>
     <div class="hr-line-dashed"></div>
     {if isset($list.id)}<input type='hidden' value='{$list.id}' name='pid'>{/if}
     <div class="layui-form-item text-center">

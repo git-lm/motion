@@ -97,7 +97,9 @@ class ProductModel extends Model
     {
         $rule = [
             'name' => 'require|max:5|min:2|chsAlpha',
-            'price' => 'require'
+            'price' => 'require',
+            'duration' => 'require|number'
+
         ];
         $message = [
             'name.require' => '产品名称必填',
@@ -105,6 +107,8 @@ class ProductModel extends Model
             'name.max' => '产品名称最多五个字',
             'name.chsAlpha' => '产品名称只能汉子和字母',
             'price.require' => '产品价格必填',
+            'duration.require' => '产品时长必填',
+            'duration.number' => '请正确填写产品时长'
             // 'price.regex' => '产品价格格式不正确',
         ];
         $validate = new \think\Validate();

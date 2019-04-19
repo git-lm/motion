@@ -39,6 +39,7 @@ class Product extends BasicAdmin
         } else {
             $param['name'] = input('post.name/s');
             $param['price'] = input('post.price/s');
+            $param['duration'] = input('post.duration/d');
             $this->pm->add($param);
             if ($this->pm->error) {
                 $this->error($this->pm->error);
@@ -60,6 +61,7 @@ class Product extends BasicAdmin
         } else {
             $param['name'] = input('post.name/s');
             $param['price'] = input('post.price/s');
+            $param['duration'] = input('post.duration/d');
             $param['id'] = input('post.pid/s');
             $this->pm->edit($param);
             if ($this->pm->error) {
@@ -84,5 +86,4 @@ class Product extends BasicAdmin
             $this->success('删除成功', '');
         }
     }
-    
 }
