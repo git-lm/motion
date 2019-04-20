@@ -63,7 +63,7 @@
             { title: '序号', fixed: 'left', type: 'numbers' },
             {
                 title: '课程类型', templet: function (d) {
-                    return d.type == 1 ? '私教' : '团课'+'-'+d.course.name;
+                    return d.type == 1 ? '私教' : '团课' + '-' + d.course.name;
                 }
             },
             {
@@ -116,9 +116,13 @@
     })
 </script>
 <script type="text/html" id="Handle">
-
     <!--{if auth("$classuri/confirm")}-->
-    <a class="layui-btn layui-btn-xs" data-action="{:url('expense/confirm')}" data-field="cid" data-title="确认信息" lay-event="open">确认信息</a>
-    <!--{/if}-->
+    {{#if(d.commission != null && d.commission.status == 1 ){}}
+    <a class="layui-btn layui-btn-xs" data-action="{:url('expense/confirm')}" data-field="cid" data-title="确认信息" lay-event="open">查看信息</a>
+    {{#}else{}}
+    <a class="layui-btn layui-btn-xs layui-btn-danger" data-action="{:url('expense/confirm')}" data-field="cid" data-title="确认信息" lay-event="open">确认信息</a>
+    {{#} }}
+   
+     <!--{/if}-->
 </script>
 {/block}

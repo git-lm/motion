@@ -1,20 +1,47 @@
-<div class="layui-form-item">
-    <label class="layui-form-label">会员名称</label>
-    <div class="layui-input-block">
-        <input type="text" required value='{$list.classesPrivate.member.name|default=""}' disabled maxlength="11"
-            class="layui-input">
-    </div>
-</div>
-<div class="layui-form-item">
-    <label class="layui-form-label">上课时间</label>
-    <div class="layui-input-block">
-        <input type="text" required value='{$list.classesPrivate.create_at|default=""}' disabled maxlength="11"
-            class="layui-input">
-    </div>
-</div>
+<form autocomplete="off" class="layui-form layui-box modal-form-box" action="{:url('classPeople')}" data-auto="true"
+    method="post">
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择会员</label>
+        <div class="layui-input-block">
+            <select required="" lay-verify="required" class="layui-select full-width block" name="member_id"
+                lay-ignore="">
+                <option value=""> - 请选择会员 -</option>
+                <!--{volist name="members" id="member"}-->
+                <option {in name="$member.id" value="$list.classesPrivate.member_id" }selected{/in}
+                    value="{$member.id}"> -
+                    {$member.name} - </option>
+                <!--{/volist}-->
 
-<div class="hr-line-dashed"></div>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开始时间</label>
+        <div class="layui-input-block">
+            <input type="text" required lay-verify="required" value='{$list.classesPrivate.begin_at}' id="begin_at"
+                maxlength="11" name="begin_at" title="请选择开始时间" placeholder="请选择开始时间" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">结束时间</label>
+        <div class="layui-input-block">
+            <input type="text" required lay-verify="required" value='{$list.classesPrivate.end_at}' id="end_at"
+                maxlength="11" name="end_at" title="请选择结束时间" placeholder="请选择结束时间" class="layui-input">
+        </div>
+    </div>
 
-<div class="layui-form-item text-center">
-    <button class="layui-btn layui-btn-danger" type='button' data-close>关闭</button>
-</div>
+    <div class="hr-line-dashed"></div>
+    {if isset($list.id)} <input type="hidden" name="class_id" value="{$list.id}"> {/if}
+    <div class="layui-form-item text-center">
+        {if !isset($list) || !isset($list.classesPrivate.end_at)}
+        <button class="layui-btn" type='submit'>保存数据</button>
+        {/if}
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定要取消编辑吗？" data-close>取消编辑</button>
+    </div>
+</form>
+{block name="script"}
+<script>
+    laydate.render({ elem: '#begin_at', type: 'datetime' });
+    laydate.render({ elem: '#end_at', type: 'datetime' });
+</script>
+{/block}

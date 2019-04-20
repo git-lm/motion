@@ -26,8 +26,8 @@ class Course extends BasicAdmin
      */
     public function get_lists()
     {
-        $post = input('post.');
-        $lists =  $this->cm->lists($post);
+        $get = input('get.');
+        $lists =  $this->cm->lists($get);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
     /**

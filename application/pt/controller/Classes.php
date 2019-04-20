@@ -5,8 +5,9 @@ namespace app\pt\controller;
 use controller\BasicAdmin;
 use app\pt\model\ClassesModel;
 use app\pt\model\CourseModel;
-use app\motion\model\Coach;
+use app\pt\model\CoachModel;
 use app\pt\model\ClassesGroupModel;
+use app\pt\model\ClassesPrivateModel;
 
 class Classes extends BasicAdmin
 {
@@ -66,15 +67,20 @@ class Classes extends BasicAdmin
             }
             $list = ClassesModel::with('classesPrivate')->where(array('id' => $class_id, 'status' => 1))->find();
             $this->assign('list', $list);
+            //获取教练下的所有有效会员
+            $cm = new CoachModel();
+            $cm->setCoachId($list['coach_id']);
+            $members = $cm->coachProductMember();
+            $this->assign('members', $members);
             return $this->fetch();
         } else {
             $post = input('post.');
-            $cgm = new ClassesGroupModel();
-            $cgm->add($post);
-            if ($cgm->error) {
-                $this->error($cgm->error);
+            $cpm = new ClassesPrivateModel();
+            $cpm->add($post);
+            if ($cpm->error) {
+                $this->error($cpm->error);
             } else {
-                $this->success('修改成功', '');
+                $this->success('操作成功', '');
             }
         }
     }
@@ -101,8 +107,8 @@ class Classes extends BasicAdmin
     {
         if (request()->isGet()) {
             //获取教练信息
-            $coachModel = new \app\motion\model\Coach;
-            $coaches = $coachModel->get_coachs();
+            $cm = new CoachModel();
+            $coaches = $cm->where(array('status' => 1))->select();
             //获取团课课程信息
             $cm = new CourseModel();
             $courses = $cm::where(array('status' => 1))->select();
@@ -132,8 +138,8 @@ class Classes extends BasicAdmin
                 $this->error('请正确选择课程');
             };
             //获取教练信息
-            $coachModel = new \app\motion\model\Coach;
-            $coaches = $coachModel->get_coachs();
+            $cm = new CoachModel();
+            $coaches = $cm->where(array('status' => 1))->select();
             //获取团课列表信息
             $cm = new CourseModel();
             $courses = $cm::where(array('status' => 1))->select();
@@ -184,12 +190,12 @@ class Classes extends BasicAdmin
         if (request()->isGet()) {
             //获取教练信息
             $user = session('user');
+            $cm = new CoachModel();
             if (!empty($user['is_admin'])) {
-                $coachModel = new \app\motion\model\Coach;
-                $coaches = $coachModel->get_coachs();
+                $coaches = $cm->where(array('status' => 1))->select();
                 $this->assign('coaches', $coaches);
             } else {
-                $coach = Coach::where(array('u_id' => $user['id']))->find();
+                $coach = $cm->where(array('u_id' => $user['id']))->find();
                 if (empty($coach)) {
                     $this->error('无教练信息');
                 }
@@ -220,12 +226,12 @@ class Classes extends BasicAdmin
             };
             //获取教练信息
             $user = session('user');
+            $cm = new CoachModel();
             if (!empty($user['is_admin'])) {
-                $coachModel = new \app\motion\model\Coach;
-                $coaches = $coachModel->get_coachs();
+                $coaches = $cm->where(array('status' => 1))->select();
                 $this->assign('coaches', $coaches);
             } else {
-                $coach = Coach::where(array('u_id' => $user['id']))->find();
+                $coach = $cm->where(array('u_id' => $user['id']))->find();
                 if (empty($coach)) {
                     $this->error('无教练信息');
                 }

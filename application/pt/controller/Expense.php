@@ -8,6 +8,7 @@ use app\pt\model\CourseModel;
 use app\pt\model\ProductExpensesModel;
 use app\pt\model\ProductModel;
 use app\pt\model\ClassesModel;
+use app\pt\model\CommissionModel;
 
 class Expense extends BasicAdmin
 {
@@ -193,10 +194,23 @@ class Expense extends BasicAdmin
 
     public function confirm()
     {
-        $cm = new ClassesModel();
-        $class_id = input('get.cid/d');
-        $list = $cm->with(['coach', 'course'])->where(array('id' => $class_id, 'status' => 1))->find();
-        $this->assign('list', $list);
-        return $this->fetch();
+        if (request()->isGet()) {
+            $cm = new ClassesModel();
+            $class_id = input('get.cid/d');
+            $list = $cm->with(['coach', 'course', 'commission'])->where(array('id' => $class_id, 'status' => 1))->find();
+            $this->assign('list', $list);
+            return $this->fetch();
+        } else {
+            $status = input('post.value/d', 0);
+            $commission_id = input('post.id/d', 0);
+
+            $cm = new CommissionModel();
+            $cm->updateTable(array('status' => $status), $commission_id);
+            if ($cm->error) {
+                $this->error($cm->error);
+            } else {
+                $this->success('操作成功', '');
+            }
+        }
     }
 }

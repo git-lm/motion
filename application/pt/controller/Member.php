@@ -25,8 +25,8 @@ class Member extends BasicAdmin
      */
     public function get_lists()
     {
-        $post = input('post.');
-        $lists =  $this->mm->lists($post);
+        $get = input('get.');
+        $lists =  $this->mm->lists($get);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
     /**
@@ -39,6 +39,7 @@ class Member extends BasicAdmin
         } else {
             $param['name'] = input('post.name/s');
             $param['phone'] = input('post.phone/s');
+           
             $this->mm->add($param);
             if ($this->mm->error) {
                 $this->error($this->mm->error);
@@ -84,4 +85,7 @@ class Member extends BasicAdmin
             $this->success('删除成功', '');
         }
     }
+
+
+    
 }

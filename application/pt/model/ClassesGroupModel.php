@@ -28,16 +28,35 @@ class ClassesGroupModel extends Model
             return false;
         }
         $group  = $this->where(array('class_id' => $param['class_id']))->find();
-        if (!empty($group)) {
-            $this->updateTable($param, $group['id']);
-        } else {
-            $code = $this->save($param);
-            if ($code) {
-                return;
+
+        try {
+            Db::startTrans();
+            if (!empty($group)) {
+                $group = $this->get($group['id']);
+                $code =  $group->save($param);
             } else {
+                $code = $this->save($param);
+            }
+            if ($code) {
+                $cm = new CommissionModel();
+                $cm->add($class);
+
+                if ($cm->error) {
+                    Db::rollback();
+                    $this->error = $cm->error;
+                    return false;
+                }
+                Db::commit();
+                return true;
+            } else {
+                Db::rollback();
                 $this->error = '新增失败';
                 return false;
             }
+        } catch (Exception $exc) {
+            Db::rollback();
+            $this->error = '新增失败';
+            return false;
         }
     }
 

@@ -4,7 +4,6 @@ namespace app\pt\model;
 
 use think\Model;
 use think\Db;
-use app\motion\model\Coach;
 
 class ClassesPrivateModel extends Model
 {
@@ -12,7 +11,7 @@ class ClassesPrivateModel extends Model
     protected $autoWriteTimestamp = 'timestamp';
     // 定义时间戳字段名
     protected $updateTime = 'update_at';
-    protected $crateTime = 'create_at';
+    protected $createTime = 'create_at';
     protected $table = 'pt_classes_private';
 
 
@@ -20,6 +19,55 @@ class ClassesPrivateModel extends Model
     {
         return $this->belongsTo('memberModel', 'member_id', 'id');
     }
+    public function product()
+    {
+        return $this->belongsTo('productModel', 'product_id', 'id');
+    }
+
+    public function add($param)
+    {
+        $cm = new  ClassesModel();
+        $class = $cm->where(array('id' => $param['class_id']))->find();
+        $validate = $this->validate($param);
+        if ($validate) {
+            $this->error = $validate;
+            return false;
+        }
+        $classPrivate = $this->where(array('class_id' => $class['id']))->find();
+        if (empty($classPrivate)) {
+            $classPrivate = $this;
+        }
+
+        $orderProduct = OrderProductModel::getProductForMemberId($param['member_id']);
+        $classPrivate->class_id = $class['id'];
+        $classPrivate->member_id = $param['member_id'];
+        $classPrivate->product_id = $orderProduct['product_id'];
+        $classPrivate->begin_at = !empty($param['begin_at']) ? $param['begin_at'] : null;
+        $classPrivate->end_at = !empty($param['end_at']) ? $param['end_at'] : null;
+        try {
+            Db::startTrans();
+            $classPrivate->save();
+            $cm = new CommissionModel();
+            $cm->add($class);
+            if ($cm->error) {
+                Db::rollback();
+                $this->error = $cm->error;
+                return false;
+            } else {
+                Db::commit();
+                return true;
+            }
+        } catch (Exception $exc) {
+            Db::rollback();
+            $this->error = '新增失败';
+            return false;
+        }
+    }
+
+
+
+
+
 
 
     /**
@@ -30,22 +78,15 @@ class ClassesPrivateModel extends Model
     {
         $rule = [
             'class_id' => 'require|number',
-            'course_id' => 'require|number',
-            'coach_id' => 'require|number',
             'begin_at' => 'require|date',
-            'end_at' => 'require|date',
+            'end_at' => 'date',
         ];
         $message = [
-            'class_id.require' => '添加失败',
-            'class_id.number' => '添加失败',
-            'course_id.require' => '私教必选',
-            'course_id.number' => '请正确选择私教',
-            'coach_id.require' => '教练必选',
-            'coach_id.number' => '请正确选择教练',
-            'begin_at.require' => '上课时间必选',
-            'begin_at.date' => '请正确选择上课时间',
-            'end_at.require' => '下课时间必选',
-            'end_at.date' => '请正确选择下课时间',
+            'class_id.require' => '请正确选择课程',
+            'class_id.number' => '请正确选择课程',
+            'begin_at.require' => '开始时间必选',
+            'begin_at.date' => '请正确选择开始时间',
+            'end_at.date' => '请正确选择结束时间',
 
         ];
         $validate = new \think\Validate();

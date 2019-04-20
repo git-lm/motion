@@ -18,9 +18,14 @@ class MemberModel extends Model
      */
     public function list($param)
     {
-        $where['status'] = ['=', 1];
-        if (!empty($param['phone'])) $where['phone'] = ['=', $param['phone']];
-        if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
+        if (empty($param['status'])) {
+            $where[] = ['status', '=', 1];
+        } else {
+            $where[] = ['status', '=', $param['status']];
+        }
+        if (!empty($param['name'])) $where[] = ['name', 'like', '%' . $param['name'] . '%'];
+        if (!empty($param['phone'])) $where[] = ['phone', 'like', '%' . $param['phone'] . '%'];
+        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
         $list =  $this->where($where)->find();
 
         return $list;
@@ -33,7 +38,13 @@ class MemberModel extends Model
      */
     public function lists($param)
     {
-        $where['status'] = ['=', 1];
+        if (empty($param['status'])) {
+            $where[] = ['status', '=', 1];
+        } else {
+            $where[] = ['status', '=', $param['status']];
+        }
+        if (!empty($param['name'])) $where[] = ['name', 'like', '%' . $param['name'] . '%'];
+        if (!empty($param['phone'])) $where[] = ['phone', 'like', '%' . $param['phone'] . '%'];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
         $lists =  $this->where($where)->paginate($limit);
         return $lists;
@@ -54,9 +65,7 @@ class MemberModel extends Model
             $this->error = '该手机号码已存在';
             return false;
         }
-        $this->name = $param['name'];
-        $this->phone = $param['phone'];
-        $code = $this->save();
+        $code = $this->save($param);
         if ($code) {
             return true;
         } else {

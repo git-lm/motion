@@ -40,7 +40,7 @@ class ClassesModel extends Model
      */
     public function coach()
     {
-        return $this->belongsTo('app\motion\model\Coach', 'coach_id', 'id');
+        return $this->belongsTo('coachModel', 'coach_id', 'id');
     }
     /**
      * 关联团课
@@ -51,8 +51,12 @@ class ClassesModel extends Model
     }
 
     /**
-     * 
+     * 关联教练费用
      */
+    public function commission()
+    {
+        return $this->hasOne('commissionModel', 'class_id', 'id');
+    }
 
     /**
      * 获取单个课程
@@ -60,12 +64,12 @@ class ClassesModel extends Model
     public function list($param)
     {
         if (empty($param['status'])) {
-            $where['status'] = ['=', 1];
+            $where[] = ['status', '=', 1];
         } else {
-            $where['status'] = ['=', $param['status']];
+            $where[] = ['status', '=', $param['status']];
         }
-        if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
-        $list =  $this->with(['coach', 'course'])->where($where)->find();
+        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
+        $list =  $this->with(['coach', 'course', 'commission'])->where($where)->find();
 
         return $list;
     }
@@ -78,14 +82,14 @@ class ClassesModel extends Model
     public function lists($param)
     {
         if (empty($param['status'])) {
-            $where['status'] = ['=', 1];
+            $where[] = ['status', '=', 1];
         } else {
-            $where['status'] = ['=', $param['status']];
+            $where[] = ['status', '=', $param['status']];
         }
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $query = $this->with(['coach', 'course'])->where($where);
+        $query = $this->with(['coach', 'course', 'commission'])->where($where)->order('class_at desc');
         $lists =  $query->paginate($limit);
-        
+
         return $lists;
     }
 
@@ -95,6 +99,7 @@ class ClassesModel extends Model
     public function add($param)
     {
         list($start, $end) = explode('-', $param['class_time']);
+
         $class_at = $param['class_date'];
         $param['class_at'] = $param['class_date'];
         $param['begin_at'] = $class_at . ' ' . trim($start);
@@ -102,6 +107,11 @@ class ClassesModel extends Model
         $validate = $this->validate($param);
         if ($validate) {
             $this->error = $validate;
+            return false;
+        }
+        $res =  $this->checkClassTime($param['coach_id'], $param['begin_at'], $param['end_at']);
+        if ($res) {
+            $this->error = '该时间段该教练已有课';
             return false;
         }
         $code = $this->save($param);
@@ -128,6 +138,11 @@ class ClassesModel extends Model
             $this->error = $validate;
             return false;
         }
+        $res = $this->checkClassTime($param['coach_id'], $param['begin_at'], $param['end_at'], $param['id']);
+        if ($res) {
+            $this->error = '该时间段该教练已有课';
+            return false;
+        }
         $this->updateTable($param, $param['id']);
     }
     /**
@@ -148,6 +163,37 @@ class ClassesModel extends Model
             return false;
         }
     }
+    /**
+     * 验证会员上课时间是否冲突
+     */
+    public function checkClassTime($coach_id, $begin, $end, $class_id = 0)
+    {
+        $map1 = [
+            ['begin_at', '>=', $begin],
+            ['begin_at', '<', $end],
+        ];
+        $map2 = [
+            ['begin_at', '<=', $begin],
+            ['end_at', '>', $end],
+        ];
+        $map3 = [
+            ['end_at', '>=', $begin],
+            ['end_at', '<', $end],
+        ];
+        $query = $this->whereOr([$map1, $map2, $map3])
+            ->where('coach_id', $coach_id);
+        if (!empty($class_id)) {
+            $query->where('id', '<>', $class_id);
+        }
+        $list = $query->find();
+        if (!empty($list)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 
     /**
      * 验证类型数据有效性

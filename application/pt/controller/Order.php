@@ -4,7 +4,7 @@ namespace app\pt\controller;
 
 use controller\BasicAdmin;
 use app\pt\model\OrderModel;
-use app\motion\model\Coach;
+use app\pt\model\CoachModel;
 use app\pt\model\ProductModel;
 
 class Order extends BasicAdmin
@@ -29,8 +29,9 @@ class Order extends BasicAdmin
      */
     public function get_lists()
     {
-        $post = input('post.');
-        $lists =  $this->om->lists($post);
+        $get = input('get.');
+        $get['member_id'] = input('get.mid/d', 0);
+        $lists =  $this->om->lists($get);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
 
@@ -39,7 +40,7 @@ class Order extends BasicAdmin
         if (request()->isGet()) {
             $member_id = input('get.mid/d');
             //获取教练
-            $cm = new Coach();
+            $cm = new CoachModel();
             $coaches = $cm->where(array('status' => 1))->select();
             $this->assign('coaches', $coaches);
             //获取项目
@@ -56,6 +57,20 @@ class Order extends BasicAdmin
             } else {
                 $this->success('添加成功', '');
             }
+        }
+    }
+    /**
+     * 删除订单
+     */
+    public function del()
+    {
+        $order_id = input('post.oid/d');
+        $param['order_status'] = 0;
+        $this->om->updateTable($param, $order_id);
+        if ($this->om->error) {
+            $this->error($this->om->error);
+        } else {
+            $this->success('删除成功', '');
         }
     }
 }

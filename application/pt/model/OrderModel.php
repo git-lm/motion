@@ -39,25 +39,20 @@ class OrderModel extends Model
         return $this->belongsTo('memberModel', 'member_id', 'id');
     }
 
-
-
     /**
-     * 
-     */
-
-    /**
-     * 获取单个课程
+     * 获取单个订单
      */
     public function list($param)
     {
-        if (empty($param['status'])) {
-            $where['status'] = ['=', 1];
+        if (empty($param['order_status'])) {
+            $where[] =  ['order_status', '=', 1];
         } else {
-            $where['status'] = ['=', $param['status']];
+            $where[] = ['order_status', '=', $param['order_status']];;
         }
-        if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
-        $list =  $this->with(['member', 'orderProduct', 'coach'])->where($where)->find();
-        
+        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
+        $list =  $this->where($where)->with(['member', 'orderProduct', 'orderProduct' => ['coach', 'product']])->find();
+
+
         return $list;
     }
 
@@ -69,19 +64,35 @@ class OrderModel extends Model
     public function lists($param)
     {
         if (empty($param['order_status'])) {
-            $where['order_status'] = ['=', 1];
+            $where[] =  ['order_status', '=', 1];
         } else {
-            $where['order_status'] = ['=', $param['order_status']];
+            $where[] = ['order_status', '=', $param['order_status']];
+        }
+        if (!empty($param['member_id'])) $where[] = ['o.member_id', '=', $param['member_id']];
+        if (!empty($param['product_name'])) $where[] = ['p.name', 'like', '%' . $param['product_name'] . '%'];
+        if (!empty($param['create_expire_time'])) {
+            list($begin, $end) = explode(' - ', $param['create_expire_time']);
+            $where[] = ['o.create_at', '>=', $begin . ' 00:00:00'];
+            $where[] = ['o.create_at', '<=', $end . ' 23:59:59'];
+        }
+        if (!empty($param['end_expire_time'])) {
+            list($begin, $end) = explode(' - ', $param['end_expire_time']);
+            $where[] = ['op.end_at', '>=', $begin . ' 00:00:00'];
+            $where[] = ['op.end_at', '<=', $end . ' 23:59:59'];
         }
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $query = $this->with(['member', 'orderProduct','orderProduct.product','orderProduct.coach'])->where($where);
-        $lists =  $query->paginate($limit);
-
+        $lists = $this->where($where)->alias('o')
+            ->leftJoin('pt_member m', 'm.id = o.member_id')             //关联会员     
+            ->leftJoin('pt_order_product op', 'op.order_id = o.id')     //关联私教订单
+            ->leftjoin('motion_coach c', 'c.id = op.coach_id')         //关联私教
+            ->leftjoin('pt_product p', 'p.id = op.product_id')         //关联私教项目
+            ->field('m.name mname , p.name pname , c.name cname ,o.create_at , op.begin_at , op.end_at ,o.id ')
+            ->paginate($limit);
         return $lists;
     }
 
     /**
-     * 新增课程
+     * 新增线下订单
      */
     public function addOffline($param)
     {
@@ -111,6 +122,7 @@ class OrderModel extends Model
             if ($opm->error) {
                 Db::rollback();
                 $this->error = $opm->error;
+                return false;
             } else {
                 Db::commit();
                 return true;
@@ -122,14 +134,19 @@ class OrderModel extends Model
         }
     }
 
+    public function del()
+    { }
+
+
+
     public function addOrder()
     {
-        $this->order_sn = $this->getOrderSn();
-        $this->member_id = $this->orderData['member_id'];
-        $this->pay_status = $this->orderData['pay_status'];
-        $this->pay_at = $this->orderData['pay_at'];
-        $this->source = $this->orderData['source'];
-        $code = $this->save();
+        $param['order_sn'] = $this->getOrderSn();
+        $param['member_id'] = $this->orderData['member_id'];
+        $param['pay_status'] = $this->orderData['pay_status'];
+        $param['pay_at'] = $this->orderData['pay_at'];
+        $param['source'] = $this->orderData['source'];
+        $code = $this->save($param);
         if ($code) {
             $this->orderData['order_id'] = $this->id;
             return true;
@@ -138,6 +155,7 @@ class OrderModel extends Model
             return false;
         }
     }
+
 
 
     /**
@@ -186,7 +204,7 @@ class OrderModel extends Model
         $this->updateTable($param, $param['id']);
     }
     /**
-     * 更新课程信息
+     * 更新订单信息
      */
     public function updateTable($param, $id)
     {
@@ -194,8 +212,8 @@ class OrderModel extends Model
             $this->error = '请选择要操作的数据！';
             return false;
         }
-        $class = $this->get($id);
-        $code = $class->save($param);
+        $order = $this->get($id);
+        $code = $order->save($param);
         if ($code) {
             return true;
         } else {

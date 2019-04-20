@@ -25,8 +25,8 @@ class Product extends BasicAdmin
      */
     public function get_lists()
     {
-        $post = input('post.');
-        $lists =  $this->pm->lists($post);
+        $get = input('get.');
+        $lists =  $this->pm->lists($get);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
     /**

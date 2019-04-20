@@ -18,8 +18,12 @@ class ProductModel extends Model
      */
     public function list($param)
     {
-        $where['status'] = ['=', 1];
-        if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
+        if (empty($param['status'])) {
+            $where[] = ['status', '=', 1];
+        } else {
+            $where[] = ['status', '=', $param['status']];
+        }
+        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
         $list =  $this->where($where)->find();
 
         return $list;
@@ -32,7 +36,12 @@ class ProductModel extends Model
      */
     public function lists($param)
     {
-        $where['status'] = ['=', 1];
+        if (empty($param['status'])) {
+            $where[] = ['status', '=', 1];
+        } else {
+            $where[] = ['status', '=', $param['status']];
+        }
+        if (!empty($param['name'])) $where[] = ['name', 'like', '%' . $param['name'] . '%'];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
         $lists =  $this->where($where)->paginate($limit);
         return $lists;
