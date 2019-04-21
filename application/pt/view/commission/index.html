@@ -1,0 +1,102 @@
+{extend name='admin@public/content'}
+{block name="button"}
+
+{block name="content"}
+
+<!-- 表单搜索 开始 -->
+<form autocomplete="off" class="layui-form layui-form-pane form-search" onsubmit="return false" method="get">
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">教练名称</label>
+        <div class="layui-input-inline">
+            <input name="coach_name" value="" placeholder="产品名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">课程类型</label>
+        <div class="layui-input-inline">
+            <select name="type">
+                <option value="0">请选择课程类型</option>
+                <option value="1">私教</option>
+                <option value="2">团课</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">上课时间</label>
+        <div class="layui-input-inline">
+            <input name="expire_time" id="expire_time" value="" placeholder="请选择上课时间" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-inline">
+        <button class="layui-btn layui-btn-primary" lay-filter="course_search" lay-submit><i
+                class="layui-icon">&#xe615;</i>
+            搜 索</button>
+    </div>
+</form>
+<table id="Table" lay-filter="Table"></table>
+{/block}
+{block name="script"}
+<script>
+    $(function () {
+        window.form.render();
+        $.layuitable('Table');
+        laydate.render({ range: true, elem: '#expire_time' });
+    })
+    table.render({
+        elem: '#Table',
+        url: '{:url("$classuri/get_lists")}', //数据接口 
+        page: true, //开启分页
+        toolbar: '<div>佣金列表</div>',
+        loading: true,
+        totalRow: true,
+        title: '佣金列表',
+        cols: [[//表头
+            { title: '序号', fixed: 'left', type: 'numbers', totalRowText: '合计：' },
+            {
+                title: '课程名称', templet: function (d) {
+                    if (d.type == 1) {
+                        return '<div>私教</div>';
+                    } else {
+                        return '<div>' + d.course_name + '</div>';
+                    }
+                }
+            },
+            { field: 'coach_name', title: '所属教练' },
+            { field: 'price', title: '佣金金额', totalRow: true },
+            { field: 'expenses', title: '课程金额', totalRow: true },
+            { field: 'award', title: '奖励金额', totalRow: true },
+            {
+                title: '上课时间', templet: function (d) {
+                    return '<div>' + d.class_at.substr(0, 10) + '</div>';
+                }
+            },
+            { field: 'create_at', title: '确认时间' },
+
+        ]],
+        parseData: function (res) { //res 即为原始返回的数据
+            return {
+                "code": res.code, //解析接口状态
+                "msg": res.msg, //解析提示文本
+                "count": res.count, //解析数据长度
+                "data": res.data //解析数据列表
+            };
+        }
+    }
+    );
+    //搜索按钮绑定事件
+    form.on('submit(course_search)', function () {
+        var coach_name = $('input[name="coach_name"]').val();
+        var expire_time = $('input[name="expire_time"]').val();
+        var type = $('select[name="type"]').val();
+        table.reload('Table', {
+            where: {
+                coach_name: coach_name,
+                expire_time: expire_time,
+                type: type,
+            },
+            page: { curr: 1 }
+        })
+    })
+</script>
+
+{/block}

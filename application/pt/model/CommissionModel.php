@@ -52,6 +52,56 @@ class CommissionModel extends Model
     {
         return $this->belongsTo('CourseExpensesModel', 'expenses_id', 'id');
     }
+
+    /**
+     * 获取单个课程
+     */
+    public function list($param)
+    {
+        if (empty($param['status'])) {
+            $where[] = ['status', '=', 1];
+        } else {
+            $where[] = ['status', '=', $param['status']];
+        }
+        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
+        $list =  $this->with(['coach', 'course', 'commission'])->where($where)->find();
+
+        return $list;
+    }
+
+
+
+    /**
+     * 分页获取所有数据
+     */
+    public function lists($param)
+    {
+        if (empty($param['status'])) {
+            $where[] = ['c.status', '=', 1];
+        } else {
+            $where[] = ['c.status', '=', $param['status']];
+        }
+        $limit = !empty($param['limit']) ? $param['limit'] : 10;
+        if (!empty($param['coach_name'])) $where[] = ['coach.name', 'like', '%' . $param['coach_name'] . '%'];
+        if (!empty($param['type'])) $where[] = ['c.type', '=',  $param['type']];
+        if (!empty($param['expire_time'])) {
+            list($begin, $end) =  explode(' - ', $param['expire_time']);
+            if (!empty($begin)) {
+                $where[] = ['class.class_at', '>=', $begin];
+            }
+            if (!empty($end)) {
+                $where[] = ['class.class_at', '<=', $end];
+            }
+        }
+        $query = $this->where($where)->alias('c')
+            ->field('c.* , course.name course_name ,coach.name coach_name ,class.class_at ')
+            ->leftJoin('motion_coach coach', 'coach.id = c.coach_id')
+            ->leftJoin('pt_classes class', 'class.id = c.class_id')
+            ->leftJoin('pt_course course', 'course.id = class.course_id');
+        $lists =  $query->paginate($limit);
+        return $lists;
+    }
+
     /**
      * 获取教练课程费用
      */
