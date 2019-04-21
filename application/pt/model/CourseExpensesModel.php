@@ -47,7 +47,7 @@ class CourseExpensesModel extends Model
         } else {
             $where[] = ['status', '=', $param['status']];
         }
-        if (!empty($param['coach_id']))  $where[] = ['coach', '=', $param['coach_id']];
+        if (!empty($param['coach_id']))  $where[] = ['coach_id', '=', $param['coach_id']];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
         $lists =  $this->where($where)->with('course')->order('course_id')->paginate($limit);
         return $lists;
