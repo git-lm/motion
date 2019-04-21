@@ -1,10 +1,4 @@
 {extend name='admin@public/content'}
-{block name="button"}
-<!--{if auth("$classuri/add")}-->
-<button data-modal='{:url("$classuri/add")}' data-title="添加教练"
-    class='layui-btn layui-btn-sm layui-btn-primary'>添加教练</button>
-<!--{/if}-->
-{/block}
 
 {block name="content"}
 
@@ -37,10 +31,8 @@
         cols: [[//表头
             { title: '序号', fixed: 'left', type: 'numbers' },
             { field: 'name', title: '教练名称' },
-            { field: 'username', title: '所属账号' },
+            { title: '所属账号', templet: '<div>{{ d.system_user.username}}</div>' },
             { field: 'phone', title: '手机号码' },
-            { field: 'status_show', title: '状态' },
-            { field: 'create_time_show', title: '添加时间' },
             { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#coachhandle' }
         ]],
         parseData: function (res) { //res 即为原始返回的数据
@@ -55,34 +47,20 @@
     //搜索按钮绑定事件
     form.on('submit(coach_search)', function () {
         var name = $('input[name="name"]').val();
-        var expire_time = $('input[name="expire_time"]').val();
         table.reload('coachTable', {
             where: {
                 name: name,
-                expire_time: expire_time
             },
             page: { curr: 1 }
         })
     })
 </script>
 <script type="text/html" id="coachhandle">
-    <!--{if auth("$classuri/edit")}-->
-    <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="id" data-title="编辑会员" lay-event="open">编辑</a>
-    <!--{/if}-->
-    <!--{if auth("$classuri/del")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="id" lay-event="del">删除</a>
-    <!--{/if}-->
-    {{#if (d.status == 1){}}
-    <!--{if auth("$classuri/handle")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-value="-1" data-action="{:url('handle')}" data-field="id" lay-event="update">禁用</a>
-    <!--{/if}-->
-    {{#}else{}}
-    <!--{if auth("$classuri/handle")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-value="1" data-action="{:url('handle')}" data-field="id" lay-event="update">启用</a>
-    <!--{/if}-->
-    {{#}}}
-    <!--{if auth("$classuri/auth")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('auth')}" data-title="授权账号" lay-event="open">授权账号</a>
-    <!--{/if}-->
+     <!--{if auth("pt/expense/course")}-->
+     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('pt/expense/course')}" data-title="团课分成" lay-event="href">团课分成</a>
+     <!--{/if}-->
+      <!--{if auth("pt/expense/product")}-->
+      <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('pt/expense/product')}" data-title="私教分成" lay-event="href">私教分成</a>
+      <!--{/if}-->
 </script>
 {/block}

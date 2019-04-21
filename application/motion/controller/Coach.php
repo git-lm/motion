@@ -33,7 +33,7 @@ class Coach extends BasicAdmin
     {
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
-        $name = request()->has('name', 'get') ? request()->get('name/d') : '';
+        $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $expire_time = request()->has('expire_time', 'get') ? request()->get('expire_time/s') : '';
         if ($name) {
             $where[] = ['c.name', 'like', '%' . $name . '%'];

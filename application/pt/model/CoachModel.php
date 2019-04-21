@@ -45,6 +45,30 @@ class CoachModel extends Model
     {
         return $this->hasMany('OrderProductModel', 'coach_id', 'id');
     }
+
+    /**
+     * 关联账号
+     */
+    public function systemUser()
+    {
+        return $this->belongsTo('app\motion\model\SystemUser', 'u_id', 'id');
+    }
+
+    /**
+     * 分页获取所有数据
+     */
+    public function lists($param)
+    {
+        if (empty($param['status'])) {
+            $where[] = ['status', '=', 1];
+        } else {
+            $where[] = ['status', '=', $param['status']];
+        }
+        if (!empty($param['name'])) $where[] = ['name', 'like', '%' . $param['name'] . '%'];
+        $limit = !empty($param['limit']) ? $param['limit'] : 10;
+        $lists =  $this->with(['systemUser'])->where($where)->paginate($limit);
+        return $lists;
+    }
     /**
      * 获取教练私教会员
      */
