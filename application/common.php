@@ -196,7 +196,7 @@ function get_thumb($str = '', $width = 100, $height = 100)
  * @param  [type] $data [写入的数据]
  * @return [type]       [description]
  */
-function write_log($data, $file)
+function write_log($data, $file = null)
 {
     //设置路径目录信息
     is_null($file) && $file = './runtime/' . date('YmdHis') . '.txt';
