@@ -26,8 +26,8 @@ class Classes extends BasicAdmin
     }
     public function get_lists()
     {
-        $post = input('post.');
-        $lists = $this->csm->lists($post);
+        $get = input('get.');
+        $lists = $this->csm->lists($get);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
 
@@ -98,7 +98,11 @@ class Classes extends BasicAdmin
     {
         $startDate = input('post.startStr/s', date('Y-m-01'));
         $endDate = input('post.endStr/s', date('Y-m-31'));
-        $classes = $this->csm::with(['coach', 'course'])->where(array('status' => 1))->whereTime('class_at', 'between', [$startDate, $endDate])->select();
+        $classes = $this->csm::withJoin(['coach', 'course'] ,'left')
+            ->where(array('classes_model.status' => 1))
+            ->whereTime('class_at', 'between', [$startDate, $endDate])
+            ->select();
+            
         return json($classes);
     }
 

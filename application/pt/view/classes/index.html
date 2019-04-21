@@ -1,40 +1,47 @@
 {extend name='admin@public/content'}
-{block name="button"}
-<!--{if auth("$classuri/add")}-->
-<button data-modal='{:url("$classuri/add")}' data-title="添加会员"
-    class='layui-btn layui-btn-sm layui-btn-primary'>添加会员</button>
-{/block}
 
 {block name="content"}
-
-<!-- 表单搜索 开始 -->
-<div class="layui-form-item layui-inline">
-    <label class="layui-form-label">会员名称</label>
-    <div class="layui-input-inline">
-        <input name="name" value="" placeholder="请输入会员名称" class="layui-input">
+<form autocomplete="off" class="layui-form layui-form-pane form-search" onsubmit="return false" method="get">
+    <!-- 表单搜索 开始 -->
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">课程类型</label>
+        <div class="layui-input-inline">
+            <select name="type">
+                <option value="0">请选择课程类型</option>
+                <option value="1">私教</option>
+                <option value="2">团课</option>
+            </select>
+        </div>
     </div>
-</div>
-<div class="layui-form-item layui-inline">
-    <label class="layui-form-label">教练名称</label>
-    <div class="layui-input-inline">
-        <input name="cname" value="" placeholder="请输入教练名称" class="layui-input">
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">课程名称</label>
+        <div class="layui-input-inline">
+            <input name="course_name" value="" placeholder="请输入课程名称" class="layui-input">
+        </div>
     </div>
-</div>
-<div class="layui-form-item layui-inline">
-    <label class="layui-form-label">到期时间</label>
-    <div class="layui-input-inline">
-        <input name="expire_time" id="expire_time" value="" placeholder="请选择到期时间" class="layui-input">
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">教练名称</label>
+        <div class="layui-input-inline">
+            <input name="coach_name" value="" placeholder="请输入教练名称" class="layui-input">
+        </div>
     </div>
-</div>
-<div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="search" lay-submit><i class="layui-icon">&#xe615;</i>
-        搜 索</button>
-</div>
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">上课时间</label>
+        <div class="layui-input-inline">
+            <input name="expire_time" id="expire_time" value="" placeholder="请选择上课时间" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-inline">
+        <button class="layui-btn layui-btn-primary" lay-filter="search" lay-submit><i class="layui-icon">&#xe615;</i>
+            搜 索</button>
+    </div>
+</form>
 <table id="Table" lay-filter="Table"></table>
 {/block}
 {block name="script"}
 <script>
     $(function () {
+        window.form.render();
         $.layuitable('Table');
         laydate.render({ range: true, elem: '#expire_time' });
         $('body').off('mouseenter', '.end_time_show').on('mouseenter', '.end_time_show', function () {
@@ -102,13 +109,15 @@
     );
     //搜索按钮绑定事件
     form.on('submit(search)', function () {
-        var name = $('input[name="name"]').val();
-        var cname = $('input[name="cname"]').val();
+        var type = $('select[name="type"]').val();
+        var course_name = $('input[name="course_name"]').val();
+        var coach_name = $('input[name="coach_name"]').val();
         var expire_time = $('input[name="expire_time"]').val();
         table.reload('Table', {
             where: {
-                name: name,
-                cname: cname,
+                type: type,
+                course_name: course_name,
+                coach_name: coach_name,
                 expire_time: expire_time
             },
             page: { curr: 1 }
@@ -118,11 +127,17 @@
 <script type="text/html" id="Handle">
     <!--{if auth("$classuri/confirm")}-->
     {{#if(d.commission != null && d.commission.status == 1 ){}}
-    <a class="layui-btn layui-btn-xs" data-action="{:url('expense/confirm')}" data-field="cid" data-title="确认信息" lay-event="open">查看信息</a>
+    <a class="layui-btn layui-btn-xs" data-action="{:url('expense/confirm')}" data-field="cid" data-title="查看信息" lay-event="open">查看信息</a>
+    {{#}else if(d.commission == null){}}
+    {{#if(d.type == 1 ){ }}
+        <a class="layui-btn layui-btn-xs layui-btn-warm" data-action="{:url('classPeople')}" data-field="class_id" data-title="设置信息" lay-event="open">设置信息</a>
     {{#}else{}}
+        <a class="layui-btn layui-btn-xs layui-btn-warm" data-action="{:url('classNumber')}" data-field="class_id" data-title="设置信息" lay-event="open">设置信息</a>
+    {{# }}}
+    
+    {{#}else if( d.commission.status == 0){ }}
     <a class="layui-btn layui-btn-xs layui-btn-danger" data-action="{:url('expense/confirm')}" data-field="cid" data-title="确认信息" lay-event="open">确认信息</a>
-    {{#} }}
-   
+    {{# }}}
      <!--{/if}-->
 </script>
 {/block}

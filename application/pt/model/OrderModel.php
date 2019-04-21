@@ -70,6 +70,7 @@ class OrderModel extends Model
         }
         if (!empty($param['member_id'])) $where[] = ['o.member_id', '=', $param['member_id']];
         if (!empty($param['product_name'])) $where[] = ['p.name', 'like', '%' . $param['product_name'] . '%'];
+        if (!empty($param['member_name'])) $where[] = ['m.name', 'like', '%' . $param['member_name'] . '%'];
         if (!empty($param['create_expire_time'])) {
             list($begin, $end) = explode(' - ', $param['create_expire_time']);
             $where[] = ['o.create_at', '>=', $begin . ' 00:00:00'];
@@ -86,7 +87,7 @@ class OrderModel extends Model
             ->leftJoin('pt_order_product op', 'op.order_id = o.id')     //关联私教订单
             ->leftjoin('motion_coach c', 'c.id = op.coach_id')         //关联私教
             ->leftjoin('pt_product p', 'p.id = op.product_id')         //关联私教项目
-            ->field('m.name mname , p.name pname , c.name cname ,o.create_at , op.begin_at , op.end_at ,o.id ')
+            ->field('m.name mname , p.name pname , p.price pprice , c.name cname ,o.create_at , o.pay_status , op.begin_at , op.end_at ,o.id ')
             ->paginate($limit);
         return $lists;
     }

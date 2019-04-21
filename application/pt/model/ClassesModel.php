@@ -82,14 +82,31 @@ class ClassesModel extends Model
     public function lists($param)
     {
         if (empty($param['status'])) {
-            $where[] = ['status', '=', 1];
+            $where[] = ['classes_model.status', '=', 1];
         } else {
-            $where[] = ['status', '=', $param['status']];
+            $where[] = ['classes_model.status', '=', $param['status']];
         }
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $query = $this->with(['coach', 'course', 'commission'])->where($where)->order('class_at desc');
+        if (!empty($param['type']))  $where[] = ['classes_model.type', '=', $param['type']];
+        $course_name = !empty($param['course_name']) ? $param['course_name'] : '';
+        $coach_name = !empty($param['coach_name']) ? $param['coach_name'] : '';
+        if (!empty($param['expire_time'])) {
+            list($begin, $end) =  explode(' - ', $param['expire_time']);
+            if (!empty($begin)) {
+                $where[] = ['class_at', '>=', $begin];
+            }
+            if (!empty($end)) {
+                $where[] = ['class_at', '<=', $end];
+            }
+        }
+        $query = $this->where($where)->withJoin(['coach' => function ($query) use ($coach_name) {
+            $query->where('name', 'like', '%' . $coach_name . '%');
+        }, 'course' => function ($query) use ($course_name) {
+            if ($course_name) {
+                $query->where('name', 'like', '%' . $course_name . '%');
+            }
+        }, 'commission'], 'left')->order('class_at desc');
         $lists =  $query->paginate($limit);
-
         return $lists;
     }
 

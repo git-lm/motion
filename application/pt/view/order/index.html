@@ -8,6 +8,14 @@
 {block name="content"}
 
 <!-- 表单搜索 开始 -->
+{if !isset($mid)}
+<div class="layui-form-item layui-inline">
+    <label class="layui-form-label">会员名称</label>
+    <div class="layui-input-inline">
+        <input name="member_name" value="" placeholder="会员名称" class="layui-input">
+    </div>
+</div>
+{/if}
 <div class="layui-form-item layui-inline">
     <label class="layui-form-label">项目名称</label>
     <div class="layui-input-inline">
@@ -47,13 +55,15 @@
         page: true, //开启分页
         toolbar: '<div>订单列表</div>',
         loading: true,
+        totalRow: true,
         title: '订单列表',
         where: { 'mid': mid },
         cols: [[//表头
-            { title: '序号', fixed: 'left', type: 'numbers' },
+            { title: '序号', fixed: 'left', type: 'numbers', totalRowText: '合计' },
             { field: 'mname', title: '会员名称' },
             { field: 'cname', title: '教练名称' },
             { field: 'pname', title: '项目名称' },
+            { field: 'pprice', title: '项目价格', totalRow: true },
             { field: 'create_at', field: 'create_at', title: '添加时间' },
             {
                 title: '开始时间', templet: function (d) {
@@ -66,7 +76,17 @@
                 }
             },
             {
-                fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#Handle'
+                title: '订单状态', templet: function (d) {
+                    if (d.pay_status == 1) {
+                        return '<div>已支付</div>';
+                    } else {
+                        return '<div>未支付</div>';
+                    }
+
+                }
+            },
+            {
+                fixed: 'right', title: '操作', width: '5%', align: 'center', toolbar: '#Handle'
             }
         ]],
         parseData: function (res) { //res 即为原始返回的数据
@@ -82,12 +102,14 @@
     //搜索按钮绑定事件
     form.on('submit(search)', function () {
         var mid = $('input[name="mid"]').val();
+        var member_name = $('input[name="member_name"]').val();
         var product_name = $('input[name="product_name"]').val();
         var create_expire_time = $('input[name="create_expire_time"]').val();
         var end_expire_time = $('input[name="end_expire_time"]').val();
         table.reload('Table', {
             where: {
                 mid: mid,
+                member_name: member_name,
                 product_name: product_name,
                 create_expire_time: create_expire_time,
                 end_expire_time: end_expire_time
