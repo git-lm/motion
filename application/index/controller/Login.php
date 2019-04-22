@@ -5,6 +5,7 @@ namespace app\index\controller;
 use app\index\controller\MobileBase;
 use app\motion\model\Member as memberModel;
 use service\WechatService;
+use app\motion\model\Coach;
 
 /**
  * 应用入口控制器

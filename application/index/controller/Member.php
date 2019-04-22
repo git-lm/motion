@@ -4,6 +4,7 @@ namespace app\index\controller;
 
 use app\index\controller\MobileBase;
 use app\motion\model\Member as memberModel;
+use app\pt\model\ClassesModel;
 
 /**
  * 应用入口控制器
@@ -20,6 +21,7 @@ class Member extends MobileBase
             $msg = ['code' => 0, 'msg' => '抱歉，您还没有登录获取访问权限！', 'url' => url('/login.html')];
             return request()->isAjax() ? json($msg) : $this->redirect($msg['url']);
         }
+        $this->motion_member = session('motion_member');
         $this->m_id = session('motion_member.id');
         $this->memberModel = new MemberModel();
     }
@@ -44,6 +46,11 @@ class Member extends MobileBase
         $order['create_time'] = 'desc';
         $photo = $this->memberModel->get_member_photo($pwhere, $order);
         $this->assign('photo', $photo);
+        //正在上课的信息
+        $classes = ClassesModel::with('classesPrivate')->where(array('coach_id' => $this->motion_member['coach_id'], 'type' => 1))
+            ->whereNull('end_at')
+            ->select();
+        $this->assign('classes', $classes);
         return $this->fetch();
     }
 

@@ -61,13 +61,20 @@
 
             </a>
         </li>
-
-        <!--        <li>
-                    <a href="javascript:;">
-                        <div class="a_header"><i class="layui-icon">&#xe614;</i>Metrics</div>
-                        <div class="show_div"></div>
-                    </a>
-                </li>-->
+        {if !empty($Think.session.motion_member.coach_id)}
+        <li>
+            <a href="javascript:;">
+                <div class="a_header"><i class="layui-icon">&#xe637;</i>课程日程</div>
+                <div class="show_div">
+                    {volist name="classes" id="class"}
+                    <p>{$class.classesPrivate.member.name}-{$class.begin_at}</p>
+                    <br />
+                    {/volist}
+                    <p class="show_class_more">查看更多 >>> </p>
+                </div>
+            </a>
+        </li>
+        {/if}
         <!--
                 <li>
                     <a href="javascript:;">
@@ -166,6 +173,9 @@
         })
         $('.show_data_more').click(function () {
             window.location.href = '{:url("data")}';
+        })
+        $('.show_class_more').click(function () {
+            window.location.href = '{:url("classes")}';
         })
     })
 </script>
