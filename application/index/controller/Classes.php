@@ -3,6 +3,7 @@
 namespace app\index\controller;
 
 use app\index\controller\MobileBase;
+use app\pt\model\ClassesModel;
 
 /**
  * 应用入口控制器
@@ -26,15 +27,25 @@ class Classes extends MobileBase
      */
     public function index()
     {
-
-
-        $type = request()->has('type', 'get') ? request()->get('type/s') : '';
         return $this->fetch();
     }
-
-
-    public function test()
+    public function indexAjax()
     {
-        echo request()->url(true);
+        $member = session('motion_member');
+        $cm = new ClassesModel();
+
+        $lists  = $cm->lists(array('coach_id' => $member['coach_id']));
+        $this->assign('lists', $lists);
+        return json(array('data' => $this->fetch(), 'pages' => $lists->lastPage()));
+    }
+    //获取当个课程
+    public function detile()
+    {
+
+        $member = session('motion_member');
+        $class_id = input('get.class_id/d', 0);
+        $list = ClassesModel::with('classesPrivate')->where(array('status' => 1, 'id' => $class_id, 'coach_id' => $member['coach_id']))->find();
+        $this->assign('list', $list);
+        return $this->fetch();
     }
 }

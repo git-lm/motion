@@ -68,9 +68,10 @@
                 <div class="show_div">
                     {volist name="classes" id="class"}
                     {if ($class.type == 1) }
-                    <p>私教-{$class.begin_at}-{$class.end_at}</p>
+                    <p>----{$class.begin_at|date="H:i:s"}----{$class.end_at|date="H:i:s"}----私教----</p>
                     {else /}
-                    <p>{$class.course.name}-{$class.begin_at}-{$class.end_at}</p>
+                    <p>----{$class.begin_at|date="H:i:s"}----{$class.end_at|date="H:i:s"}----{$class.course.name}----
+                    </p>
                     {/if}
 
                     <br />
@@ -180,7 +181,7 @@
             window.location.href = '{:url("data")}';
         })
         $('.show_class_more').click(function () {
-            window.location.href = '{:url("classes")}';
+            window.location.href = '{:url("classes/index")}';
         })
     })
 </script>

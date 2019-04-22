@@ -1,0 +1,33 @@
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugs/layui/css/layui.css?v={:date('ymd')}">
+<link rel="stylesheet" href="__STATIC__/plugs/iosSelec/iosSelect.css?v={:date('his')}" type="text/css" />
+<script type="text/javascript" src="__STATIC__/plugs/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/plugs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__/plugs/iosSelec/iosSelect.js?v={:date('his')}"></script>
+<script type="text/javascript" src="__STATIC__/plugs/iosSelec/data.js?v={:date('his')}"></script>
+<!--main 开始-->
+<form class="layui-form">
+    <div class="layui-input-inline">
+        <select name="quiz1">
+            <option value="">请选择省</option>
+            <option value="浙江" selected="">浙江省</option>
+            <option value="你的工号">江西省</option>
+            <option value="你最喜欢的老师">福建省</option>
+        </select>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>
+    </div>
+</form>
+<!--main 结束-->
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        form.render()
+        //次
+       
+       
+    });
+
+</script>

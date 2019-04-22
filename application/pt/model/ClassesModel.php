@@ -88,6 +88,7 @@ class ClassesModel extends Model
         }
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
         if (!empty($param['type']))  $where[] = ['classes_model.type', '=', $param['type']];
+        if (!empty($param['coach_id']))  $where[] = ['classes_model.coach_id', '=', $param['coach_id']];
         $course_name = !empty($param['course_name']) ? $param['course_name'] : '';
         $coach_name = !empty($param['coach_name']) ? $param['coach_name'] : '';
         if (!empty($param['expire_time'])) {
@@ -186,15 +187,15 @@ class ClassesModel extends Model
     public function checkClassTime($coach_id, $begin, $end, $class_id = 0)
     {
         $map1 = [
-            ['begin_at', '>=', $begin],
+            ['begin_at', '>', $begin],
             ['begin_at', '<', $end],
         ];
         $map2 = [
-            ['begin_at', '<=', $begin],
+            ['begin_at', '<', $begin],
             ['end_at', '>', $end],
         ];
         $map3 = [
-            ['end_at', '>=', $begin],
+            ['end_at', '>', $begin],
             ['end_at', '<', $end],
         ];
         $query = $this->whereOr([$map1, $map2, $map3])
