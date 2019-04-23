@@ -9,7 +9,7 @@ var baseRoot = (function () {
 require.config({
     waitSeconds: 60,
     baseUrl: baseRoot,
-    map: {'*': {css: baseRoot + 'plugs/require/require.css.js'}},
+    map: { '*': { css: baseRoot + 'plugs/require/require.css.js' } },
     paths: {
         'template': ['plugs/template/template'],
         'pcasunzips': ['plugs/jquery/pcasunzips'],
@@ -31,16 +31,20 @@ require.config({
         'bootstrap.multiselect': ['plugs/bootstrap-multiselect/bootstrap-multiselect'],
         // distpicker
         'distpicker': ['plugs/distpicker/distpicker'],
+        //echarts
+        'echarts': ['plugs/jquery/echarts'],
+
+
     },
     shim: {
         // open-source
-        'websocket': {deps: [baseRoot + 'plugs/socket/swfobject.min.js']},
+        'websocket': { deps: [baseRoot + 'plugs/socket/swfobject.min.js'] },
         // jquery
-        'jquery.ztree': {deps: ['css!' + baseRoot + 'plugs/ztree/zTreeStyle/zTreeStyle.css']},
+        'jquery.ztree': { deps: ['css!' + baseRoot + 'plugs/ztree/zTreeStyle/zTreeStyle.css'] },
         // bootstrap
-        'bootstrap.typeahead': {deps: ['bootstrap']},
-        'bootstrap.multiselect': {deps: ['bootstrap', 'css!' + baseRoot + 'plugs/bootstrap-multiselect/bootstrap-multiselect.css']},
-        'distpicker': {deps: [baseRoot + 'plugs/distpicker/distpicker.data.js']},
+        'bootstrap.typeahead': { deps: ['bootstrap'] },
+        'bootstrap.multiselect': { deps: ['bootstrap', 'css!' + baseRoot + 'plugs/bootstrap-multiselect/bootstrap-multiselect.css'] },
+        'distpicker': { deps: [baseRoot + 'plugs/distpicker/distpicker.data.js'] },
     },
     deps: ['json', 'bootstrap'],
     // 开启debug模式，不缓存资源
