@@ -32,10 +32,10 @@
                         {if !empty($list.classesPrivate) && !empty($list.classesPrivate.end_at)}
                         <span class="mbs tag is-completed ember-view"><i class="layui-icon">&#x1005;</i> 已完成 </span>
                         {elseif !empty($list.classesPrivate) && empty($list.classesPrivate.end_at) /}
-                        <span class="mbs tag is-missed ember-view class_member" itemid="{$list.id}"><i
+                        <span class="mbs tag is-missed ember-view class_end" itemid="{$list.id}"><i
                                 class="layui-icon">&#x1007;</i> 未结束</span>
                         {else /}
-                        <span class="mbs tag is-missed ember-view class_member" itemid="{$list.id}"><i
+                        <span class="mbs tag is-missed ember-view class_begin" itemid="{$list.id}"><i
                                 class="layui-icon">&#x1007;</i>
                             未开始</span>
                         {/if}
@@ -59,8 +59,8 @@
                         {if $list.type == 1}
                         {if !empty($list.classesPrivate)}
                         会员姓名：{$list.classesPrivate.member.name} <br />
-                        开始时间{$list.classesPrivate.begin_at} <br />
-                        结束时间{$list.classesPrivate.end_at}
+                        开始时间：{$list.classesPrivate.begin_at} <br />
+                        结束时间：{$list.classesPrivate.end_at}
                         {/if}
                         {else /}
                         {if !empty($list.classesGroup)}
@@ -79,30 +79,3 @@
 
 
 {/volist}
-<a id="aaa1">aaaa</a>
-<div class="container"></div>
-<script>
-    $(function () {
-        var execute_num = [];
-        for (i = 1; i <= 60; i++) {
-            var execute_num_obj = {};
-            execute_num_obj.id = i;
-            execute_num_obj.value = i;
-            execute_num.push(execute_num_obj);
-        }
-        var btn_group = document.querySelector('#aaa1');
-        btn_group.addEventListener('click', function () {
-            var bankSelect = new IosSelect(1,
-                [execute_num],
-                {
-                    container: '.container',
-                    title: '选择组',
-                    itemHeight: 50,
-                    itemShowCount: 3,
-                    callback: function (selectOneObj) {
-
-                    }
-                });
-        });
-    })
-</script>

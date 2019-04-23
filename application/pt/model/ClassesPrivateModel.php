@@ -34,6 +34,10 @@ class ClassesPrivateModel extends Model
             return false;
         }
         $classPrivate = $this->where(array('class_id' => $class['id']))->find();
+        if (!empty($classPrivate['end_at'])) {
+            $this->error = '该课程已结束';
+            return false;
+        }
         if (empty($classPrivate)) {
             $classPrivate = $this;
         }

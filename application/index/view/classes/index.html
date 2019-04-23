@@ -1,5 +1,7 @@
 {extend name="public:main"}
 {block name="main"}
+<link rel="stylesheet" href="__STATIC__/plugs/iosSelec/iosSelect.css?v={:date('his')}" type="text/css" />
+<script type="text/javascript" src="__STATIC__/plugs/iosSelec/iosSelect.js?v={:date('his')}"></script>
 <!--choose_nav  开始-->
 <div class="choose_nav">
     <div class="choose_nav_c width">
@@ -16,12 +18,12 @@
 {block name="script"}
 <script>
     $(function () {
-        layui.use(['flow', 'laytpl'], function () {
+        layui.use(['layer', 'flow', 'laytpl'], function () {
 
             var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
             var flow = layui.flow;
             var laytpl = layui.laytpl;
-
+            var layer = layui.layer;
             flow.load({
                 elem: '#classes', //指定列表容器
                 end: '没有更多了...',
@@ -35,6 +37,59 @@
                 }
             });
         });
+
+        $(document).on('click', '.class_begin', function () {
+            var class_id = $(this).attr('itemid');
+            $.post('{:url("get_members")}', function (res) {
+                var member = [];
+                for (var i = 0; i < res.length; i++) {
+                    var member_obj = {};
+                    member_obj.id = res[i].id;
+                    member_obj.value = res[i].name;
+                    member.push(member_obj);
+                }
+
+                var bankSelect = new IosSelect(1,
+                    [member],
+                    {
+                        container: '.container',
+                        title: '选择会员',
+                        itemHeight: 50,
+                        itemShowCount: 3,
+                        callback: function (selectOneObj) {
+                            var select_value = selectOneObj.value;
+                            var select_id = selectOneObj.id;
+                            layer.confirm('确定' + select_value + '？', function () {
+                                $.post('{:url("begin")}', { 'member_id': select_id, 'class_id': class_id }, function (data) {
+                                    if (data.code == 1) {
+                                        layer.msg(data.msg, function () {
+                                            location.reload();
+                                        });
+
+                                    } else {
+                                        layer.msg(data.msg);
+                                    }
+                                })
+                            })
+                        }
+                    });
+            })
+
+        })
+        $(document).on('click', '.class_end', function () {
+            var class_id = $(this).attr('itemid');
+            layer.confirm('确认结束课程', function () {
+                $.post('{:url("end")}', { 'class_id': class_id }, function (data) {
+                    if (data.code == 1) {
+                        layer.msg(data.msg, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                })
+            })
+        })
 
     })
 
