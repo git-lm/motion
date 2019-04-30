@@ -203,7 +203,7 @@ class Classes extends BasicAdmin
                 if (empty($coach)) {
                     $this->error('无教练信息');
                 }
-                $this->assign('cocah', $coach);
+                $this->assign('coach', $coach);
             }
             return $this->fetch();
         } else {
