@@ -57,7 +57,15 @@ class ProductExpensesModel extends Model
             $this->error = $validate;
             return false;
         }
-        $code = $this->save($param);
+        $product_id_arr = explode(',', $param['product_id']);
+        $expenses_arr = array();
+        foreach ($product_id_arr as $key => $product_id) {
+            $expenses_arr[$key]['product_id'] = $product_id;
+            $expenses_arr[$key]['expenses'] = $param['expenses'];
+            $expenses_arr[$key]['award'] = $param['award'];
+            $expenses_arr[$key]['coach_id'] = $param['coach_id'];
+        }
+        $code = $this->saveAll($expenses_arr);
         if ($code) {
             return true;
         } else {
@@ -105,7 +113,7 @@ class ProductExpensesModel extends Model
     {
         $rule = [
             'coach_id' => 'require|number',
-            'product_id' => 'require|number',
+            'product_id' => 'require',
             'expenses' => 'require|number|elt:100',
             // 'award' => 'number',
         ];
@@ -113,7 +121,6 @@ class ProductExpensesModel extends Model
             'coach_id.require' => '教练必选',
             'coach_id.number' => '请正确选择教练',
             'product_id.require' => '项目必选',
-            'product_id.number' => '请正确选择项目',
             'expenses.require' => '佣金比例必填',
             'expenses.number' => '请正确填写上佣金比例',
             'expenses.elt' => '佣金比例小于100',

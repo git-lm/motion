@@ -63,7 +63,17 @@ class CourseExpensesModel extends Model
             $this->error = $validate;
             return false;
         }
-        $code = $this->save($param);
+        $course_id_arr = explode(',', $param['course_id']);
+        $expenses_arr = array();
+        foreach ($course_id_arr as $key => $course_id) {
+            $expenses_arr[$key]['course_id'] = $course_id;
+            $expenses_arr[$key]['floor_num'] = $param['floor_num'];
+            $expenses_arr[$key]['upper_num'] = $param['upper_num'];
+            $expenses_arr[$key]['expenses'] = $param['expenses'];
+            $expenses_arr[$key]['award'] = $param['award'];
+            $expenses_arr[$key]['coach_id'] = $param['coach_id'];
+        }
+        $code = $this->saveAll($expenses_arr);
         if ($code) {
             return true;
         } else {
@@ -111,7 +121,7 @@ class CourseExpensesModel extends Model
     {
         $rule = [
             'coach_id' => 'require|number',
-            'course_id' => 'require|number',
+            'course_id' => 'require',
             'floor_num' => 'require|number',
             'upper_num' => 'require|number',
             'expenses' => 'require|number|elt:100',
@@ -121,7 +131,6 @@ class CourseExpensesModel extends Model
             'coach_id.require' => '教练必选',
             'coach_id.number' => '请正确选择教练',
             'course_id.require' => '团课必选',
-            'course_id.number' => '请正确选择团课',
             'floor_num.require' => '下限人数必填',
             'floor_num.number' => '请正确填写下限人数',
             'upper_num.require' => '上限人数必填',
