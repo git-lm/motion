@@ -53,7 +53,7 @@
     <div class="hr-line-dashed"></div>
 
     <div class="layui-form-item text-center">
-        {egt name="$list.end_at" value='date("Y-m-d H:i:s")' }
+        {egt name="$list.end_at" value=':date("Y-m-d H:i:s")' }
         <button class="layui-btn" type='submit'>保存数据</button>
         <!--{if auth("$classuri/del")}-->
         <button class="layui-btn layui-btn-warm" type='button' data-update="{$list.id}"
