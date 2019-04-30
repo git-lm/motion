@@ -41,6 +41,10 @@
         $(document).on('click', '.class_begin', function () {
             var class_id = $(this).attr('itemid');
             $.post('{:url("get_members")}', function (res) {
+                if (res.length == 0) {
+                    layer.msg('暂无会员可预约');
+                    return false;
+                }
                 var member = [];
                 for (var i = 0; i < res.length; i++) {
                     var member_obj = {};
