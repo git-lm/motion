@@ -19,7 +19,10 @@
                 <!--上面部分 开始-->
                 <div class="wallflower">
                     <div class="wallflower-cell">
-                        <p class="byline">{$list.begin_at|date="H:i:s"}----{$list.end_at|date="H:i:s"}</p>
+                        <p class="byline">
+                            {$list.begin_at|date="Y-m-d"}<br />
+                            {$list.begin_at|date="H:i:s"}----{$list.end_at|date="H:i:s"}
+                        </p>
                         <h3 class="client-workout-item-header">
                             {if $list.type == 1}
                             私教
