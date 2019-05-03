@@ -124,7 +124,7 @@ class CourseExpensesModel extends Model
             'course_id' => 'require',
             'floor_num' => 'require|number',
             'upper_num' => 'require|number',
-            'expenses' => 'require|number|elt:100',
+            'expenses' => 'require|number',
             // 'award' => 'number',
         ];
         $message = [
@@ -137,7 +137,6 @@ class CourseExpensesModel extends Model
             'upper_num.number' => '请正确填写上限人数',
             'expenses.require' => '佣金比例必填',
             'expenses.number' => '请正确填写上佣金比例',
-            'expenses.elt' => '佣金比例小于100',
             // 'award.number' => '请正确填写上奖励金额',
         ];
         $validate = new \think\Validate();
