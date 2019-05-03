@@ -2,13 +2,14 @@
 
 namespace app\pt\controller;
 
-use controller\BasicAdmin;
+use app\pt\model\ClassesModel;
+use app\pt\model\CoachModel;
+use app\pt\model\CommissionModel;
 use app\pt\model\CourseExpensesModel;
 use app\pt\model\CourseModel;
 use app\pt\model\ProductExpensesModel;
 use app\pt\model\ProductModel;
-use app\pt\model\ClassesModel;
-use app\pt\model\CommissionModel;
+use controller\BasicAdmin;
 
 class Expense extends BasicAdmin
 {
@@ -22,8 +23,10 @@ class Expense extends BasicAdmin
      */
     public function course()
     {
-        $this->assign('title', '团课支出列表');
         $coach_id = input('get.id/d');
+        $coach = CoachModel::where(array('id' => $coach_id))->find();
+        $coach_name = !empty($coach['name']) ? $coach['name'] . '--' : '';
+        $this->assign('title', $coach_name . '团课支出列表');
         $this->assign('coach_id', $coach_id);
         return $this->fetch();
     }
@@ -35,7 +38,7 @@ class Expense extends BasicAdmin
     {
         $param = input('post.');
         $param['coach_id'] = input('get.coach_id/d');
-        $lists =  $this->cem->lists($param);
+        $lists = $this->cem->lists($param);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
     /**
@@ -99,14 +102,16 @@ class Expense extends BasicAdmin
         }
     }
 
-
     /**
      * 私教支出
      */
     public function product()
     {
-        $this->assign('title', '私教支出列表');
+
         $coach_id = input('get.id/d');
+        $coach = CoachModel::where(array('id' => $coach_id))->find();
+        $coach_name = !empty($coach['name']) ? $coach['name'] . '--' : '';
+        $this->assign('title', $coach_name . '私教支出列表');
         $this->assign('coach_id', $coach_id);
         return $this->fetch();
     }
@@ -117,7 +122,7 @@ class Expense extends BasicAdmin
     {
         $param = input('post.');
         $param['coach_id'] = input('get.coach_id/d');
-        $lists =  $this->pem->lists($param);
+        $lists = $this->pem->lists($param);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
 
@@ -190,7 +195,6 @@ class Expense extends BasicAdmin
             $this->success('删除成功', '');
         }
     }
-
 
     public function confirm()
     {
