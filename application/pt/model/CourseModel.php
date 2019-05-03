@@ -111,13 +111,12 @@ class CourseModel extends Model
     public function validate($data)
     {
         $rule = [
-            'name' => 'require|max:5|min:2|chsAlpha',
+            'name' => 'require|max:11|min:2',
         ];
         $message = [
             'name.require' => '产品名称必填',
             'name.min' => '产品名称最少两个字',
-            'name.max' => '产品名称最多五个字',
-            'name.chsAlpha' => '产品名称只能汉子和字母',
+            'name.max' => '产品名称最多十一个字',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);
