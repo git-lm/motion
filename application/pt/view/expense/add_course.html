@@ -16,34 +16,39 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">下限人数</label>
+        <label class="layui-form-label">人数范围</label>
         <div class="layui-input-block">
-            <input type="text" autofocus name="floor_num" required lay-verify="required|number" value='' maxlength="5"
-                minlength="2" title="请输入下限人数" placeholder="请输入下限人数" class="layui-input">
+            <input type="text" autofocus name="range_num" required lay-verify="required" value='' maxlength="50"
+                minlength="2" title="请输入人数范围" placeholder="请输入人数范围" class="layui-input">
+                <p class="help-block" style="color: #FF5722;">PS：0-3,4-10,11-50,50-100 ，每个范围之间用逗号隔开，每个范围用扩折号区分上限和下限人数</p>
         </div>
+        
     </div>
 
-    <div class="layui-form-item">
+    <!-- <div class="layui-form-item">
         <label class="layui-form-label">上限人数</label>
         <div class="layui-input-block">
             <input type="text" autofocus name="upper_num" required lay-verify="required|number" value='' maxlength="11"
                 title="请输入上限人数" placeholder="请输入上限人数" class="layui-input">
         </div>
-    </div>
+    </div> -->
     <div class="layui-form-item">
         <label class="layui-form-label">课程费用</label>
         <div class="layui-input-block">
-            <input type="text" autofocus name="expenses" required lay-verify="required|number" value='' maxlength="11"
+            <input type="text" autofocus name="expenses" required lay-verify="required" value='' maxlength="50"
                 title="请输入课程费用" placeholder="请输入课程费用" class="layui-input">
+                <p class="help-block" style="color: #FF5722;">PS：100,200,300,400 对应人数范围费用，每个费用之间用逗号隔开，如人数范围缺少费用则为0</p>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">奖励金额</label>
         <div class="layui-input-block">
-            <input type="text" autofocus name="award" required lay-verify="number" value='0' maxlength="11"
+            <input type="text" autofocus name="award" required lay-verify="required" value='0' maxlength="50"
                 title="请输入奖励金额" placeholder="请输入奖励金额" class="layui-input">
+                <p class="help-block" style="color: #FF5722;">PS：10,20,30,40 对应人数范围奖励金额，每个金额之间用逗号隔开，如人数范围缺少费用则为0</p>
         </div>
     </div>
+   
     {if isset($coach_id)}<input type='hidden' value='{$coach_id}' name='coach_id'>{/if}
 
 

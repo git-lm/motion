@@ -55,6 +55,7 @@ class Expense extends BasicAdmin
             return $this->fetch();
         } else {
             $param = input('post.');
+            
             $this->cem->add($param);
             if ($this->cem->error) {
                 $this->error($this->cem->error);
