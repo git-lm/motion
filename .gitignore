@@ -1,3 +1,4 @@
 runtime
 upload
 /composer.lock
+/config/database.php
