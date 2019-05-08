@@ -3,7 +3,6 @@
 namespace app\pt\model;
 
 use think\Model;
-use think\Db;
 
 class ClassesModel extends Model
 {
@@ -23,14 +22,14 @@ class ClassesModel extends Model
     /**
      * 关联团课上课记录
      */
-    public function  classesGroup()
+    public function classesGroup()
     {
         return $this->hasOne('classesGroupModel', 'class_id', 'id');
     }
     /**
      * 关联团课上课记录
      */
-    public function  classesPrivate()
+    public function classesPrivate()
     {
         return $this->hasOne('classesPrivateModel', 'class_id', 'id');
     }
@@ -61,20 +60,20 @@ class ClassesModel extends Model
     /**
      * 获取单个课程
      */
-    public function list($param)
-    {
+    function list($param) {
         if (empty($param['status'])) {
             $where[] = ['status', '=', 1];
         } else {
             $where[] = ['status', '=', $param['status']];
         }
-        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
-        $list =  $this->with(['coach', 'course', 'commission'])->where($where)->find();
+        if (!empty($param['id'])) {
+            $where[] = ['id', '=', $param['id']];
+        }
+
+        $list = $this->with(['coach', 'course', 'commission'])->where($where)->find();
 
         return $list;
     }
-
-
 
     /**
      * 分页获取所有数据
@@ -87,12 +86,18 @@ class ClassesModel extends Model
             $where[] = ['classes_model.status', '=', $param['status']];
         }
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        if (!empty($param['type']))  $where[] = ['classes_model.type', '=', $param['type']];
-        if (!empty($param['coach_id']))  $where[] = ['classes_model.coach_id', '=', $param['coach_id']];
+        if (!empty($param['type'])) {
+            $where[] = ['classes_model.type', '=', $param['type']];
+        }
+
+        if (!empty($param['coach_id'])) {
+            $where[] = ['classes_model.coach_id', '=', $param['coach_id']];
+        }
+
         $course_name = !empty($param['course_name']) ? $param['course_name'] : '';
         $coach_name = !empty($param['coach_name']) ? $param['coach_name'] : '';
         if (!empty($param['expire_time'])) {
-            list($begin, $end) =  explode(' - ', $param['expire_time']);
+            list($begin, $end) = explode(' - ', $param['expire_time']);
             if (!empty($begin)) {
                 $where[] = ['class_at', '>=', $begin];
             }
@@ -107,7 +112,7 @@ class ClassesModel extends Model
                 $query->where('name', 'like', '%' . $course_name . '%');
             }
         }, 'commission'], 'left')->order('class_at desc');
-        $lists =  $query->paginate($limit);
+        $lists = $query->paginate($limit);
         return $lists;
     }
 
@@ -127,12 +132,13 @@ class ClassesModel extends Model
             $this->error = $validate;
             return false;
         }
-        $res =  $this->checkClassTime($param['coach_id'], $param['begin_at'], $param['end_at']);
+        $res = $this->checkClassTime($param['coach_id'], $param['begin_at'], $param['end_at']);
         if ($res) {
-            $this->error = '该时间段该教练已有课';
+            $this->error = '该' . $param['class_time'] . '时间段该教练已有课';
             return false;
         }
-        $code = $this->save($param);
+
+        $code = $this->create($param, true);
         if ($code) {
             return;
         } else {
@@ -210,8 +216,6 @@ class ClassesModel extends Model
             return false;
         }
     }
-
-
 
     /**
      * 验证类型数据有效性

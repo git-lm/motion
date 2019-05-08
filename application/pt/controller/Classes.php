@@ -2,12 +2,15 @@
 
 namespace app\pt\controller;
 
-use controller\BasicAdmin;
-use app\pt\model\ClassesModel;
-use app\pt\model\CourseModel;
-use app\pt\model\CoachModel;
 use app\pt\model\ClassesGroupModel;
+use app\pt\model\ClassesModel;
 use app\pt\model\ClassesPrivateModel;
+use app\pt\model\CoachModel;
+use app\pt\model\CourseModel;
+use controller\BasicAdmin;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use think\Db;
 
 class Classes extends BasicAdmin
 {
@@ -17,7 +20,7 @@ class Classes extends BasicAdmin
     }
 
     /**
-     * 
+     *
      */
     public function index()
     {
@@ -98,11 +101,11 @@ class Classes extends BasicAdmin
     {
         $startDate = input('post.startStr/s', date('Y-m-01'));
         $endDate = input('post.endStr/s', date('Y-m-31'));
-        $classes = $this->csm::withJoin(['coach', 'course'] ,'left')
+        $classes = $this->csm::withJoin(['coach', 'course'], 'left')
             ->where(array('classes_model.status' => 1))
             ->whereTime('class_at', 'between', [$startDate, $endDate])
             ->select();
-            
+
         return json($classes);
     }
 
@@ -123,7 +126,7 @@ class Classes extends BasicAdmin
             //获取课程信息 先添加
             $post = input('post.');
             $post['class_date'] = input('post.class_date/s', '');
-            $post['class_time'] =  input('post.class_time/s', '');
+            $post['class_time'] = input('post.class_time/s', '');
             $post['type'] = 2;
             $this->csm->add($post);
             if ($this->csm->error) {
@@ -157,7 +160,7 @@ class Classes extends BasicAdmin
         } else {
             $post = input('post.');
             $post['class_date'] = input('post.class_date/s', '');
-            $post['class_time'] =  input('post.class_time/s', '');
+            $post['class_time'] = input('post.class_time/s', '');
             $post['type'] = 2;
             $this->csm->edit($post);
             if ($this->csm->error) {
@@ -167,8 +170,6 @@ class Classes extends BasicAdmin
             }
         }
     }
-
-
 
     /**
      * 删除团课记录 并删除课程信息
@@ -210,7 +211,7 @@ class Classes extends BasicAdmin
             //获取课程信息 先添加
             $post = input('post.');
             $post['class_date'] = input('post.class_date/s', '');
-            $post['class_time'] =  input('post.class_time/s', '');
+            $post['class_time'] = input('post.class_time/s', '');
             $post['type'] = 1;
             $this->csm->add($post);
             if ($this->csm->error) {
@@ -247,7 +248,7 @@ class Classes extends BasicAdmin
         } else {
             $post = input('post.');
             $post['class_date'] = input('post.class_date/s', '');
-            $post['class_time'] =  input('post.class_time/s', '');
+            $post['class_time'] = input('post.class_time/s', '');
             $post['type'] = 1;
             $this->csm->edit($post);
             if ($this->csm->error) {
@@ -257,4 +258,154 @@ class Classes extends BasicAdmin
             }
         }
     }
+
+    /**
+     * 上传日程
+     * @param $data 数据
+     * @param $id motion_batch_lesson 主键ID
+     */
+    public function upload()
+    {
+        if (request()->post()) {
+            $file = input('file/s');
+            $type = input('type/d', 1); //1 是提交 2是验证
+            $req = $this->analysisExcel($file);
+            if ($type == 2) {
+                return $req;
+            } else {
+                if ($req['code'] != 1) {
+                    $this->error($req['msg']);
+                }
+                // $mid = input('mid/d');
+                // $member = $this->check_member_data($mid);
+                $data = $req['data'];
+                $file_url = $file;
+                Db::startTrans();
+                $courseModel = new CourseModel();
+                $coachMode = new CoachModel();
+                $classesModel = new ClassesModel();
+                try {
+                    foreach ($data as $key => $value) {
+                        //上课日期
+                        $param['class_date'] = !empty($value['date']) ? $value['date'] : '';
+                        $detail = $value['detail'];
+                        foreach ($detail as $k => $v) {
+                            //上课时间
+                            $param['class_time'] = !empty($v['time']) ? $v['time'] : '';
+                            //上课团课课程
+                            $course_name = $v['course'];
+                            if ($course_name == '私教') {
+                                $param['course_id'] = 0;
+                                $param['type'] = 1;
+                            } else {
+                                $course = $courseModel->where(array('name' => $course_name, 'status' => 1))->find();
+                                if (empty($course) || empty($course['id'])) {
+                                    $this->error("无此{$course_name}团课课程");
+                                }
+                                $param['course_id'] = $course['id'];
+                                $param['type'] = 2;
+                            }
+
+                            //上课教练
+                            $coach_name = $v['coach'];
+                            $coach = $coachMode->where(array('name' => $coach_name, 'status' => 1))->find();
+                            if (empty($coach) || empty($coach['id'])) {
+                                $this->error("无此{$coach_name}教练");
+                            }
+                            $param['coach_id'] = $coach['id'];
+                            $classesModel->add($param);
+                            if ($classesModel->error) {
+                                $this->error($classesModel->error);
+                            }
+                        }
+                    }
+
+                    Db::commit();
+                    return ['code' => 1, 'msg' => '添加成功'];
+                } catch (\Exception $e) {
+                    // 回滚事务
+                    Db::rollback();
+                    $this->error('添加失败');
+                }
+            }
+            return;
+        }
+        return $this->fetch();
+    }
+    /**
+     * 解析上传的计划
+     * @param $url 文件地址
+     * @param array  解析后的数组
+     */
+
+    public function analysisExcel($url = '')
+    {
+        //解析url
+        $parse_url = parse_url($url);
+        $path = !empty($parse_url['path']) ? '.' . $parse_url['path'] : '';
+
+        if (file_exists($path)) {
+            $inputFileName = $path;
+            $inputFileType = 'Xlsx';
+            $reader = IOFactory::createReader($inputFileType);
+
+            $spreadsheet = $reader->load($inputFileName);
+            // $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+            $worksheet = $spreadsheet->getActiveSheet(); //获取工作表
+            $sheetData = $worksheet->toArray(null, true, true, true);
+            $highestRow = $worksheet->getHighestRow(); // 总行数
+            $highestColumn = $worksheet->getHighestColumn(); // 总列数
+            $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn); //把列的字母转成数字
+
+            $end_title = (string) $worksheet->getCellByColumnAndRow(1, $highestRow)->getValue(); //获取最后一行的文字
+
+            if ('结束日程' != $end_title) {
+                unlink($path);
+                return ['code' => 0, 'msg' => '日程表错误，无--结束日程--标签，请重新下载', 'data' => array()];
+            }
+            $sheet = array();
+            for ($column = 1; $column <= $highestColumnIndex - 1; $column++) { //$highestRow
+                //每次循环 读取三列 生成一个日程
+                $columnNext = $column + 2;
+                //定义一个日程数组
+                $valArr = array();
+                //获取日程时间
+                $date = (string) $worksheet->getCellByColumnAndRow($column, 2)->getValue();
+                if (empty($date)) {
+                    break;
+                }
+                $valArr['date'] = $date;
+                $detail = array(); //日程详情
+                for ($row = 3; $row <= $highestRow; $row++) {
+                    $end = (string) $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    if ($end == '结束日程') {
+                        break;
+                    }
+                    $time = (string) $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                    if (empty($time)) {
+                        continue;
+                    }
+                    $course = (string) $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+                    $coach = (string) $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+                    $detail['time'] = $time;
+                    $detail['course'] = $course;
+                    $detail['coach'] = $coach;
+                    $valArr['detail'][] = $detail;
+                }
+
+                $sheet[] = $valArr;
+                $column = $columnNext;
+            }
+            if (empty($sheet)) {
+                unlink($path);
+                return ['code' => 0, 'msg' => '该文件日程为空'];
+            } else {
+                return ['code' => 1, 'msg' => '', 'data' => $sheet];
+            }
+
+        } else {
+            return ['code' => 0, 'msg' => '文件不存在', 'data' => array()];
+        }
+    }
+
 }

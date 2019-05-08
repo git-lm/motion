@@ -5,18 +5,16 @@ namespace app\admin\controller;
 use controller\BasicAdmin;
 use service\FileService;
 use think\Response;
-use think\Validate;
 
 /**
  * 插件助手控制器
  * Class Plugs
  * @package app\admin\controller
- * @author Anyon 
+ * @author Anyon
  * @date 2017/02/21
  */
 class Plugs extends BasicAdmin
 {
-
 
     /**
      * 文件上传
@@ -54,6 +52,7 @@ class Plugs extends BasicAdmin
      * 6、会员照片
      * 7、计划任务
      * 8、音乐
+     * 9、课程日程
      */
 
     /**
@@ -109,6 +108,8 @@ class Plugs extends BasicAdmin
             $pr = "{$dir}/arrange/{$uid}";
         } else if ($filetype == 8) {
             $pr = "{$dir}/music/{$uid}";
+        } else if ($filetype == 9) {
+            $pr = "{$dir}/class/{$uid}";
         } else {
             $pr = "{$dir}/others/{$uid}";
         }
@@ -124,7 +125,7 @@ class Plugs extends BasicAdmin
         if ($uptype == 'oss') {
             $filePath = $file->getInfo('tmp_name');
             $filename = $pr . "/{$names[1]}.{$ext}";
-            $res =  FileService::ossUploadFile($filename, $filePath);
+            $res = FileService::ossUploadFile($filename, $filePath);
             if (!empty($res['url'])) {
                 return json(['data' => ['site_url' => $res['url']], 'code' => 'SUCCESS', 'msg' => '文件上传成功']);
             }
@@ -139,8 +140,6 @@ class Plugs extends BasicAdmin
         }
         return json(['code' => 'ERROR', 'msg' => '文件上传失败']);
     }
-
-
 
     /**
      * 文件状态检查
@@ -237,12 +236,12 @@ class Plugs extends BasicAdmin
             if (empty($fileNameArr[1])) {
                 return;
             } else {
-                $height = (int)$fileNameArr[1] > 100 ? 100 : (int)$fileNameArr[1];
+                $height = (int) $fileNameArr[1] > 100 ? 100 : (int) $fileNameArr[1];
             }
             if (empty($fileNameArr[2])) {
                 return;
             } else {
-                $width = (int)$fileNameArr[2] > 100 ? 100 : (int)$fileNameArr[2];
+                $width = (int) $fileNameArr[2] > 100 ? 100 : (int) $fileNameArr[2];
             }
 
             $file = ".{$dir}/" . $name . '.' . $extension;
