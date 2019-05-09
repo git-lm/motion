@@ -29,14 +29,30 @@ class Classes extends MobileBase
      */
     public function index()
     {
+        $type = request()->has('type', 'get') ? request()->get('type/s') : '';
+        if ($type) {
+            $this->assign('type', $type);
+        } else {
+            $this->assign('type', 'upcomming');
+        }
         return $this->fetch();
     }
     public function indexAjax()
     {
         $member = session('motion_member');
         $cm = new ClassesModel();
-
-        $lists  = $cm->lists(array('coach_id' => $member['coach_id']));
+        $type = request()->has('type', 'get') ? request()->get('type/s') : 'upcomming';
+        if ($type == 'upcomming') {
+            //说明获取未到时间的
+            $order['class_at'] = 'asc';
+            $where[] = ['class_at', '>', date('Y-m-d H:i:s')];
+        } else {
+            $order['class_at'] = 'desc';
+            //说明获取已过时间的
+            $where[] = ['class_at', '<', date('Y-m-d H:i:s')];
+        }
+        $param['coach_id'] =  $member['coach_id'];
+        $lists  = $cm->setWhere($where)->setOrder($order)->lists($param);
         $this->assign('lists', $lists);
         return json(array('data' => $this->fetch(), 'pages' => $lists->lastPage()));
     }

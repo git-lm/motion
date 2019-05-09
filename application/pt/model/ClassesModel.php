@@ -13,6 +13,9 @@ class ClassesModel extends Model
     protected $updateTime = 'update_at';
     protected $table = 'pt_classes';
 
+    protected $order = '';
+    protected $where = '';
+
     public function getTypeTextAttr($value, $data)
     {
         $type = [1 => '私教', 2 => '团课'];
@@ -57,10 +60,22 @@ class ClassesModel extends Model
         return $this->hasOne('commissionModel', 'class_id', 'id');
     }
 
+    public function setOrder($order)
+    {
+        $this->order  =  $order;
+        return $this;
+    }
+    public function setWhere($where)
+    {
+        $this->where  =  $where;
+        return $this;
+    }
+
     /**
      * 获取单个课程
      */
-    function list($param) {
+    function list($param)
+    {
         if (empty($param['status'])) {
             $where[] = ['status', '=', 1];
         } else {
@@ -70,7 +85,7 @@ class ClassesModel extends Model
             $where[] = ['id', '=', $param['id']];
         }
 
-        $list = $this->with(['coach', 'course', 'commission'])->where($where)->find();
+        $list = $this->with(['coach', 'course', 'commission'])->order()->where($where)->find();
 
         return $list;
     }
@@ -111,7 +126,13 @@ class ClassesModel extends Model
             if ($course_name) {
                 $query->where('name', 'like', '%' . $course_name . '%');
             }
-        }, 'commission'], 'left')->order('class_at desc');
+        }, 'commission'], 'left');
+        if (!empty($this->where)) {
+            $query->where($this->where);
+        }
+        if (!empty($this->order)) {
+            $query->order($this->order);
+        }
         $lists = $query->paginate($limit);
         return $lists;
     }

@@ -3,14 +3,29 @@
 <link rel="stylesheet" href="__STATIC__/plugs/iosSelec/iosSelect.css?v={:date('his')}" type="text/css" />
 <script type="text/javascript" src="__STATIC__/plugs/iosSelec/iosSelect.js?v={:date('his')}"></script>
 <style type="text/css">
-    .class_begin , .class_end {
+    .class_begin,
+    .class_end {
         cursor: pointer;
     }
 </style>
 <!--choose_nav  开始-->
-<div class="choose_nav">
+<!-- <div class="choose_nav">
     <div class="choose_nav_c width">
         <span style="color:#ffffff;font-size: 15px">课程列表</span>
+    </div>
+</div> -->
+<!--choose_nav  开始-->
+<div class="choose_nav">
+    <div class="choose_nav_c width">
+        <div class="choose_nav_c_span">
+            <span class=' {eq name=' $type' value='upcomming' }span_cur{/eq}'> <a href="{:url('')}">upcomming
+                </a></span>
+            <span class=' {eq name=' $type' value='past' }span_cur{/eq}'> <a href="{:url('')}?type=past">past
+                </a></span>
+        </div>
+
+        <!--        <div class="R"><img src="__STATIC__/index/images/icon_w.png" alt="">History</div>-->
+
     </div>
 </div>
 <!--main 开始-->
@@ -35,7 +50,7 @@
                 done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
                     var lis = [];
                     //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
-                    $.get('{:url("/index/classes/indexAjax")}?page=' + page, function (res) {
+                    $.get('{:url("/index/classes/indexAjax")}?page=' + page+'&type={$type}', function (res) {
                         lis.push(res.data);
                         next(lis.join(''), page < res.pages);
                     }, 'json');
