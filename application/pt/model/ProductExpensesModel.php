@@ -43,10 +43,7 @@ class ProductExpensesModel extends Model
         $where[] = ['status', '=', 1];
         if (!empty($param['coach_id']))  $where[] = ['coach_id', '=', $param['coach_id']];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        // $lists =  $this->where($where)->with('product')->order('product_id')->paginate($limit);
-        $lists =  $this->where($where)->with('product')->order('product_id')->fetchSql()->select();
-        echo $lists;
-        exit;
+        $lists =  $this->where($where)->with('product')->order('product_id')->paginate($limit);
         return $lists;
     }
 
