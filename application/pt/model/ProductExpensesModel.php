@@ -24,10 +24,10 @@ class ProductExpensesModel extends Model
      */
     public function list($param)
     {
-        $where['status'] = ['=', 1];
-        if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
-        if (!empty($param['product_id'])) $where['product_id'] = ['=', $param['product_id']];
-        if (!empty($param['coach_id'])) $where['coach_id'] = ['=', $param['coach_id']];
+        $where[] = ['status', '=', 1];
+        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
+        if (!empty($param['product_id'])) $where[] = ['product_id', '=', $param['product_id']];
+        if (!empty($param['coach_id'])) $where[] = ['coach_id', '=', $param['coach_id']];
         $list =  $this->where($where)->find();
 
         return $list;
@@ -40,10 +40,13 @@ class ProductExpensesModel extends Model
      */
     public function lists($param)
     {
-        $where['status'] = ['=', 1];
-        if (!empty($param['coach_id']))  $where['coach_id'] = ['=', $param['coach_id']];
+        $where[] = ['status', '=', 1];
+        if (!empty($param['coach_id']))  $where[] = ['coach_id', '=', $param['coach_id']];
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $lists =  $this->where($where)->with('product')->order('product_id')->paginate($limit);
+        // $lists =  $this->where($where)->with('product')->order('product_id')->paginate($limit);
+        $lists =  $this->where($where)->with('product')->order('product_id')->fetchSql()->select();
+        echo $lists;
+        exit;
         return $lists;
     }
 

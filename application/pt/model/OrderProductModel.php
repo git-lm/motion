@@ -61,12 +61,12 @@ class OrderProductModel extends Model
      */
     public function list($param)
     {
-        $where['status'] = ['=', 1];
-        if (!empty($param['id'])) $where['id'] = ['=', $param['id']];
-        if (!empty($param['order_id'])) $where['order_id'] = ['=', $param['order_id']];
-        if (!empty($param['product_id'])) $where['product_id'] = ['=', $param['product_id']];
-        if (!empty($param['member_id'])) $where['member_id'] = ['=', $param['member_id']];
-        if (!empty($param['coach_id'])) $where['coach_id'] = ['=', $param['coach_id']];
+        $where[] = ['status', '=', 1];
+        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
+        if (!empty($param['order_id'])) $where[] = ['order_id', '=', $param['order_id']];
+        if (!empty($param['product_id'])) $where[] = ['product_id', '=', $param['product_id']];
+        if (!empty($param['member_id'])) $where[] = ['member_id', '=', $param['member_id']];
+        if (!empty($param['coach_id'])) $where[] = ['coach_id', '=', $param['coach_id']];
         $list =  $this->where($where)->find();
         return $list;
     }
