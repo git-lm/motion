@@ -3,7 +3,6 @@
 namespace app\pt\model;
 
 use think\Model;
-use think\Db;
 
 class OrderProductModel extends Model
 {
@@ -28,14 +27,14 @@ class OrderProductModel extends Model
     /**
      * 关联订单
      */
-    public function  order()
+    public function order()
     {
         return $this->belongsTo('orderModel', 'order_id', 'id');
     }
     /**
      * 关联项目
      */
-    public function  product()
+    public function product()
     {
         return $this->belongsTo('productModel', 'product_id', 'id');
     }
@@ -43,7 +42,7 @@ class OrderProductModel extends Model
     /**
      * 关联会员
      */
-    public function  member()
+    public function member()
     {
         return $this->belongsTo('memberModel', 'member_id', 'id');
     }
@@ -51,7 +50,7 @@ class OrderProductModel extends Model
     /**
      * 关联教练
      */
-    public function  coach()
+    public function coach()
     {
         return $this->belongsTo('coachModel', 'coach_id', 'id');
     }
@@ -59,15 +58,29 @@ class OrderProductModel extends Model
     /**
      * 获取单个项目订单
      */
-    public function list($param)
-    {
+    function list($param) {
         $where[] = ['status', '=', 1];
-        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
-        if (!empty($param['order_id'])) $where[] = ['order_id', '=', $param['order_id']];
-        if (!empty($param['product_id'])) $where[] = ['product_id', '=', $param['product_id']];
-        if (!empty($param['member_id'])) $where[] = ['member_id', '=', $param['member_id']];
-        if (!empty($param['coach_id'])) $where[] = ['coach_id', '=', $param['coach_id']];
-        $list =  $this->where($where)->find();
+        if (!empty($param['id'])) {
+            $where[] = ['id', '=', $param['id']];
+        }
+
+        if (!empty($param['order_id'])) {
+            $where[] = ['order_id', '=', $param['order_id']];
+        }
+
+        if (!empty($param['product_id'])) {
+            $where[] = ['product_id', '=', $param['product_id']];
+        }
+
+        if (!empty($param['member_id'])) {
+            $where[] = ['member_id', '=', $param['member_id']];
+        }
+
+        if (!empty($param['coach_id'])) {
+            $where[] = ['coach_id', '=', $param['coach_id']];
+        }
+
+        $list = $this->where($where)->find();
         return $list;
     }
     /**
@@ -75,7 +88,7 @@ class OrderProductModel extends Model
      */
     public static function getProductForMemberId($member_id)
     {
-        $list  = self::join('pt_order o', 'order_id = o.id')->where('o.order_status', 1)->where('o.pay_status', 1)->where('o.member_id', $member_id)
+        $list = self::join('pt_order o', 'order_id = o.id')->where('o.order_status', 1)->where('o.pay_status', 1)->where('o.member_id', $member_id)
             ->find();
         return $list;
     }
@@ -93,7 +106,8 @@ class OrderProductModel extends Model
         $this->duration = $this->orderData['duration'];
         $this->give_time = $this->orderData['give_time'];
         $this->begin_at = $this->orderData['begin_at'];
-        $this->end_at = date('Y-m-d', strtotime('+' . $this->duration + $this->give_time . ' day', strtotime($this->begin_at)));
+        $end_at = $this->orderData['end_at'];
+        $this->end_at = date('Y-m-d', strtotime('+' . $this->give_time . ' day', strtotime($end_at)));
         $this->save();
     }
 }

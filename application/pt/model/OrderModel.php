@@ -2,9 +2,9 @@
 
 namespace app\pt\model;
 
-use think\Model;
-use think\Db;
 use app\pt\model\OrderProductModel;
+use think\Db;
+use think\Model;
 
 class OrderModel extends Model
 {
@@ -23,18 +23,17 @@ class OrderModel extends Model
         return $status[$data['type']];
     }
 
-
     /**
      * 关联订单项目
      */
-    public function  orderProduct()
+    public function orderProduct()
     {
         return $this->hasOne('orderProductModel', 'order_id', 'id');
     }
     /**
      * 关联团课上课记录
      */
-    public function  member()
+    public function member()
     {
         return $this->belongsTo('memberModel', 'member_id', 'id');
     }
@@ -42,21 +41,20 @@ class OrderModel extends Model
     /**
      * 获取单个订单
      */
-    public function list($param)
-    {
+    function list($param) {
         if (empty($param['order_status'])) {
-            $where[] =  ['order_status', '=', 1];
+            $where[] = ['order_status', '=', 1];
         } else {
-            $where[] = ['order_status', '=', $param['order_status']];;
+            $where[] = ['order_status', '=', $param['order_status']];
         }
-        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
-        $list =  $this->where($where)->with(['member', 'orderProduct', 'orderProduct' => ['coach', 'product']])->find();
+        if (!empty($param['id'])) {
+            $where[] = ['id', '=', $param['id']];
+        }
 
+        $list = $this->where($where)->with(['member', 'orderProduct', 'orderProduct' => ['coach', 'product']])->find();
 
         return $list;
     }
-
-
 
     /**
      * 分页获取所有数据
@@ -64,13 +62,22 @@ class OrderModel extends Model
     public function lists($param)
     {
         if (empty($param['order_status'])) {
-            $where[] =  ['order_status', '=', 1];
+            $where[] = ['order_status', '=', 1];
         } else {
             $where[] = ['order_status', '=', $param['order_status']];
         }
-        if (!empty($param['member_id'])) $where[] = ['o.member_id', '=', $param['member_id']];
-        if (!empty($param['product_name'])) $where[] = ['p.name', 'like', '%' . $param['product_name'] . '%'];
-        if (!empty($param['member_name'])) $where[] = ['m.name', 'like', '%' . $param['member_name'] . '%'];
+        if (!empty($param['member_id'])) {
+            $where[] = ['o.member_id', '=', $param['member_id']];
+        }
+
+        if (!empty($param['product_name'])) {
+            $where[] = ['p.name', 'like', '%' . $param['product_name'] . '%'];
+        }
+
+        if (!empty($param['member_name'])) {
+            $where[] = ['m.name', 'like', '%' . $param['member_name'] . '%'];
+        }
+
         if (!empty($param['create_expire_time'])) {
             list($begin, $end) = explode(' - ', $param['create_expire_time']);
             $where[] = ['o.create_at', '>=', $begin . ' 00:00:00'];
@@ -83,10 +90,10 @@ class OrderModel extends Model
         }
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
         $lists = $this->where($where)->alias('o')
-            ->leftJoin('pt_member m', 'm.id = o.member_id')             //关联会员     
-            ->leftJoin('pt_order_product op', 'op.order_id = o.id')     //关联私教订单
-            ->leftjoin('motion_coach c', 'c.id = op.coach_id')         //关联私教
-            ->leftjoin('pt_product p', 'p.id = op.product_id')         //关联私教项目
+            ->leftJoin('pt_member m', 'm.id = o.member_id') //关联会员
+            ->leftJoin('pt_order_product op', 'op.order_id = o.id') //关联私教订单
+            ->leftjoin('motion_coach c', 'c.id = op.coach_id') //关联私教
+            ->leftjoin('pt_product p', 'p.id = op.product_id') //关联私教项目
             ->field('m.name mname , p.name pname , p.price pprice , c.name cname ,o.create_at , o.pay_status , op.begin_at , op.end_at ,o.id ')
             ->paginate($limit);
         return $lists;
@@ -136,9 +143,7 @@ class OrderModel extends Model
     }
 
     public function del()
-    { }
-
-
+    {}
 
     public function addOrder()
     {
@@ -156,8 +161,6 @@ class OrderModel extends Model
             return false;
         }
     }
-
-
 
     /**
      * 赋值总金额
@@ -180,11 +183,9 @@ class OrderModel extends Model
         $this->order_amount = $product['price'];
     }
 
-
-
     public function getOrderSn()
     {
-        return  time() . rand(1000, 9999);
+        return time() . rand(1000, 9999);
     }
 
     /**

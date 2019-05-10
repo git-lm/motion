@@ -2,8 +2,8 @@
 
 namespace app\pt\controller;
 
-use controller\BasicAdmin;
 use app\pt\model\ProductModel;
+use controller\BasicAdmin;
 
 class Product extends BasicAdmin
 {
@@ -26,7 +26,7 @@ class Product extends BasicAdmin
     public function get_lists()
     {
         $get = input('get.');
-        $lists =  $this->pm->lists($get);
+        $lists = $this->pm->lists($get);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
     /**
@@ -85,5 +85,19 @@ class Product extends BasicAdmin
         } else {
             $this->success('删除成功', '');
         }
+    }
+
+    public function selectProduct()
+    {
+        $product_id = input('post.product_id/d', 0);
+        if (empty($product_id)) {
+            $this->error('请选择产品');
+        }
+        $param['id'] = $product_id;
+        $list = $this->pm->list($param);
+        if (empty($list)) {
+            $this->error('请正确选择产品');
+        }
+        $this->success(json_decode($list));
     }
 }

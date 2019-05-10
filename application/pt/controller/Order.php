@@ -2,10 +2,10 @@
 
 namespace app\pt\controller;
 
-use controller\BasicAdmin;
-use app\pt\model\OrderModel;
 use app\pt\model\CoachModel;
+use app\pt\model\OrderModel;
 use app\pt\model\ProductModel;
+use controller\BasicAdmin;
 
 class Order extends BasicAdmin
 {
@@ -31,7 +31,7 @@ class Order extends BasicAdmin
     {
         $get = input('get.');
         $get['member_id'] = input('get.mid/d', 0);
-        $lists =  $this->om->lists($get);
+        $lists = $this->om->lists($get);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
 
