@@ -21,7 +21,8 @@ class CourseExpensesModel extends Model
     /**
      * 获取单个支出
      */
-    function list($param) {
+    function list($param)
+    {
         if (empty($param['status'])) {
             $where[] = ['status', '=', 1];
         } else {
@@ -99,7 +100,7 @@ class CourseExpensesModel extends Model
      */
     public function edit($param)
     {
-        $validate = $this->validate($param);
+        $validate = $this->validate_edit($param);
         if ($validate) {
             $this->error = $validate;
             return false;
@@ -144,6 +145,36 @@ class CourseExpensesModel extends Model
             'course_id.require' => '团课必选',
             'range_num.require' => '人数范围必填',
             'expenses.require' => '佣金比例必填',
+            // 'award.number' => '请正确填写上奖励金额',
+        ];
+        $validate = new \think\Validate();
+        $validate->rule($rule)->message($message)->check($data);
+        return $validate->getError();
+    }
+    /**
+     * 验证类型数据有效性
+     * @param type $data 需要验证的数据
+     */
+    public function validate_edit($data)
+    {
+        $rule = [
+            'coach_id' => 'require|number',
+            'course_id' => 'require',
+            'floor_num' => 'require|number',
+            'upper_num' => 'require|number',
+            'expenses' => 'require|number',
+            // 'award' => 'number',
+        ];
+        $message = [
+            'coach_id.require' => '教练必选',
+            'coach_id.number' => '请正确选择教练',
+            'course_id.require' => '团课必选',
+            'floor_num.require' => '下限人数必填',
+            'floor_num.number' => '请正确填写下限人数',
+            'upper_num.require' => '上限人数必填',
+            'upper_num.number' => '请正确填写上限人数',
+            'expenses.require' => '佣金比例必填',
+            'expenses.number' => '请正确填写上佣金比例',
             // 'award.number' => '请正确填写上奖励金额',
         ];
         $validate = new \think\Validate();
