@@ -259,7 +259,7 @@ class OrderModel extends Model
     public function getOrderProduct($member_id)
     {
         $opm = new OrderProductModel();
-        $orderProduct = $opm->where(array('member_id' => $member_id))->whereBetweenTimeField('begin_at', 'end_at')->find();
+        $orderProduct = $opm->alias('op')->where(array('op.member_id' => $member_id))->join('pt_order o', 'o.id = op.order_id')->where(array('order_status' => 1))->whereBetweenTimeField('begin_at', 'end_at')->find();
         return $orderProduct;
     }
 }
