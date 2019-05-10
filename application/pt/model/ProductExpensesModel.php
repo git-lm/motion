@@ -114,7 +114,7 @@ class ProductExpensesModel extends Model
         $rule = [
             'coach_id' => 'require|number',
             'product_id' => 'require',
-            'expenses' => 'require|number',
+            'expenses' => 'require|float',
             // 'award' => 'number',
         ];
         $message = [
@@ -122,7 +122,7 @@ class ProductExpensesModel extends Model
             'coach_id.number' => '请正确选择教练',
             'product_id.require' => '项目必选',
             'expenses.require' => '佣金比例必填',
-            'expenses.number' => '请正确填写上佣金比例',
+            'expenses.float' => '请正确填写上佣金比例',
             // 'award.number' => '请正确填写上奖励金额',
         ];
         $validate = new \think\Validate();
