@@ -300,6 +300,8 @@ class Classes extends BasicAdmin
                             } else {
                                 $course = $courseModel->where(array('name' => $course_name, 'status' => 1))->find();
                                 if (empty($course) || empty($course['id'])) {
+                                    Db::rollback();
+                                    return ['code' => 0, 'msg' => "无此{$coach_name}团课课程"];
                                     $this->error("无此{$course_name}团课课程");
                                 }
                                 $param['course_id'] = $course['id'];
@@ -310,11 +312,15 @@ class Classes extends BasicAdmin
                             $coach_name = $v['coach'];
                             $coach = $coachMode->where(array('name' => $coach_name, 'status' => 1))->find();
                             if (empty($coach) || empty($coach['id'])) {
+                                Db::rollback();
+                                return ['code' => 0, 'msg' => "无此{$coach_name}教练"];
                                 $this->error("无此{$coach_name}教练");
                             }
                             $param['coach_id'] = $coach['id'];
                             $classesModel->add($param);
                             if ($classesModel->error) {
+                                Db::rollback();
+                                return ['code' => 0, 'msg' => $classesModel->error];
                                 $this->error($classesModel->error);
                             }
                         }

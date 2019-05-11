@@ -153,11 +153,11 @@ class ClassesModel extends Model
             $this->error = $validate;
             return false;
         }
-        $res = $this->checkClassTime($param['coach_id'], $param['begin_at'], $param['end_at']);
-        if ($res) {
-            $this->error = '该' . $param['class_time'] . '时间段该教练已有课';
-            return false;
-        }
+        // $res = $this->checkClassTime($param['coach_id'], $param['begin_at'], $param['end_at']);
+        // if ($res) {
+        //     $this->error = '该' . $param['class_time'] . '时间段该教练已有课';
+        //     return false;
+        // }
 
         $code = $this->create($param, true);
         if ($code) {
