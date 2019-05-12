@@ -62,20 +62,19 @@ class ClassesModel extends Model
 
     public function setOrder($order)
     {
-        $this->order  =  $order;
+        $this->order = $order;
         return $this;
     }
     public function setWhere($where)
     {
-        $this->where  =  $where;
+        $this->where = $where;
         return $this;
     }
 
     /**
      * 获取单个课程
      */
-    function list($param)
-    {
+    function list($param) {
         if (empty($param['status'])) {
             $where[] = ['status', '=', 1];
         } else {
@@ -225,8 +224,12 @@ class ClassesModel extends Model
             ['end_at', '>', $begin],
             ['end_at', '<', $end],
         ];
-        $query = $this->whereOr([$map1, $map2, $map3])
-            ->where('coach_id', $coach_id);
+        $query = $this
+        // ->whereOr([$map1, $map2, $map3])
+        ->where('coach_id', $coach_id)
+            ->where(function ($query) use ($map1, $map2, $map3) {
+                $query->whereOr([$map1, $map2, $map3]);
+            });
         if (!empty($class_id)) {
             $query->where('id', '<>', $class_id);
         }
