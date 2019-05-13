@@ -105,7 +105,7 @@ class ProductModel extends Model
     public function validate($data)
     {
         $rule = [
-            'name' => 'require|max:11|min:2',
+            'name' => 'require|max:25|min:2',
             'price' => 'require',
             'duration' => 'require|number'
 
@@ -113,7 +113,7 @@ class ProductModel extends Model
         $message = [
             'name.require' => '产品名称必填',
             'name.min' => '产品名称最少两个字',
-            'name.max' => '产品名称最多十一个字',
+            'name.max' => '产品名称最多二十五个字',
             'price.require' => '产品价格必填',
             'duration.require' => '产品时长必填',
             'duration.number' => '请正确填写产品时长'
