@@ -109,11 +109,11 @@ class OrderModel extends Model
             $this->error = $validate;
             return false;
         }
-        $orderProduct = $this->getOrderProduct($param['member_id']);
-        if (!empty($orderProduct)) {
-            $this->error = '该会员当前时间内已存在项目';
-            return false;
-        }
+        // $orderProduct = $this->getOrderProduct($param['member_id']);
+        // if (!empty($orderProduct)) {
+        //     $this->error = '该会员当前时间内已存在项目';
+        //     return false;
+        // }
         $param['pay_status'] = 1;
         $param['source'] = 1;
         $param['pay_at'] = date('Y-m-d H:i:s');
