@@ -2,17 +2,16 @@
 
 namespace app\motion\controller;
 
-use controller\BasicAdmin;
+use app\motion\model\Coach as coachModel;
+use app\motion\model\Course as courseModel;
 use app\motion\model\Lesson as lessonModel;
 use app\motion\model\Member as memberModel;
-use app\motion\model\Course as courseModel;
-use app\motion\model\Coach as coachModel;
 use app\motion\model\Motion as motionModel;
-use think\facade\Request;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use controller\BasicAdmin;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use think\db;
+use think\facade\Request;
 
 class Lesson extends BasicAdmin
 {
@@ -217,12 +216,11 @@ class Lesson extends BasicAdmin
 
         //验证数据有效性
         $data['name'] = $name; // 课程名称
-        $data['warmup'] = $warmup;  //热身语
+        $data['warmup'] = $warmup; //热身语
         $data['warmup_mids'] = $warmup_mids; //热身视频
-        $data['colldown'] = $colldown;  //冷身语
-        $data['colldown_mids'] = $colldown_mids;    //冷身视频
+        $data['colldown'] = $colldown; //冷身语
+        $data['colldown_mids'] = $colldown_mids; //冷身视频
         $data['class_time'] = $class_time;
-
 
         $validate = $this->lessonModel->validate($data);
         if ($validate) {
@@ -300,10 +298,10 @@ class Lesson extends BasicAdmin
         }
         //验证数据有效性
         $data['name'] = $name; // 课程名称
-        $data['warmup'] = $warmup;  //热身语
+        $data['warmup'] = $warmup; //热身语
         $data['warmup_mids'] = $warmup_mids; //热身视频
-        $data['colldown'] = $colldown;  //冷身语
-        $data['colldown_mids'] = $colldown_mids;    //冷身视频
+        $data['colldown'] = $colldown; //冷身语
+        $data['colldown_mids'] = $colldown_mids; //冷身视频
         $data['class_time'] = $class_time;
         $validate = $this->lessonModel->validate($data);
         if ($validate) {
@@ -335,8 +333,8 @@ class Lesson extends BasicAdmin
     {
         if (request()->post()) {
             $file = input('file/s');
-            $type = input('type/d', 1);  //1 是提交 2是验证
-            $req =  $this->analysisExcel($file);
+            $type = input('type/d', 1); //1 是提交 2是验证
+            $req = $this->analysisExcel($file);
             if ($type == 2) {
                 return $req;
             } else {
@@ -349,32 +347,58 @@ class Lesson extends BasicAdmin
                 $file_url = $file;
                 Db::startTrans();
                 try {
+                    $bank = db()->table('motion_bank')->where(array('status' => 1))->column('name', 'id');
                     foreach ($data as $key => $value) {
                         $mid = $key;
                         $member = $this->check_member_data($mid);
                         foreach ($value as $k => $vo) {
-                            $lesson['class_time'] = strtotime(validate()->isDate($vo[0]) ? $vo[0] : date('Y-m-d'));  //上课时间
-                            $lesson['name'] = !empty($vo[1]) ? $vo[1] : '';  //计划名称
-                            $lesson['warmup'] = !empty($vo[2]) ? $vo[2] : '';  //warmup
-                            $lesson['colldown'] = !empty($vo[3]) ? $vo[3] : '';  //colldown
+                            $lesson['class_time'] = strtotime(validate()->isDate($vo['date']) ? $vo['date'] : date('Y-m-d')); //上课时间
+                            $lesson['name'] = !empty($vo['name']) ? $vo['name'] : ''; //计划名称
+                            $lesson['warmup'] = !empty($vo['warmUp']) ? $vo['warmUp'] : ''; //warmup
+                            $lesson['colldown'] = !empty($vo['collDown']) ? $vo['collDown'] : ''; //colldown
                             $lesson['m_id'] = $mid;
                             $lesson['coach_id'] = $member['c_id'];
                             $lesson['file_url'] = $file_url;
-                            $lesson_id =  $this->lessonModel->add($lesson);
+
+                            $warmUpVideo = !empty($vo['warmUpVideo']) ? explode(',', str_replace('，', ',', $vo['warmUpVideo'])) : []; //video
+                            $collDownVideo = !empty($vo['collDownVideo']) ? explode(',', str_replace('，', ',', $vo['collDownVideo'])) : []; //video
+                            $warmup_mids = '';
+                            foreach ($warmUpVideo as $v) {
+                                $bank_id = array_search($v, $bank);
+                                if ($bank_id) {
+                                    $warmup_mids .= $bank_id . ',';
+                                }
+                            }
+                            $lesson['warmup_mids'] = trim($warmup_mids, ',');
+                            $colldown_mids = '';
+                            foreach ($collDownVideo as $k) {
+                                $bank_id = array_search($k, $bank);
+                                if ($bank_id) {
+                                    $colldown_mids .= $bank_id . ',';
+                                }
+                            }
+                            $lesson['colldown_mids'] = trim($colldown_mids, ',');
+                            $lesson_id = $this->lessonModel->add($lesson);
                             if (!$lesson_id) {
                                 continue;
                             }
-                            foreach ($vo['detail'] as $k =>  $v) {
-                                if (empty($v[0]) && empty($v[1])) {
-                                    continue;
+                            foreach ($vo['detail'] as $k => $v) {
+                                $little['num'] = !empty($v['num']) ? $v['num'] : ''; //动作编号
+                                $name_remark = trim($v['explain']);
+                                $name = substr($name_remark, 0, stripos($name_remark, "\n"));
+                                $remark = substr($name_remark, stripos($name_remark, "\n"));
+                                $little['name'] = !empty($name) ? $name : '';
+                                $little['remark'] = !empty($remark) ? $remark : '';
+                                $littleVideo = !empty($v['video']) ? explode(',', str_replace('，', ',', $v['video'])) : []; //video
+                                $m_ids = '';
+                                foreach ($littleVideo as $k) {
+                                    $bank_id = array_search($k, $bank);
+                                    if ($bank_id) {
+                                        $m_ids .= $bank_id . ',';
+                                    }
                                 }
-                                $little['num'] = !empty($v[0]) ? $v[0] : ''; //动作编号
-                                $name_remark = trim($v[1]);
-                                $name =  substr($name_remark, 0, stripos($name_remark, "\n"));
-                                $remark =  substr($name_remark, stripos($name_remark, "\n"));
-                                $little['name'] = !empty($name) ? $name  : '';
-                                $little['remark'] = !empty($remark) ? $remark  : '';
-                                $little['l_id'] =  $lesson_id;
+                                $little['m_ids'] = trim($m_ids, ',');
+                                $little['l_id'] = $lesson_id;
                                 $little_id = $this->lessonModel->little_add($little);
                                 if (!$little_id) {
                                     continue;
@@ -404,7 +428,6 @@ class Lesson extends BasicAdmin
      * @param array  解析后的数组
      */
 
-
     public function analysisExcel($url = '')
     {
         //解析url
@@ -423,12 +446,12 @@ class Lesson extends BasicAdmin
             $msg = '';
             foreach ($sheetNames as $k => $sheetName) {
                 $sheetIndex = $k + 1;
-                $sheetNameArr  = explode('-', $sheetName);
+                $sheetNameArr = explode('-', $sheetName);
                 if (empty($sheetNameArr[0]) || empty($sheetNameArr[1])) {
                     unlink($path);
-                    return ['code' => 0, 'msg' =>  "第{$sheetIndex}个工作表名错误", 'data' => array()];
+                    return ['code' => 0, 'msg' => "第{$sheetIndex}个工作表名错误", 'data' => array()];
                 }
-                $member_id = (int)$sheetNameArr[0];
+                $member_id = (int) $sheetNameArr[0];
                 $member_name = trim($sheetNameArr[1]);
                 $where['m.id'] = ['=', $member_id];
                 $where['m.name'] = ['=', $member_name];
@@ -443,81 +466,108 @@ class Lesson extends BasicAdmin
                 $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
                 $sheet = array();
 
-                $title = (string)$worksheet->getCellByColumnAndRow(1, 2)->getValue();
+                $title = (string) $worksheet->getCellByColumnAndRow(1, 2)->getValue();
                 if ('计划任务-' . date('Y-m-d') != $title) {
                     unlink($path);
                     return ['code' => 0, 'msg' => '计划表错误', 'data' => array()];
                 }
-                $end_title = (string)$worksheet->getCellByColumnAndRow(1, $highestRow)->getValue();
-                if ('结束计划' != $end_title) {
+                $end_row_title = (string) $worksheet->getCellByColumnAndRow(1, $highestRow)->getValue();
+                if ('结束计划' != $end_row_title) {
                     unlink($path);
-                    return ['code' => 0, 'msg' => '计划表错误，无--结束计划--标签，请重新下载', 'data' => array()];
+                    return ['code' => 0, 'msg' => '计划表错误，无--最后一行结束计划--标签，请重新下载', 'data' => array()];
+                }
+
+                $end_column_title = (string) $worksheet->getCellByColumnAndRow($highestColumnIndex, 3)->getValue();
+                if ('结束计划' != $end_column_title) {
+                    unlink($path);
+                    return ['code' => 0, 'msg' => '计划表错误，无--最后一列结束计划--标签，请重新下载', 'data' => array()];
                 }
                 //循环列 去掉说明列
+                $index = 1; //第几个计划
                 for ($column = 2; $column <= $highestColumnIndex - 1; $column++) { //$highestRow
                     //每次循环 读取两列 生成一个计划
-                    $columnNext = $column + 1;
+                    $planNext = $column + 2;
+                    $detail_video_column = $column + 1;
+                    $detail_explain_column = $column + 2;
                     //定义一个计划数组
                     $valArr = array();
                     //循环行，第一行 日期 第二行计划名称 第三行热身语  最后一行冷身语  其他为计划详情
                     $detail = array(); //动作详情
-                    for ($row  = 3; $row <= $highestRow; $row++) {
+
+                    $date = (string) $worksheet->getCellByColumnAndRow($column, 3)->getValue();
+                    if (empty($date)) {
+                        unlink($path);
+                        return ['code' => 0, 'msg' => "第{$sheetIndex}个工作表中,第{$index}个计划，时间格式格式错误", 'data' => array()];
+                    }
+                    $valArr['date'] = $date;
+                    $name = (string) $worksheet->getCellByColumnAndRow($column, 4)->getValue();
+                    if (empty($name)) {
+                        unlink($path);
+                        return ['code' => 0, 'msg' => "第{$sheetIndex}个工作表中,第{$index}个计划，计划名称错误", 'data' => array()];
+                    }
+                    $valArr['name'] = $name;
+
+                    $warmUp = (string) $worksheet->getCellByColumnAndRow($column, 5)->getValue();
+                    if (empty($warmUp)) {
+                        $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，热身语为空##@@##";
+                    }
+                    $valArr['warmUp'] = $warmUp;
+                    $warmUpVideo = (string) $worksheet->getCellByColumnAndRow($column, 6)->getValue();
+                    if (empty($warmUpVideo)) {
+                        $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，热身视频为空##@@##";
+                    }
+                    $valArr['warmUpVideo'] = $warmUpVideo;
+
+                    $collDown = (string) $worksheet->getCellByColumnAndRow($column, 7)->getValue();
+                    if (empty($collDown)) {
+                        $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，冷身语为空##@@##";
+                    }
+                    $valArr['collDown'] = $collDown;
+                    $collDownVideo = (string) $worksheet->getCellByColumnAndRow($column, 8)->getValue();
+                    if (empty($collDownVideo)) {
+                        $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，冷身视频为空##@@##";
+                    }
+                    $valArr['collDownVideo'] = $collDownVideo;
+                    for ($row = 9; $row < $highestRow; $row++) {
                         //把数字转成字母
-                        $columnString = Coordinate::stringFromColumnIndex($column);
-                        $columnNextString = Coordinate::stringFromColumnIndex($columnNext);
-
-
-                        $colldown = (string)$worksheet->getCellByColumnAndRow(1, $row + 1)->getValue();
-                        if ($colldown == '结束计划') {
-                            $val = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                            $valArr[] = $val;
-                            if (empty($val)) {
-                                $msg .= "第{$row}行-{$columnString}列和{$columnNextString}列，冷身语为空##@@@##";
-                                $val = '';
-                            }
+                        $numLetter = Coordinate::stringFromColumnIndex($column);
+                        $videoLetter = Coordinate::stringFromColumnIndex($detail_video_column);
+                        $explainLetter = Coordinate::stringFromColumnIndex($detail_explain_column);
+                        //结束信息
+                        $end = (string) $worksheet->getCellByColumnAndRow(1, $row + 1)->getValue();
+                        if ($end == '结束计划') {
                             break;
                         }
                         //获取计划详情内容
-                        if ($row > 5 && $row  < $highestRow) {
-                            $val1 = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                            $detail[$row][] = $val1;
-                            $val2 = (string)$worksheet->getCellByColumnAndRow($columnNext, $row)->getValue();
-                            $detail[$row][] = $val2;
-                            $valArr['detail']  = $detail;
-                        } else {
-                            //获取除计划详情内容外 其他内容
-                            $val = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
-                            $valArr[] = $val;
+                        $detail_num = (string) $worksheet->getCellByColumnAndRow($column, $row)->getValue(); //计划详情编号
+                        if (empty($detail_num)) {
+                            $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，详情编号为空##@@##";
                         }
+                        $detail_video = (string) $worksheet->getCellByColumnAndRow($detail_video_column, $row)->getValue();
+                        if (empty($detail_video)) {
+                            $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，详情视频为空##@@##";
+                        }
+                        $detail_explain = (string) $worksheet->getCellByColumnAndRow($detail_explain_column, $row)->getValue();
+                        if (empty($detail_video)) {
+                            $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，详情说明为空##@@##";
+                        }
+                        $detail[$row]['explain'] = $detail_explain;
+                        $detail[$row]['num'] = $detail_num;
+                        $detail[$row]['video'] = $detail_video;
+                        $valArr['detail'] = $detail;
 
-                        //记录日志
-                        if ($row == 3 && empty($val)) {
-                            $msg .= "第{$sheetIndex}个工作表中第{$row}行-{$columnString}列和{$columnNextString}列，日期为空，不与保存##@@@##";
-                            break 2;
-                        } else if ($row == 4 && empty($val)) {
-                            $msg .= "第{$sheetIndex}个工作表中第{$row}行-{$columnString}列和{$columnNextString}列，计划名称为空，默认计划名称##@@@##";
-                            $val = '计划名称';
-                        } else if ($row == 5 && empty($val)) {
-                            $msg .= "第{$sheetIndex}个工作表中第{$row}行-{$columnString}列和{$columnNextString}列，热身语为空##@@@##";
-                            $val = '';
-                        } else {
-                            if ($row > 5 && $row  < $highestRow && empty($val1)) {
-                                $msg .= "第{$sheetIndex}个工作表中第{$row}行-{$columnString}列，标签为空##@@@##";
-                            }
-                            if ($row > 5 && $row  < $highestRow && empty($val2)) {
-                                $msg .= "第{$sheetIndex}个工作表中第{$row}行-{$columnNextString}列，动作详情和描述为空##@@@##";
-                            }
-                        }
                     }
                     $msg .= "\r\n";
-                    $sheet[]  = $valArr;
-                    $column = $columnNext;
+                    $sheet[] = $valArr;
+                    $column = $planNext;
+                    $index++;
                 }
                 $excelArr[$member_id] = $sheet;
+
             }
             // $logpath = './runtime/arrange/' . date('YmdHis') . '.txt';
             // write_log($msg, $logpath);
-            return ['code' => 1, 'msg' => '', 'data' => $excelArr];
+            return ['code' => 1, 'msg' => $msg, 'data' => $excelArr];
         } else {
             return ['code' => 0, 'msg' => '文件不存在', 'data' => array()];
         }
@@ -525,15 +575,18 @@ class Lesson extends BasicAdmin
 
     public function test()
     {
-        $url = 'http://motion.WJ/static/upload/AAAAAAA.xlsx';
-        $logpath = './runtime/arrange/' . date('YmdHis') . '.txt';
-        echo $logpath;exit;
-        write_log($url, $logpath);
+        // $bank = db()->table('motion_bank')->column('name', 'id');
+        // $id = array_search('交替壶铃借力推 ', $bank);
+        // dump($id);
+        // dump($bank);exit;
+        // $url = 'http://motion.com/static/upload/1.xlsx';
+        $url = 'http://motion.com/static/upload/0d4c207ce5250441.xlsx';
+        // $logpath = './runtime/arrange/' . date('YmdHis') . '.txt';
+        // echo $logpath;exit;
+        // write_log($url, $logpath);
+        $res = $this->analysisExcel($url);
+        dump($res);
     }
-
-
-
-
 
     /**
      * 编辑批量计划
@@ -552,7 +605,7 @@ class Lesson extends BasicAdmin
             $lesson_ids_arr = explode(',', $lesson_ids);
             foreach ($lesson_ids_arr as $v) {
                 $lwhere['id'] = $v;
-                $code =  $this->lessonModel->edit($data, $lwhere);
+                $code = $this->lessonModel->edit($data, $lwhere);
             }
         }
         return $code;
@@ -703,7 +756,7 @@ class Lesson extends BasicAdmin
         if (!empty($lesson['is_dispense'])) {
             //说明已经分发了
             $lesson_ids_arr = explode(',', $lesson['lesson_ids']);
-            $littleIdsArr = array();  //定义一个空数组  存放自增ID
+            $littleIdsArr = array(); //定义一个空数组  存放自增ID
             foreach ($lesson_ids_arr as $v) {
                 $data['l_id'] = $v; //l_id 是计划的ID
                 $code = $this->lessonModel->little_add($data);
@@ -711,7 +764,7 @@ class Lesson extends BasicAdmin
             }
             $lesson_course_ids = implode(',', $littleIdsArr);
             $data['lesson_course_ids'] = $lesson_course_ids;
-            $data['l_id'] = $lid;  // l_id  是教练计划ID
+            $data['l_id'] = $lid; // l_id  是教练计划ID
             $code = $this->lessonModel->batch_little_add($data);
         } else {
             $code = $this->lessonModel->batch_little_add($data);
@@ -731,7 +784,6 @@ class Lesson extends BasicAdmin
             $this->error('请正确选择');
         }
 
-
         //验证小动作是否存在
         $list = $this->check_little_data($id);
         //验证排课是否存在
@@ -742,8 +794,6 @@ class Lesson extends BasicAdmin
         $this->assign('types', $types);
         return $this->fetch();
     }
-
-
 
     /**
      * 添加小动作信息
@@ -801,7 +851,7 @@ class Lesson extends BasicAdmin
         if (!$id) {
             $this->error('请选择要编辑的动作');
         }
-        if (!$sort  && $sort != 0) {
+        if (!$sort && $sort != 0) {
             $this->error('请填写序号');
         }
         $data['sort'] = $sort;
@@ -959,7 +1009,7 @@ class Lesson extends BasicAdmin
         $search_time = request()->get('search_time/s');
         if (!empty($search_time)) {
             $end_time = request()->has('search_time', 'get') ? strtotime(request()->get('search_time/s') . ' 23:59:59') : time();
-            $begin_time =  strtotime('-7 day', $end_time);
+            $begin_time = strtotime('-7 day', $end_time);
             $where[] = ['class_time', '>=', $begin_time];
             $where[] = ['class_time', '<=', $end_time];
             $page = 0;
@@ -972,7 +1022,7 @@ class Lesson extends BasicAdmin
         $where[] = ['m.id', '=', $mid];
         $where[] = ['l.status', '=', 1];
         $where['name'] = $name;
-        $order['class_time'] =  'asc';
+        $order['class_time'] = 'asc';
         $lesson = $this->lessonModel->get_arrange_lists($where, $order, $page, $limit);
         // $little_array = array();
         foreach ($lesson as $k => $l) {
@@ -982,7 +1032,7 @@ class Lesson extends BasicAdmin
             $lesson[$k]['little'] = $little;
             foreach ($little as $j => $v) {
                 $fwhere['lc_id'] = ['=', $v['id']];
-                $files =  $this->lessonModel->get_course_files($fwhere);
+                $files = $this->lessonModel->get_course_files($fwhere);
                 $lesson[$k]['little'][$j]['files'] = $files;
             }
 
@@ -1054,9 +1104,9 @@ class Lesson extends BasicAdmin
         }
         $lwhere[] = ['m.status', '=', 1];
         $lwhere[] = ['t.end_time', '>', time()];
-        $members =  $this->memberModel->get_members($lwhere);
+        $members = $this->memberModel->get_members($lwhere);
         $this->assign('members', $members);
-        $motionModel = new  \app\motion\model\Motion();
+        $motionModel = new \app\motion\model\Motion();
         $types = $motionModel->get_type_motions();
         $this->assign('types', $types);
         $is_batch = 1;
@@ -1094,9 +1144,9 @@ class Lesson extends BasicAdmin
         }
         $lwhere[] = ['m.status', '=', 1];
         $lwhere[] = ['t.end_time', '>', time()];
-        $members =  $this->memberModel->get_members($lwhere);
+        $members = $this->memberModel->get_members($lwhere);
         $this->assign('members', $members);
-        $motionModel = new  \app\motion\model\Motion();
+        $motionModel = new \app\motion\model\Motion();
         $types = $motionModel->get_type_motions();
         $this->assign('types', $types);
         $is_batch = 1;
@@ -1115,7 +1165,7 @@ class Lesson extends BasicAdmin
             $this->error('请正确选择批量计划');
         }
 
-        $where['id'] =  $id;
+        $where['id'] = $id;
         $batch_lesson = $this->lessonModel->get_batch_lesson($where);
         if (empty($batch_lesson)) {
             $this->error('无此教练计划');
@@ -1175,7 +1225,7 @@ class Lesson extends BasicAdmin
         }
 
         $where['id'] = ['=', $id];
-        $list =  $this->lessonModel->get_batch_little($where);
+        $list = $this->lessonModel->get_batch_little($where);
         $this->assign('list', $list);
         //获取所有分组视频
         $motionModel = new \app\motion\model\Motion();
@@ -1203,12 +1253,12 @@ class Lesson extends BasicAdmin
             $this->erro('无此批量计划详情');
         }
         $lwhere['id'] = $little['l_id'];
-        $lesson =  $this->lessonModel->get_batch_lesson($lwhere);
+        $lesson = $this->lessonModel->get_batch_lesson($lwhere);
         $where['id'] = $id;
         $data['status'] = 0;
-        $code =   $this->lessonModel->batch_little_edit($data, $where);
+        $code = $this->lessonModel->batch_little_edit($data, $where);
         if (!empty($lesson['is_dispense'])) {
-            $lesson_course_ids_arr =  explode(',', $little['lesson_course_ids']);
+            $lesson_course_ids_arr = explode(',', $little['lesson_course_ids']);
             foreach ($lesson_course_ids_arr as $v) {
                 $where['id'] = $v;
                 $ldata['status'] = 0;
@@ -1244,7 +1294,7 @@ class Lesson extends BasicAdmin
      * 分发教练计划
      */
     public function batch_dispense()
-    {   //排课ID
+    { //排课ID
         $lid = request()->has('id', 'post') ? request()->post('id/d') : 0;
         if (!$lid) {
             $this->error('请正确选择');
@@ -1296,7 +1346,6 @@ class Lesson extends BasicAdmin
             $this->error('分发失败');
         }
     }
-
 
     /**
      * 判断会员是否存在
