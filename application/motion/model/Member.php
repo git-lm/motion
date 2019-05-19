@@ -12,6 +12,10 @@ class Member extends Model
 
     protected $table = 'motion_member';
 
+    public function memberInfo()
+    {
+        return $this->hasOne('memberInfo', 'm_id', 'id');
+    }
     /**
      * 时间获取器
      * @param type $val  转换数据
@@ -444,14 +448,14 @@ class Member extends Model
             $code = DbService::update('motion_member_photo', $data, $where);
             DbService::save_log('motion_log', '', json_encode($data), '', '修改会员照片', 'motion_member_photo');
         } else //不存在 则新增一条
-            {
-                $data['create_time'] = time();
-                $data[$data['name'] . '_photo'] = $data['photo'];
-                unset($data['name']);
-                unset($data['photo']);
-                $code = DbService::save('motion_member_photo', $data);
-                DbService::save_log('motion_log', '', json_encode($data), '', '新增会员照片', 'motion_member_photo');
-            }
+        {
+            $data['create_time'] = time();
+            $data[$data['name'] . '_photo'] = $data['photo'];
+            unset($data['name']);
+            unset($data['photo']);
+            $code = DbService::save('motion_member_photo', $data);
+            DbService::save_log('motion_log', '', json_encode($data), '', '新增会员照片', 'motion_member_photo');
+        }
 
         return $code;
     }

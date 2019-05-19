@@ -10,6 +10,11 @@ class Coach extends Model
 {
 
     protected $table = 'motion_coach';
+
+    public function member()
+    {
+        return $this->hasOne('member', 'coach_id', 'id');
+    }
     /**
      * 时间获取器
      * @param type $val  转换数据
