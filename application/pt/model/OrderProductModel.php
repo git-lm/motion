@@ -8,6 +8,8 @@ class OrderProductModel extends Model
 {
     public $error;
     protected $orderData;
+    protected $orderId;
+    protected $memberId;
     protected $autoWriteTimestamp = 'timestamp';
     // 定义时间戳字段名
     protected $createTime = 'create_at';
@@ -17,6 +19,15 @@ class OrderProductModel extends Model
     public function setOrderData($orderData)
     {
         $this->orderData = $orderData;
+    }
+
+    public function setOrderId($orderId)
+    {
+        $this->orderId = $orderId;
+    }
+    public function setMemberId($memberId)
+    {
+        $this->memberId = $memberId;
     }
     public function getPayStatusTextAttr($value, $data)
     {
@@ -109,5 +120,22 @@ class OrderProductModel extends Model
         $end_at = $this->orderData['end_at'];
         $this->end_at = date('Y-m-d', strtotime('+' . $this->give_time . ' day', strtotime($end_at)));
         $this->save();
+    }
+    /**
+     * 新增订单项目
+     */
+    public function editOrderProduct()
+    {
+        $where['member_id'] = $this->memberId;
+        $where['order_id'] = $this->orderId;
+        $orderProduct = $this::get($where);
+        $orderProduct->product_id = $this->orderData['product_id'];
+        $orderProduct->coach_id = $this->orderData['coach_id'];
+        $orderProduct->duration = $this->orderData['duration'];
+        $orderProduct->give_time = $this->orderData['give_time'];
+        $orderProduct->begin_at = $this->orderData['begin_at'];
+        $end_at = $this->orderData['end_at'];
+        $orderProduct->end_at = date('Y-m-d', strtotime('+' . $orderProduct->give_time . ' day', strtotime($end_at)));
+        $orderProduct->save();
     }
 }

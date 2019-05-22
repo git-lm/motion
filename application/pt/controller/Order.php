@@ -74,4 +74,34 @@ class Order extends BasicAdmin
             $this->success('删除成功', '');
         }
     }
+
+    public function edit()
+    {
+        if (request()->isGet()) {
+            $order_id = input('get.oid/d', 0);
+            $param['id'] = $order_id;
+            $list = $this->om->list($param);
+            $this->assign('list', $list);
+            //获取教练
+            $cm = new CoachModel();
+            $coaches = $cm->where(array('status' => 1))->select();
+            $this->assign('coaches', $coaches);
+            //获取项目
+            $pm = new ProductModel();
+            $products = $pm->where(array('status' => 1))->select();
+            $this->assign('products', $products);
+            return $this->fetch();
+        } else {
+            $post = input('post.');
+            if (empty($post['order_id']) || empty($post['member_id'])) {
+                $this->error('请正确选择');
+            }
+            $this->om->editOffline($post);
+            if ($this->om->error) {
+                $this->error($this->om->error);
+            } else {
+                $this->success('编辑成功', '');
+            }
+        }
+    }
 }

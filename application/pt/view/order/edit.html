@@ -30,8 +30,6 @@
             </select>
         </div>
     </div>
-
-
     <div class="layui-form-item">
         <label class="layui-form-label">开始日期</label>
         <div class="layui-input-block">
@@ -39,6 +37,15 @@
                 id="begin_at" maxlength="11" name="begin_at" title="请选择开始日期" placeholder="请选择开始日期" class="layui-input">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">结束日期</label>
+        <div class="layui-input-block">
+            <input type="text" required lay-verify="required" value='{$list.order_product.end_at|date="Y-m-d"}'
+                id="end_at" maxlength="11" name="end_at" title="请选择开始日期" placeholder="请选择结束日期" class="layui-input">
+        </div>
+    </div>
+
+
     <div class="layui-form-item">
         <label class="layui-form-label">赠送时长</label>
         <div class="layui-input-block">
@@ -59,7 +66,81 @@
     </div>
 </form>
 <script>
+    function dateAdd(startDate, days) {
+        startDate = new Date(startDate);
+        startDate = +startDate + 1000 * 60 * 60 * 24 * days;
+        startDate = new Date(startDate);
+        var year = startDate.getFullYear();
+        var month = startDate.getMonth() + 1;
+        if (month < 10) {
+            month = '0' + month;
+        }
+        var day = startDate.getDate();
+        if (day < 10) {
+            day = '0' + day;
+        }
+        var nextStartDate = year + "-" + month + "-" + day;
+        return nextStartDate;
+
+    }
     formSelects.render('coach{:time()}');
     formSelects.render('product{:time()}');
-    laydate.render({ elem: '#begin_at' });
+    laydate.render({
+        elem: '#begin_at',
+        done: function (value, date, endDate) {
+            var duration = $('#duration').val();
+            if (duration == 0) {
+                layer.msg('请选择产品');
+                $('#begin_at').val('');
+                return false;
+            } else {
+                var begin_at = $('#begin_at').val();
+                end_at = dateAdd(begin_at, duration);
+                $('#end_at').val(end_at);
+            }
+        }
+    });
+    laydate.render({
+        elem: '#end_at',
+        done: function (value, date, endDate) {
+            var begin_at = $('#begin_at').val();
+            if (begin_at == '') {
+                layer.msg('请选择开始时间');
+                $('#end_at').val('');
+                return false;
+            }
+            var duration = $('#duration').val();
+            if (duration == 0) {
+                layer.msg('请选择产品');
+                $('#begin_at').val('');
+                return false;
+            }
+        }
+    });
+    $(function () {
+        formSelects.on('product{:time()}', function (id, vals, val, isAdd, isDisabled) {
+            if (isAdd) {
+                var product_id = val.value;
+                $.post('{:url("/pt/product/selectProduct")}', { 'product_id': product_id }, function (data) {
+                    if (data.code == 0) {
+                        formSelects.value('product{:time()}', []);
+                        layer.msg(data.msg)
+                        return false;
+                    } else {
+                        var duration = data.msg.duration
+                        $('#duration').val(duration);
+                        var begin_at = $('#begin_at').val();
+                        if (begin_at != '') {
+                            end_at = dateAdd(begin_at, duration);
+                            $('#end_at').val(end_at);
+                        }
+                    }
+                })
+            } else {
+                $('#duration').val(0);
+            }
+        });
+
+
+    })
 </script>

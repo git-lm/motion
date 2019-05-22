@@ -92,7 +92,7 @@
                 }
             },
             {
-                fixed: 'right', title: '操作', width: '5%', align: 'center', toolbar: '#Handle'
+                fixed: 'right', title: '操作', width: '10%', align: 'center', toolbar: '#Handle'
             }
         ]],
         parseData: function (res) { //res 即为原始返回的数据
@@ -127,6 +127,9 @@
     })
 </script>
 <script type="text/html" id="Handle">
+    <!--{if auth("$classuri/edit")}-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('edit')}" data-field="oid" lay-event="open">编辑</a>
+    <!--{/if}-->
     <!--{if auth("$classuri/del")}-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="oid" lay-event="del">删除</a>
     <!--{/if}-->

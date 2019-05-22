@@ -38,7 +38,6 @@ class OrderModel extends Model
         return $this->belongsTo('memberModel', 'member_id', 'id');
     }
 
-
     /**
      * 查询排序
      */
@@ -51,8 +50,7 @@ class OrderModel extends Model
     /**
      * 获取单个订单
      */
-    function list($param)
-    {
+    function list($param) {
         if (empty($param['order_status'])) {
             $where[] = ['order_status', '=', 1];
         } else {
@@ -160,8 +158,41 @@ class OrderModel extends Model
         }
     }
 
+    /**
+     * 新增线下订单
+     */
+    public function editOffline($param)
+    {
+        $validate = $this->validate($param);
+        if ($validate) {
+            $this->error = $validate;
+            return false;
+        }
+        // $orderProduct = $this->getOrderProduct($param['member_id']);
+        // if (!empty($orderProduct)) {
+        //     $this->error = '该会员当前时间内已存在项目';
+        //     return false;
+        // }
+        $this->orderData = $param;
+
+        $this->setTotalAmount($param['product_id']);
+        $this->setOrderAmount($param['product_id']);
+        $opm = new OrderProductModel();
+        $opm->setOrderId($param['order_id']);
+        $opm->setMemberId($param['member_id']);
+        $opm->setOrderData($this->orderData);
+        $opm->editOrderProduct();
+        if ($opm->error) {
+            $this->error = $opm->error;
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
     public function del()
-    { }
+    {}
 
     public function addOrder()
     {
@@ -254,6 +285,7 @@ class OrderModel extends Model
             'coach_id' => 'require|number',
             'give_time' => 'require|number',
             'begin_at' => 'require|date',
+            'end_at' => 'require|date',
         ];
         $message = [
             'member_id.require' => '请正确选择会员',
@@ -266,6 +298,8 @@ class OrderModel extends Model
             'give_time.number' => '请正确填写赠送天数',
             'begin_at.require' => '开始时间必填',
             'begin_at.date' => '请正确选择开始时间',
+            'end_at.require' => '结束时间必填',
+            'end_at.date' => '请正确选择结束时间',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);
