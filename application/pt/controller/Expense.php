@@ -36,7 +36,7 @@ class Expense extends BasicAdmin
      */
     public function get_course_lists()
     {
-        $param = input('post.');
+        $param = input('param.');
         $param['coach_id'] = input('get.coach_id/d');
         $lists = $this->cem->lists($param);
         echo $this->tableReturn($lists->all(), $lists->total());
@@ -121,7 +121,7 @@ class Expense extends BasicAdmin
      */
     public function get_product_lists()
     {
-        $param = input('post.');
+        $param = input('param.');
         $param['coach_id'] = input('get.coach_id/d');
         $lists = $this->pem->lists($param);
         echo $this->tableReturn($lists->all(), $lists->total());

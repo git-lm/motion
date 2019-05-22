@@ -2,3 +2,4 @@ runtime
 upload
 /composer.lock
 /config/database.php
+/.vscode/launch.json
