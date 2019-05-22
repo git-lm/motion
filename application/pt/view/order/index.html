@@ -109,6 +109,7 @@
     form.on('submit(search)', function () {
         var mid = $('input[name="mid"]').val();
         var member_name = $('input[name="member_name"]').val();
+        var coach_name = $('input[name="coach_name"]').val();
         var product_name = $('input[name="product_name"]').val();
         var create_expire_time = $('input[name="create_expire_time"]').val();
         var end_expire_time = $('input[name="end_expire_time"]').val();
@@ -116,6 +117,7 @@
             where: {
                 mid: mid,
                 member_name: member_name,
+                coach_name: coach_name,
                 product_name: product_name,
                 create_expire_time: create_expire_time,
                 end_expire_time: end_expire_time
