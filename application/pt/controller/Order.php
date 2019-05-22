@@ -31,6 +31,7 @@ class Order extends BasicAdmin
     {
         $get = input('get.');
         $get['member_id'] = input('get.mid/d', 0);
+        $this->om->setSearchOrder(array('create_at' => 'desc'));
         $lists = $this->om->lists($get);
         echo $this->tableReturn($lists->all(), $lists->total());
     }

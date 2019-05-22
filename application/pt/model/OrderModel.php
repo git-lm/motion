@@ -16,7 +16,7 @@ class OrderModel extends Model
     protected $createTime = 'create_at';
     protected $updateTime = 'update_at';
     protected $table = 'pt_order';
-
+    protected $searchOrder;
     public function getPayStatusTextAttr($value, $data)
     {
         $status = [1 => '已支付', 0 => '未支付'];
@@ -36,6 +36,16 @@ class OrderModel extends Model
     public function member()
     {
         return $this->belongsTo('memberModel', 'member_id', 'id');
+    }
+
+
+    /**
+     * 查询排序
+     */
+    public function setSearchOrder($order)
+    {
+        $this->searchOrder = $order;
+        return $this;
     }
 
     /**
@@ -92,14 +102,18 @@ class OrderModel extends Model
             $where[] = ['op.end_at', '>=', $begin . ' 00:00:00'];
             $where[] = ['op.end_at', '<=', $end . ' 23:59:59'];
         }
+
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $lists = $this->where($where)->alias('o')
+        $query = $this->where($where)->alias('o')
             ->leftJoin('pt_member m', 'm.id = o.member_id') //关联会员
             ->leftJoin('pt_order_product op', 'op.order_id = o.id') //关联私教订单
             ->leftjoin('motion_coach c', 'c.id = op.coach_id') //关联私教
             ->leftjoin('pt_product p', 'p.id = op.product_id') //关联私教项目
-            ->field('m.name mname , p.name pname , p.price pprice , c.name cname ,o.create_at , o.pay_status , op.begin_at , op.end_at ,o.id ')
-            ->paginate($limit);
+            ->field('m.name mname , p.name pname , p.price pprice , c.name cname ,o.create_at , o.pay_status , op.begin_at , op.end_at ,o.id ');
+        if (!empty($this->searchOrder)) {
+            $query->order($this->searchOrder);
+        }
+        $lists = $query->paginate($limit);
         return $lists;
     }
 
