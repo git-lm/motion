@@ -34,10 +34,10 @@
         <div class="videos">
             {volist name="list.warmup_motions" id="wm"}
             <div class="video_list">
-                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$wm.name|default=''}</div>
-                <div class="video_show_div">
-                    {$wm.url|raw|default='javascripti'}
+                <div class="video_list_top" data-src="{:extractSrc($wm.url)}"><i
+                        class="layui-icon">&#xe6ed;</i>{$wm.name|default=''}
                 </div>
+
             </div>
             {/volist}
         </div>
@@ -66,17 +66,16 @@
                     <!--main_list_l_r_top_b start-->
                     <div class="main_list_l_r_top_b">
                         <p class="font_l">{:nl2br($c.remark)}</p>
-                        <p class="R layui-btn layui-btn-warm"
-                            data-modal='{:url("/lesson/execute")}?id={$c.id}' data-title="">开始</p>
+                        <p class="R layui-btn layui-btn-warm" data-modal='{:url("/lesson/execute")}?id={$c.id}'
+                            data-title="">开始</p>
                         <!--视频 开始-->
                         <div class="videos">
                             {volist name="c.motions" id="motion"}
                             <div class="video_list">
-                                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$motion.name|default=''}
+                                <div class="video_list_top" data-src="{:extractSrc($motion.url)}">
+                                    <i class="layui-icon">&#xe6ed;</i>{$motion.name|default=''}
                                 </div>
-                                <div class="video_show_div">
-                                    {$motion.url|raw|default=''}
-                                </div>
+
                             </div>
                             {/volist}
                         </div>
@@ -92,7 +91,7 @@
                         <div class="textarea_over clearfix">
                             <input type="hidden" name="file{$c.id}" onchange="recordfile('{$c.id}', this)"
                                 class="layui-input" />
-                            <i class="layui-icon"  data-field="file{$c.id}" data-file="one" data-uptype="oss"
+                            <i class="layui-icon" data-field="file{$c.id}" data-file="one" data-uptype="oss"
                                 data-type="jpg,png,jpeg,mp4,mov" data-title="运动记录" data-filetype="4">&#xe65d;</i>
                             <textarea itemid="{$c.id|default=0}" placeholder="输入内容">{$c.message|default=''}</textarea>
                         </div>
@@ -131,10 +130,10 @@
         <div class="videos">
             {volist name="$list.colldown_motions" id="cm"}
             <div class="video_list">
-                <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$cm.name|default=''}</div>
-                <div class="video_show_div">
-                    {$cm.url|raw|default=''}
+                <div class="video_list_top" data-src="{:extractSrc($cm.url)}"><i
+                        class="layui-icon">&#xe6ed;</i>{$cm.name|default=''}
                 </div>
+
             </div>
             {/volist}
 
@@ -199,11 +198,18 @@
         //        var me = window.createEditor('[name="message"]', {height: 200});
         //导航点击相应的div显示 开始
         $(".video_list_top").click(function () {
-            if ($(this).siblings('.video_show_div').is(":hidden")) {
-                $(this).siblings('.video_show_div').show();
-            } else {
-                $(this).siblings('.video_show_div').hide()
-            }
+            var video = $(this).attr('data-src');
+            var iframe = '<iframe frameborder="0" src="' + video + '" allowFullScreen="true"></iframe>';
+            layer.open({
+                type: 1,
+                title: false,
+                content: iframe
+            });
+            // if ($(this).siblings('.video_show_div').is(":hidden")) {
+            //     $(this).siblings('.video_show_div').show();
+            // } else {
+            //     $(this).siblings('.video_show_div').hide()
+            // }
         });
         //导航点击相应的div显示 结束
         //状态tips显示 开始

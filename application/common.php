@@ -111,14 +111,13 @@ function ajax_list_return($msg = '', $pages = 0, $code = 1)
 }
 
 /**
- *  时间比较 
+ *  时间比较
  * @param type $the_time 时间戳
  * @return type
  */
 function time_trans($the_time)
 {
     $now_time = time();
-
 
     $dur = $now_time - $the_time;
 
@@ -159,7 +158,6 @@ function deep_in_array($value, $array)
     return false;
 }
 
-
 /**
  * 判断是否微信
  * @return boolean
@@ -182,14 +180,13 @@ function get_thumb($str = '', $width = 100, $height = 100)
         $parse_url = parse_url($str);
         if (!empty($parse_url['path'])) {
             $path = $parse_url['path'];
-            $pathinfo =  pathinfo($path);
+            $pathinfo = pathinfo($path);
             $filename = $pathinfo['filename'];
             $str = str_replace(['static/upload', $filename], ['static/upload/thumb', $filename . "_{$width}" . "_{$height}"], $str);
             return $str;
         }
     }
 }
-
 
 /**
  * [write_log 写入日志]
@@ -206,7 +203,18 @@ function write_log($data, $file = null)
         //iconv防止中文名乱码
         $res = mkdir(iconv("UTF-8", "GBK", $dir_name), 0777, true);
     }
-    $fp = fopen($file, "a"); //打开文件资源通道 不存在则自动创建       
+    $fp = fopen($file, "a"); //打开文件资源通道 不存在则自动创建
     fwrite($fp, date("Y-m-d H:i:s") . var_export($data, true) . "\r\n"); //写入文件
     fclose($fp); //关闭资源通道
+}
+
+function extractSrc($src = '')
+{
+    preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $src, $matched);
+    if (empty($matched[1])) {
+        return '';
+    } else {
+        return $matched[1];
+    }
+
 }
