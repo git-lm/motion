@@ -133,7 +133,7 @@
             <div class="video_list">
                 <div class="video_list_top"><i class="layui-icon">&#xe6ed;</i>{$cm.name|default=''}</div>
                 <div class="video_show_div">
-                    {$cm.url|default=''}
+                    {$cm.url|raw|default=''}
                 </div>
             </div>
             {/volist}

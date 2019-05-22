@@ -41,7 +41,8 @@ class OrderModel extends Model
     /**
      * 获取单个订单
      */
-    function list($param) {
+    function list($param)
+    {
         if (empty($param['order_status'])) {
             $where[] = ['order_status', '=', 1];
         } else {
@@ -78,6 +79,9 @@ class OrderModel extends Model
             $where[] = ['m.name', 'like', '%' . $param['member_name'] . '%'];
         }
 
+        if (!empty($param['coach_name'])) {
+            $where[] = ['c.name', 'like', '%' . $param['coach_name'] . '%'];
+        }
         if (!empty($param['create_expire_time'])) {
             list($begin, $end) = explode(' - ', $param['create_expire_time']);
             $where[] = ['o.create_at', '>=', $begin . ' 00:00:00'];
@@ -143,7 +147,7 @@ class OrderModel extends Model
     }
 
     public function del()
-    {}
+    { }
 
     public function addOrder()
     {

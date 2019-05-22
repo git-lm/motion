@@ -50,7 +50,7 @@
                 done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
                     var lis = [];
                     //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
-                    $.get('{:url("/index/classes/indexAjax")}?page=' + page+'&type={$type}', function (res) {
+                    $.get('{:url("/index/classes/indexAjax")}?page=' + page + '&type={$type}', function (res) {
                         lis.push(res.data);
                         next(lis.join(''), page < res.pages);
                     }, 'json');
@@ -60,7 +60,7 @@
 
         $(document).on('click', '.class_begin', function () {
             var class_id = $(this).attr('itemid');
-            $.post('{:url("get_members")}', function (res) {
+            $.post('{:url("get_members")}', { 'class_id': class_id }, function (res) {
                 if (res.length == 0) {
                     layer.msg('暂无会员可预约');
                     return false;
