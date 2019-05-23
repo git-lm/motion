@@ -23,7 +23,7 @@
                 name="product_id" lay-ignore="" id="product">
                 <option value=""> - 请选择项目 -</option>
                 <!--{volist name="products" id="product"}-->
-                <option value="{$product.id}">{$product.name}-{$product.duration}天</option>
+                <option value="{$product.id}">{$product.name}-{$product.duration}天-{$product.price}元</option>
                 <!--{/volist}-->
             </select>
         </div>
