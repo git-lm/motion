@@ -6,12 +6,6 @@
 <!-- 表单搜索 开始 -->
 <form autocomplete="off" class="layui-form layui-form-pane form-search" onsubmit="return false" method="get">
     <div class="layui-form-item layui-inline">
-        <label class="layui-form-label">教练名称</label>
-        <div class="layui-input-inline">
-            <input name="coach_name" value="" placeholder="教练名称" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item layui-inline">
         <label class="layui-form-label">课程类型</label>
         <div class="layui-input-inline">
             <select name="type">
@@ -44,7 +38,7 @@
     })
     table.render({
         elem: '#Table',
-        url: '{:url("$classuri/get_lists")}', //数据接口 
+        url: '{:url("$classuri/get_my_lists")}', //数据接口 
         page: true, //开启分页
         toolbar: '<div>佣金列表</div>',
         loading: true,

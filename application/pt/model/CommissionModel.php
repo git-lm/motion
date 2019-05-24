@@ -93,6 +93,7 @@ class CommissionModel extends Model
                 $where[] = ['class.class_at', '<=', $end];
             }
         }
+        if (!empty($param['coach_id'])) $where[] = ['coach_id', '=', $param['coach_id']];
         $query = $this->where($where)->alias('c')
             ->field('c.* , course.name course_name ,coach.name coach_name ,class.class_at ')
             ->leftJoin('motion_coach coach', 'coach.id = c.coach_id')
