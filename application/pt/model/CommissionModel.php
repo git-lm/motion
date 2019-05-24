@@ -117,6 +117,7 @@ class CommissionModel extends Model
             $product_id =  $classesPrivate->product_id;    //获取上课时私教项目
             $member_id =  $classesPrivate->member_id;      //获取上课会员
             $coach_id = $class->coach_id;                   //获取上课教练
+            $class_at = $classesPrivate->create_at;         //上课时间
             //获取教练项目的费用
             $pem = new ProductExpensesModel();
             $expenses = $pem->list(array('coach_id' => $coach_id, 'product_id' => $product_id));
@@ -133,6 +134,7 @@ class CommissionModel extends Model
             $coach_id = $class->coach_id;                   //获取上课教练
             $number = $classesGroup->number;                //上课人数
             $course_id = $class->course_id;                 //团课ID
+            $class_at = $classesGroup->create_at;         //上课时间
 
             $cem = new CourseExpensesModel();
 
@@ -161,6 +163,7 @@ class CommissionModel extends Model
         $param['award'] =  $expenses['award'];
         $param['price'] = $expenses['expenses'] + $expenses['award'];
         $param['type'] = $class['type'];
+        $param['class_at'] = $class['class_at'];
         $code =  $commissio->save($param);
         if ($code) {
             return true;
