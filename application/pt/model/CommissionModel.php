@@ -163,7 +163,7 @@ class CommissionModel extends Model
         $param['award'] =  $expenses['award'];
         $param['price'] = $expenses['expenses'] + $expenses['award'];
         $param['type'] = $class['type'];
-        $param['class_at'] = $class['class_at'];
+        $param['class_at'] = $class_at;
         $code =  $commissio->save($param);
         if ($code) {
             return true;
