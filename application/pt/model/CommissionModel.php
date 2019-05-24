@@ -95,7 +95,7 @@ class CommissionModel extends Model
         }
         if (!empty($param['coach_id'])) $where[] = ['coach_id', '=', $param['coach_id']];
         $query = $this->where($where)->alias('c')
-            ->field('c.* , course.name course_name ,coach.name coach_name ,class.class_at ')
+            ->field('c.* , course.name course_name ,coach.name coach_name ,class.class_at ,class.begin_at , class.end_at ')
             ->leftJoin('motion_coach coach', 'coach.id = c.coach_id')
             ->leftJoin('pt_classes class', 'class.id = c.class_id')
             ->leftJoin('pt_course course', 'course.id = class.course_id');
@@ -117,7 +117,7 @@ class CommissionModel extends Model
             $product_id =  $classesPrivate->product_id;    //获取上课时私教项目
             $member_id =  $classesPrivate->member_id;      //获取上课会员
             $coach_id = $class->coach_id;                   //获取上课教练
-            $coach_class_at = $classesPrivate->create_at;         //上课时间
+            $coach_class_at = $classesPrivate->begin_at;         //上课时间
             //获取教练项目的费用
             $pem = new ProductExpensesModel();
             $expenses = $pem->list(array('coach_id' => $coach_id, 'product_id' => $product_id));
@@ -134,7 +134,7 @@ class CommissionModel extends Model
             $coach_id = $class->coach_id;                   //获取上课教练
             $number = $classesGroup->number;                //上课人数
             $course_id = $class->course_id;                 //团课ID
-            $coach_class_at = $classesGroup->create_at;         //上课时间
+            $coach_class_at = $classesGroup->update_at;         //上课时间
 
             $cem = new CourseExpensesModel();
 
