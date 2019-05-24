@@ -154,6 +154,8 @@ class CommissionModel extends Model
         $commissio = $cm->where(array('class_id' => $class['id']))->find();
         if (empty($commissio)) {
             $commissio = $this;
+        } else {
+            $param['update_at'] = date('Y-m-d H:i:s');
         }
         $param['coach_id'] = $coach_id;
         $param['class_id'] = $class['id'];
@@ -165,6 +167,7 @@ class CommissionModel extends Model
         $param['type'] = $class['type'];
         $param['coach_class_at'] = $coach_class_at;
         $code =  $commissio->save($param);
+
         if ($code) {
             return true;
         } else {
