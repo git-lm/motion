@@ -61,7 +61,7 @@
             { field: 'award', title: '奖励金额', totalRow: true },
             {
                 title: '上课时间', templet: function (d) {
-                    return '<div>' + d.begin_at.substr(10) + "  " + d.end_at.substr(10) + '</div>';
+                    return '<div>' + d.begin_at.substr(10) + "-" + d.end_at.substr(10) + '</div>';
                 }
             },
             { field: 'create_at', title: '确认时间' },
