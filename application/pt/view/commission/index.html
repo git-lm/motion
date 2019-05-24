@@ -65,11 +65,7 @@
             { field: 'price', title: '佣金金额', totalRow: true },
             { field: 'expenses', title: '课程金额', totalRow: true },
             { field: 'award', title: '奖励金额', totalRow: true },
-            {
-                title: '上课时间', templet: function (d) {
-                    return '<div>' + d.class_at.substr(0, 10) + '</div>';
-                }
-            },
+            { field: 'coach_class_at', title: '上课时间' },
             { field: 'create_at', title: '确认时间' },
 
         ]],
