@@ -42,7 +42,7 @@
         $.layuitable('Table');
         laydate.render({ range: true, elem: '#expire_time' });
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#Table',
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
@@ -93,6 +93,7 @@
     }
     );
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(course_search)', function () {
         var coach_name = $('input[name="coach_name"]').val();
         var expire_time = $('input[name="expire_time"]').val();
@@ -103,8 +104,9 @@
                 expire_time: expire_time,
                 type: type,
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 

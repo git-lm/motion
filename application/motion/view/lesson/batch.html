@@ -33,7 +33,7 @@
         $.layuitable('arrangeTable');
         laydate.render({ range: true, elem: '#class_time' });
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#arrangeTable',
 
         url: '{:url("$classuri/get_batch_lesson")}', //数据接口 
@@ -60,6 +60,7 @@
         }
     });
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(arrange_search)', function () {
         var name = $('input[name="name"]').val();
         var class_time = $('input[name="class_time"]').val();
@@ -68,8 +69,9 @@
                 name: name,
                 class_time: class_time
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="arrangehandle">

@@ -26,7 +26,7 @@
     $(function () {
         $.layuitable('typeTable');
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#typeTable',
 
         url: '{:url("$classuri/get_lists")}', //数据接口 
@@ -52,14 +52,16 @@
         }
     });
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(type_search)', function () {
         var name = $('input[name="name"]').val();
         table.reload('typeTable', {
             where: {
                 name: name
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="typehandle">

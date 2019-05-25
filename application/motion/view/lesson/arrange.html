@@ -2,9 +2,9 @@
 {block name="button"}
 <button data-modal='{:url("$classuri/add")}?mid={$mid}' data-title="新建计划"
     class='layui-btn layui-btn-sm layui-btn-primary'>新建计划</button>
-    <button data-modal='{:url("$classuri/upload")}?mid={$mid}' data-title="上传计划"
+<button data-modal='{:url("$classuri/upload")}?mid={$mid}' data-title="上传计划"
     class='layui-btn layui-btn-sm layui-btn-primary'>上传计划</button>
-    <button data-href='/static/upload/arrange/计划示例.xlsx' data-title="上传计划"
+<button data-href='/static/upload/arrange/计划示例.xlsx' data-title="上传计划"
     class='layui-btn layui-btn-sm layui-btn-primary'>下载示例</button>
 <!-- <button data-filetype="7" data-file="one" data-uptype="local" data-type="xlsx" data-field="arrangeFile" class='layui-btn layui-btn-sm layui-btn-primary'>上传计划</button> -->
 {/block}
@@ -37,7 +37,7 @@
         $.layuitable('arrangeTable');
         laydate.render({ range: true, elem: '#class_time' });
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#arrangeTable',
 
         url: '{:url("$classuri/get_arrange_lists")}?id={$mid}', //数据接口 
@@ -52,7 +52,7 @@
             { field: 'state_show', title: '上课状态' },
             { field: 'coach_name', title: '教练姓名' },
             { field: 'warmup', title: '热身语', templet: '#warmup' },
-            { field: 'warmup_video', title: '热身视频'},
+            { field: 'warmup_video', title: '热身视频' },
             { field: 'colldown', title: '冷身语', templet: '#colldown' },
             { field: 'colldown_video', title: '冷身视频' },
             { field: 'create_time_show', title: '添加时间' },
@@ -68,6 +68,7 @@
         }
     });
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(arrange_search)', function () {
         var name = $('input[name="name"]').val();
         var class_time = $('input[name="class_time"]').val();
@@ -76,8 +77,9 @@
                 name: name,
                 class_time: class_time
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="arrangehandle">

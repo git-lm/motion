@@ -37,7 +37,7 @@
     $(function () {
         $.layuitable('memberTable');
         laydate.render({ range: true, elem: '#expire_time' });
-        $('body').off('mouseenter','.end_time_show').on('mouseenter', '.end_time_show', function () {
+        $('body').off('mouseenter', '.end_time_show').on('mouseenter', '.end_time_show', function () {
             var that = this;
             var mid = $(this).attr('data-itemid');
             $.post('{:url("get_member_times")}', { 'mid': mid }, function (data) {
@@ -52,7 +52,7 @@
 
         })
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#memberTable',
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
@@ -83,6 +83,7 @@
     }
     );
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(member_search)', function () {
         var name = $('input[name="name"]').val();
         var cname = $('input[name="cname"]').val();
@@ -93,8 +94,9 @@
                 cname: cname,
                 expire_time: expire_time
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="memberhandle">
