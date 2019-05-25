@@ -3,7 +3,6 @@
 namespace app\pt\model;
 
 use think\Model;
-use think\Db;
 
 class CommissionModel extends Model
 {
@@ -18,14 +17,14 @@ class CommissionModel extends Model
     /**
      * 关联课程
      */
-    public function  class()
+    function class ()
     {
         return $this->belongsTo('classModel', 'class_id', 'id');
     }
     /**
      * 关联教练
      */
-    public function  coach()
+    public function coach()
     {
         return $this->belongsTo('coachModel', 'coach_id', 'id');
     }
@@ -33,7 +32,7 @@ class CommissionModel extends Model
     /**
      * 关联订单
      */
-    public function  order()
+    public function order()
     {
         return $this->belongsTo('orderModel', 'order_id', 'id');
     }
@@ -41,14 +40,14 @@ class CommissionModel extends Model
     /**
      * 关联私教支出
      */
-    public function  productExpenses()
+    public function productExpenses()
     {
         return $this->belongsTo('ProductExpensesModel', 'expenses_id', 'id');
     }
     /**
      * 关联团课支出
      */
-    public function  groupExpenses()
+    public function groupExpenses()
     {
         return $this->belongsTo('CourseExpensesModel', 'expenses_id', 'id');
     }
@@ -56,20 +55,20 @@ class CommissionModel extends Model
     /**
      * 获取单个课程
      */
-    public function list($param)
-    {
+    function list($param) {
         if (empty($param['status'])) {
             $where[] = ['status', '=', 1];
         } else {
             $where[] = ['status', '=', $param['status']];
         }
-        if (!empty($param['id'])) $where[] = ['id', '=', $param['id']];
-        $list =  $this->with(['coach', 'course', 'commission'])->where($where)->find();
+        if (!empty($param['id'])) {
+            $where[] = ['id', '=', $param['id']];
+        }
+
+        $list = $this->with(['coach', 'course', 'commission'])->where($where)->find();
 
         return $list;
     }
-
-
 
     /**
      * 分页获取所有数据
@@ -82,10 +81,16 @@ class CommissionModel extends Model
             $where[] = ['c.status', '=', $param['status']];
         }
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        if (!empty($param['coach_name'])) $where[] = ['coach.name', 'like', '%' . $param['coach_name'] . '%'];
-        if (!empty($param['type'])) $where[] = ['c.type', '=',  $param['type']];
+        if (!empty($param['coach_name'])) {
+            $where[] = ['coach.name', 'like', '%' . $param['coach_name'] . '%'];
+        }
+
+        if (!empty($param['type'])) {
+            $where[] = ['c.type', '=', $param['type']];
+        }
+
         if (!empty($param['expire_time'])) {
-            list($begin, $end) =  explode(' - ', $param['expire_time']);
+            list($begin, $end) = explode(' - ', $param['expire_time']);
             if (!empty($begin)) {
                 $where[] = ['class.class_at', '>=', $begin];
             }
@@ -93,13 +98,19 @@ class CommissionModel extends Model
                 $where[] = ['class.class_at', '<=', $end];
             }
         }
-        if (!empty($param['coach_id'])) $where[] = ['coach_id', '=', $param['coach_id']];
+        if (!empty($param['coach_id'])) {
+            $where[] = ['coach_id', '=', $param['coach_id']];
+        }
+
         $query = $this->where($where)->alias('c')
-            ->field('c.* , course.name course_name ,coach.name coach_name ,class.class_at ,class.begin_at , class.end_at ')
+            ->field('c.* , course.name course_name ,coach.name coach_name ,class.class_at ,class.begin_at , class.end_at ,m.name mname , cg.number')
             ->leftJoin('motion_coach coach', 'coach.id = c.coach_id')
             ->leftJoin('pt_classes class', 'class.id = c.class_id')
-            ->leftJoin('pt_course course', 'course.id = class.course_id');
-        $lists =  $query->paginate($limit);
+            ->leftJoin('pt_course course', 'course.id = class.course_id')
+            ->leftJoin('pt_classes_group cg', 'cg.class_id = c.class_id')
+            ->leftJoin('pt_classes_private cp', 'cp.class_id = c.class_id')
+            ->leftJoin('pt_member m', 'm.id = cp.member_id');
+        $lists = $query->paginate($limit);
         return $lists;
     }
 
@@ -114,10 +125,10 @@ class CommissionModel extends Model
         }
         if ($class['type'] == 1) { //说明是私教
             $classesPrivate = $class->classesPrivate;
-            $product_id =  $classesPrivate->product_id;    //获取上课时私教项目
-            $member_id =  $classesPrivate->member_id;      //获取上课会员
-            $coach_id = $class->coach_id;                   //获取上课教练
-            $coach_class_at = $classesPrivate->begin_at;         //上课时间
+            $product_id = $classesPrivate->product_id; //获取上课时私教项目
+            $member_id = $classesPrivate->member_id; //获取上课会员
+            $coach_id = $class->coach_id; //获取上课教练
+            $coach_class_at = $classesPrivate->begin_at; //上课时间
             //获取教练项目的费用
             $pem = new ProductExpensesModel();
             $expenses = $pem->list(array('coach_id' => $coach_id, 'product_id' => $product_id));
@@ -127,14 +138,14 @@ class CommissionModel extends Model
             }
             //获取会员会员身份识别
             $orderProduct = OrderProductModel::getProductForMemberId($member_id);
-            $oder_id =  $orderProduct['order_id'];
+            $oder_id = $orderProduct['order_id'];
         } else if ($class['type'] == 2) { //说明是团课
             $classesGroup = $class->classesGroup;
 
-            $coach_id = $class->coach_id;                   //获取上课教练
-            $number = $classesGroup->number;                //上课人数
-            $course_id = $class->course_id;                 //团课ID
-            $coach_class_at = $classesGroup->update_at;         //上课时间
+            $coach_id = $class->coach_id; //获取上课教练
+            $number = $classesGroup->number; //上课人数
+            $course_id = $class->course_id; //团课ID
+            $coach_class_at = $classesGroup->update_at; //上课时间
 
             $cem = new CourseExpensesModel();
 
@@ -162,11 +173,11 @@ class CommissionModel extends Model
         $param['order_id'] = $oder_id;
         $param['expenses_id'] = $expenses['id'];
         $param['expenses'] = $expenses['expenses'];
-        $param['award'] =  $expenses['award'];
+        $param['award'] = $expenses['award'];
         $param['price'] = $expenses['expenses'] + $expenses['award'];
         $param['type'] = $class['type'];
         $param['coach_class_at'] = $coach_class_at;
-        $code =  $commissio->save($param);
+        $code = $commissio->save($param);
 
         if ($code) {
             return true;
@@ -185,7 +196,7 @@ class CommissionModel extends Model
             return false;
         }
         $commission = $this->get($id);
-        $code =  $commission->save($param);
+        $code = $commission->save($param);
         if ($code) {
             return true;
         } else {

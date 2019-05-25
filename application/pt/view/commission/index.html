@@ -62,12 +62,21 @@
                 }
             },
             { field: 'coach_name', title: '所属教练' },
+            {
+                title: '会员/人数', templet: function (d) {
+                    if (d.type == 1) {
+                        return '<div>' + d.mname + '</div>';
+                    } else {
+                        return '<div>' + d.number + '</div>';
+                    }
+                }
+            },
             { field: 'price', title: '佣金金额', totalRow: true },
             { field: 'expenses', title: '课程金额', totalRow: true },
             { field: 'award', title: '奖励金额', totalRow: true },
             {
                 title: '上课时间', templet: function (d) {
-                    return '<div>' + d.begin_at.substr(10) + "-" + d.end_at.substr(10) + '</div>';
+                    return '<div>' + d.class_at.substr(0, 10) + d.begin_at.substr(10) + "-" + d.end_at.substr(10) + '</div>';
                 }
             },
             { field: 'create_at', title: '确认时间' },
