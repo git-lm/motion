@@ -1,7 +1,8 @@
 {extend name='admin@public/content'}
 {block name="button"}
- <!--{if auth("$classuri/time_add")}-->
-<button data-modal='{:url("$classuri/time_add")}?mid={$mid}' data-title="添加时间"  class='layui-btn layui-btn-sm layui-btn-primary'>添加时间</button>
+<!--{if auth("$classuri/time_add")}-->
+<button data-modal='{:url("$classuri/time_add")}?mid={$mid}' data-title="添加时间"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加时间</button>
 <!--{/if}-->
 {/block}
 
@@ -16,7 +17,8 @@
         </div>
     </div>
     <div class="layui-form-item layui-inline">
-        <button class="layui-btn layui-btn-primary" lay-filter="time_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
+        <button class="layui-btn layui-btn-primary" lay-filter="time_search" lay-submit><i
+                class="layui-icon">&#xe615;</i> 搜 索</button>
     </div>
 </div>
 <table id="timeTable" lay-filter="timeTable"></table>
@@ -25,10 +27,10 @@
 <script>
     $(function () {
         $.layuitable('timeTable');
-        laydate.render({ elem: '#expire_time'});
+        laydate.render({ elem: '#expire_time' });
 
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#timeTable',
         url: '{:url("$classuri/get_member_times")}?mid={$mid}', //数据接口 
         page: true, //开启分页
@@ -36,13 +38,13 @@
         loading: true,
         title: '会员时间列表',
         cols: [[//表头
-                {title: '序号', fixed: 'left', type: 'numbers'},
-                {field: 'begin_time_show', title: '开始时间'},
-                {field: 'end_time_show', title: '结束时间'},
-                {field: 'create_time_show', title: '添加时间'},
-                {field: 'username', title: '添加人'},
-                {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#timehandle'}
-            ]],
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'begin_time_show', title: '开始时间' },
+            { field: 'end_time_show', title: '结束时间' },
+            { field: 'create_time_show', title: '添加时间' },
+            { field: 'username', title: '添加人' },
+            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#timehandle' }
+        ]],
         parseData: function (res) { //res 即为原始返回的数据
             return {
                 "code": res.code, //解析接口状态
@@ -54,14 +56,16 @@
     }
     );
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(time_search)', function () {
         var expire_time = $('input[name="expire_time"]').val();
         table.reload('timeTable', {
             where: {
                 expire_time: expire_time
             },
-            page: {curr: 1}
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="timehandle">

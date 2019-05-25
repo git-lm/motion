@@ -1,7 +1,8 @@
 {extend name='admin@public/content'}
 {block name="button"}
 <!--{if auth("$classuri/add")}-->
-<button data-modal='{:url("$classuri/add")}' data-title="添加课程" class='layui-btn layui-btn-sm layui-btn-primary'>添加课程</button>
+<button data-modal='{:url("$classuri/add")}' data-title="添加课程"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加课程</button>
 <!--{/if}-->
 {/block}
 
@@ -21,7 +22,8 @@
     </div>
 </div>
 <div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="member_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
+    <button class="layui-btn layui-btn-primary" lay-filter="member_search" lay-submit><i class="layui-icon">&#xe615;</i>
+        搜 索</button>
 </div>
 <table id="memberTable" lay-filter="memberTable"></table>
 {/block}
@@ -31,24 +33,24 @@
         $.layuitable('memberTable');
         form.render();
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#memberTable',
-       
+
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
         toolbar: '<div>会员列表</div>',
         loading: true,
         title: '会员列表',
         cols: [[//表头
-                {title: '序号', fixed: 'left', type: 'numbers'},
-                {field: 'name', title: '课程名称', templet: '<div>{{d.str}} {{d.name}}</div>'},
-                {field: 'warmup', title: '热身语'},
-                {field: 'colldown', title: '结束语'},
-                {field: 'tname', title: '课程类型'},
-                {field: 'status_show', title: '状态'},
-                {field: 'create_time_show', title: '添加时间'},
-                {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#memberhandle'}
-            ]],
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'name', title: '课程名称', templet: '<div>{{d.str}} {{d.name}}</div>' },
+            { field: 'warmup', title: '热身语' },
+            { field: 'colldown', title: '结束语' },
+            { field: 'tname', title: '课程类型' },
+            { field: 'status_show', title: '状态' },
+            { field: 'create_time_show', title: '添加时间' },
+            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#memberhandle' }
+        ]],
         parseData: function (res) { //res 即为原始返回的数据
             return {
                 "code": res.code, //解析接口状态
@@ -59,6 +61,7 @@
         }
     });
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(member_search)', function () {
         var name = $('input[name="name"]').val();
         var tname = $('input[name="tname"]').val();
@@ -67,8 +70,9 @@
                 name: name,
                 tname: tname,
             },
-            page: {curr: 1}
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="memberhandle">
