@@ -48,7 +48,7 @@ class ProductModel extends Model
     }
 
     /**
-     * 新增会员
+     * 新增产品
      */
     public function add($param)
     {
@@ -107,7 +107,9 @@ class ProductModel extends Model
         $rule = [
             'name' => 'require|max:25|min:2',
             'price' => 'require',
-            'duration' => 'require|number'
+            'duration' => 'require|number',
+            'unit_price' => 'require',
+            'number' => 'require|number'
 
         ];
         $message = [
@@ -116,8 +118,10 @@ class ProductModel extends Model
             'name.max' => '产品名称最多二十五个字',
             'price.require' => '产品价格必填',
             'duration.require' => '产品时长必填',
-            'duration.number' => '请正确填写产品时长'
-            // 'price.regex' => '产品价格格式不正确',
+            'duration.number' => '请正确填写产品时长',
+            'unit_price.require' => '课程单价必填',
+            'number.require' => '课程次数必填',
+            'number.number' => '请正确填写课程次数',
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

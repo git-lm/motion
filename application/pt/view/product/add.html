@@ -5,8 +5,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">产品名称</label>
         <div class="layui-input-block">
-            <input type="text" autofocus name="name" required lay-verify="required" value='' maxlength="25" minlength="2"
-                title="请输入产品名称" placeholder="请输入产品名称" class="layui-input">
+            <input type="text" autofocus name="name" required lay-verify="required" value='' maxlength="25"
+                minlength="2" title="请输入产品名称" placeholder="请输入产品名称" class="layui-input">
         </div>
     </div>
 
@@ -22,6 +22,20 @@
         <div class="layui-input-block">
             <input type="text" autofocus name="duration" required lay-verify="required|number" value='' maxlength="11"
                 title="请输入产品时长" placeholder="请输入产品时长" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">产品单价</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="unit_price" required lay-verify="required|price" value='' maxlength="11"
+                title="请输入产品单价" placeholder="请输入产品单价" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">课程次数</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="number" required lay-verify="required|number" value='' maxlength="11"
+                title="请输入课程次数" placeholder="请输入课程次数" class="layui-input">
         </div>
     </div>
 

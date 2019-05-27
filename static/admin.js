@@ -14,6 +14,12 @@ if (typeof layui !== 'undefined') {
     if (typeof jQuery === 'undefined') {
         var $ = jQuery = layui.$;
     }
+    form.verify({
+        price: [
+            /^\d+\.?\d{0,2}$/,
+            '输入的金额不正确'
+        ]
+    });
 }
 
 $(function () {
@@ -711,3 +717,4 @@ $(function () {
     $.menu.listen();
     $.vali.listen();
 });
+

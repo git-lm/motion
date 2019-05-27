@@ -53,6 +53,8 @@
             { field: 'name', title: '产品名称' },
             { field: 'price', title: '产品价格' },
             { field: 'duration', title: '产品时长' },
+            { field: 'number', title: '课次' },
+            { field: 'unit_price', title: '单价' },
             {
                 fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#productHandle'
             }
@@ -65,8 +67,7 @@
                 "data": res.data //解析数据列表
             };
         }
-    }
-    );
+    });
 
     var curr = 1;
     //搜索按钮绑定事件
