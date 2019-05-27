@@ -529,15 +529,16 @@ class Lesson extends BasicAdmin
                     }
                     $valArr['collDownVideo'] = $collDownVideo;
                     for ($row = 9; $row < $highestRow; $row++) {
+                        //结束信息
+                        $end = (string)$worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                        if ($end == '结束计划') {
+                            break;
+                        }
                         //把数字转成字母
                         $numLetter = Coordinate::stringFromColumnIndex($column);
                         $videoLetter = Coordinate::stringFromColumnIndex($detail_video_column);
                         $explainLetter = Coordinate::stringFromColumnIndex($detail_explain_column);
-                        //结束信息
-                        $end = (string)$worksheet->getCellByColumnAndRow(1, $row + 1)->getValue();
-                        if ($end == '结束计划') {
-                            break;
-                        }
+
                         //获取计划详情内容
                         $detail_num = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue(); //计划详情编号
                         if (empty($detail_num)) {
