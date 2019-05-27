@@ -17,7 +17,7 @@ class CommissionModel extends Model
     /**
      * 关联课程
      */
-    function class ()
+    function class()
     {
         return $this->belongsTo('classModel', 'class_id', 'id');
     }
@@ -55,7 +55,8 @@ class CommissionModel extends Model
     /**
      * 获取单个课程
      */
-    function list($param) {
+    function list($param)
+    {
         if (empty($param['status'])) {
             $where[] = ['status', '=', 1];
         } else {
@@ -103,13 +104,14 @@ class CommissionModel extends Model
         }
 
         $query = $this->where($where)->alias('c')
-            ->field('c.* , course.name course_name ,coach.name coach_name ,class.class_at ,class.begin_at , class.end_at ,m.name mname , cg.number')
+            ->field('c.* , course.name course_name ,coach.name coach_name ,class.class_at ,class.begin_at , class.end_at ,m.name mname , cg.number , p.name pname')
             ->leftJoin('motion_coach coach', 'coach.id = c.coach_id')
             ->leftJoin('pt_classes class', 'class.id = c.class_id')
             ->leftJoin('pt_course course', 'course.id = class.course_id')
             ->leftJoin('pt_classes_group cg', 'cg.class_id = c.class_id')
             ->leftJoin('pt_classes_private cp', 'cp.class_id = c.class_id')
-            ->leftJoin('pt_member m', 'm.id = cp.member_id');
+            ->leftJoin('pt_member m', 'm.id = cp.member_id')
+            ->leftJoin('pt_product p', 'p.id = cp.product_id');
         $lists = $query->paginate($limit);
         return $lists;
     }
@@ -125,10 +127,12 @@ class CommissionModel extends Model
         }
         if ($class['type'] == 1) { //说明是私教
             $classesPrivate = $class->classesPrivate;
+            $product = $classesPrivate->product;
             $product_id = $classesPrivate->product_id; //获取上课时私教项目
             $member_id = $classesPrivate->member_id; //获取上课会员
             $coach_id = $class->coach_id; //获取上课教练
             $coach_class_at = $classesPrivate->begin_at; //上课时间
+            $unit_price = $product->unit_price; //单次课时费用
             //获取教练项目的费用
             $pem = new ProductExpensesModel();
             $expenses = $pem->list(array('coach_id' => $coach_id, 'product_id' => $product_id));
@@ -146,7 +150,7 @@ class CommissionModel extends Model
             $number = $classesGroup->number; //上课人数
             $course_id = $class->course_id; //团课ID
             $coach_class_at = $classesGroup->update_at; //上课时间
-
+            $unit_price = '0.00'; //单次课时费用
             $cem = new CourseExpensesModel();
 
             $expenses = $cem
@@ -177,6 +181,7 @@ class CommissionModel extends Model
         $param['price'] = $expenses['expenses'] + $expenses['award'];
         $param['type'] = $class['type'];
         $param['coach_class_at'] = $coach_class_at;
+        $param['unit_price'] = $unit_price;
         $code = $commissio->save($param);
 
         if ($code) {

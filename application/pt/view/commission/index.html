@@ -72,6 +72,7 @@
                 }
             },
             { field: 'price', title: '佣金金额', totalRow: true },
+            { field: 'unit_price', title: '产品单价', totalRow: true }, ,
             { field: 'expenses', title: '课程金额', totalRow: true },
             { field: 'award', title: '奖励金额', totalRow: true },
             {
@@ -83,6 +84,13 @@
 
         ]],
         parseData: function (res) { //res 即为原始返回的数据
+            $.each(res.data, function (i, d) {
+                if (d.type == 1) {
+                    res.data[i].unit_price = d.unit_price;
+                } else {
+                    res.data[i].unit_price = '0.00';
+                }
+            })
             return {
                 "code": res.code, //解析接口状态
                 "msg": res.msg, //解析提示文本
