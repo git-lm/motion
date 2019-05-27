@@ -20,7 +20,7 @@
     $(function () {
         $.layuitable('coachTable');
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#coachTable',
 
         url: '{:url("$classuri/get_lists")}', //数据接口 
@@ -45,14 +45,16 @@
         }
     });
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(coach_search)', function () {
         var name = $('input[name="name"]').val();
         table.reload('coachTable', {
             where: {
                 name: name,
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="coachhandle">

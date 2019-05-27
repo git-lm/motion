@@ -47,7 +47,7 @@
 
         })
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#memberTable',
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
@@ -74,6 +74,7 @@
     }
     );
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(member_search)', function () {
         var name = $('input[name="name"]').val();
         var phone = $('input[name="phone"]').val();
@@ -82,8 +83,9 @@
                 name: name,
                 phone: phone,
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="memberhandle">

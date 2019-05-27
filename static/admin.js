@@ -90,7 +90,7 @@ $(function () {
         // 自动处理显示Think返回的Json数据
         this.auto = function (data, time) {
             return (parseInt(data.code) === 1) ? self.success(data.msg, time, function () {
-                !!data.url ? (window.location.href = data.url) : $.form.reload();
+                !!data.url ? (window.location.href = data.url) : tableShow == undefined ? $.form.submit() : curr = tableShow.config.page.curr; $.form.submit()
                 for (var i in self.dialogIndexs) {
                     layer.close(self.dialogIndexs[i]);
                 }
@@ -134,6 +134,9 @@ $(function () {
         this.reload = function () {
             window.onhashchange.call(this);
         };
+        this.submit = function () {
+            $('[lay-submit]').click();
+        }
         // 返回上一步
         this.back = function () {
             window.history.back(-1);

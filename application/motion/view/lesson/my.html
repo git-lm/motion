@@ -37,7 +37,7 @@
         $.layuitable('memberTable');
         laydate.render({ range: true, elem: '#expire_time' });
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#memberTable',
 
         url: '{:url("$classuri/get_my_lists")}', //数据接口 
@@ -67,6 +67,7 @@
         }
     });
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(member_search)', function () {
         var name = $('input[name="name"]').val();
         var cname = $('input[name="cname"]').val();
@@ -77,8 +78,9 @@
                 cname: cname,
                 expire_time: expire_time
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="memberhandle">

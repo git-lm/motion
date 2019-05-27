@@ -55,7 +55,7 @@
         laydate.render({ range: true, elem: '#end_expire_time' });
     })
     var mid = $('#mid').val() | 0;
-    table.render({
+    var tableShow = table.render({
         elem: '#Table',
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
@@ -106,6 +106,7 @@
     }
     );
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(search)', function () {
         var mid = $('input[name="mid"]').val();
         var member_name = $('input[name="member_name"]').val();
@@ -122,8 +123,9 @@
                 create_expire_time: create_expire_time,
                 end_expire_time: end_expire_time
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="Handle">

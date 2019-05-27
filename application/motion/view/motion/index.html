@@ -1,7 +1,8 @@
 {extend name='admin@public/content'}
 {block name="button"}
-  <!--{if auth("$classuri/add")}-->
-<button data-modal='{:url("$classuri/add")}' data-title="添加动作库" class='layui-btn layui-btn-sm layui-btn-primary'>添加动作库</button>
+<!--{if auth("$classuri/add")}-->
+<button data-modal='{:url("$classuri/add")}' data-title="添加动作库"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加动作库</button>
 <!--{/if}-->
 {/block}
 
@@ -17,8 +18,9 @@
 <div class="layui-form-item layui-inline ">
     <label class="layui-form-label">所属类型</label>
     <div class="layui-input-inline ">
-        <select required=""  xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select="mtname" lay-verify="required" class="layui-select full-width block" name="mtid" lay-ignore="">
-            <option  value=""> - 请选择类型 -</option>
+        <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down" xm-select="mtname"
+            lay-verify="required" class="layui-select full-width block" name="mtid" lay-ignore="">
+            <option value=""> - 请选择类型 -</option>
             <!--{volist name="types" id="type"}-->
             <option value="{$type.id}">{$type.name}</option>
             <!--{/volist}-->
@@ -32,7 +34,8 @@
     </div>
 </div>
 <div class="layui-form-item layui-inline">
-    <button class="layui-btn layui-btn-primary" lay-filter="motion_search" lay-submit><i class="layui-icon">&#xe615;</i> 搜 索</button>
+    <button class="layui-btn layui-btn-primary" lay-filter="motion_search" lay-submit><i class="layui-icon">&#xe615;</i>
+        搜 索</button>
 </div>
 <table id="motionTable" lay-filter="motionTable"></table>
 {/block}
@@ -41,10 +44,10 @@
     $(function () {
         $.layuitable('motionTable');
         formSelects.render('mtname');
-        window.laydate.render({range: true, elem: '#create_at'});
+        window.laydate.render({ range: true, elem: '#create_at' });
     })
 
-    table.render({
+    var tableShow = table.render({
         elem: '#motionTable',
 
         url: '{:url("$classuri/get_lists")}', //数据接口 
@@ -54,14 +57,14 @@
         loading: true,
         title: '动作库列表',
         cols: [[//表头
-                {title: '序号', fixed: 'left', type: 'numbers'},
-                {field: 'name', title: '名称'},
-                {field: 'url_show', title: '地址', templet: '<div><a target="_blank" href="{{d.url_show}}" class="layui-table-link">点击查看</a></div>'},
-                {field: 'create_time_show', title: '添加时间'},
-                {field: 'mtname', title: '所属类型'},
-                {field: 'status_show', title: '状态'},
-                {fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#motionhandle'}
-            ]],
+            { title: '序号', fixed: 'left', type: 'numbers' },
+            { field: 'name', title: '名称' },
+            { field: 'url_show', title: '地址', templet: '<div><a target="_blank" href="{{d.url_show}}" class="layui-table-link">点击查看</a></div>' },
+            { field: 'create_time_show', title: '添加时间' },
+            { field: 'mtname', title: '所属类型' },
+            { field: 'status_show', title: '状态' },
+            { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#motionhandle' }
+        ]],
         parseData: function (res) { //res 即为原始返回的数据
             return {
                 "code": res.code, //解析接口状态
@@ -72,18 +75,20 @@
         }
     });
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(motion_search)', function () {
         var name = $('input[name="name"]').val();
-        var mtid = formSelects.value('mtname' , 'valStr'); 
-       var create_at = $('input[name="create_at"]').val();
+        var mtid = formSelects.value('mtname', 'valStr');
+        var create_at = $('input[name="create_at"]').val();
         table.reload('motionTable', {
             where: {
                 name: name,
-                mtid :mtid,
-                create_at :create_at,
+                mtid: mtid,
+                create_at: create_at,
             },
-            page: {curr: 1}
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="motionhandle">

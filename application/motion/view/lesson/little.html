@@ -25,7 +25,7 @@
         $.layuitable('littleTable');
 
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#littleTable',
 
         url: '{:url("$classuri/get_little_courses")}?lid={$lid}', //数据接口 
@@ -56,9 +56,6 @@
         }
     });
     table.on('edit(littleTable)', function (obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
-        console.log(obj.value); //得到修改后的值
-        console.log(obj.field); //当前编辑的字段名
-        console.log(obj.data); //所在行的所有相关数据  
         var id = obj.data.id;
         var sort = obj.value;
         if (isNaN(sort)) {
@@ -73,14 +70,16 @@
         }, 'json')
     });
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(little_search)', function () {
         var cname = $('input[name="cname"]').val();
         table.reload('littleTable', {
             where: {
                 cname: cname,
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="coursehandle">

@@ -26,7 +26,7 @@
         $.layuitable('courseTable');
         laydate.render({ range: true, elem: '#expire_time' });
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#courseTable',
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
@@ -52,14 +52,16 @@
     }
     );
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(course_search)', function () {
         var name = $('input[name="name"]').val();
         table.reload('courseTable', {
             where: {
                 name: name,
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="courseHandle">

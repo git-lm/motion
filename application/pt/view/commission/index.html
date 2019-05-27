@@ -42,7 +42,7 @@
         $.layuitable('Table');
         laydate.render({ range: true, elem: '#expire_time' });
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#Table',
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
@@ -62,12 +62,21 @@
                 }
             },
             { field: 'coach_name', title: '所属教练' },
+            {
+                title: '会员/人数', templet: function (d) {
+                    if (d.type == 1) {
+                        return '<div>' + d.mname + '</div>';
+                    } else {
+                        return '<div>' + d.number + '</div>';
+                    }
+                }
+            },
             { field: 'price', title: '佣金金额', totalRow: true },
             { field: 'expenses', title: '课程金额', totalRow: true },
             { field: 'award', title: '奖励金额', totalRow: true },
             {
                 title: '上课时间', templet: function (d) {
-                    return '<div>' + d.begin_at.substr(10) + "-" + d.end_at.substr(10) + '</div>';
+                    return '<div>' + d.class_at.substr(0, 10) + d.begin_at.substr(10) + "-" + d.end_at.substr(10) + '</div>';
                 }
             },
             { field: 'create_at', title: '确认时间' },
@@ -84,6 +93,7 @@
     }
     );
     //搜索按钮绑定事件
+    var curr = 1;
     form.on('submit(course_search)', function () {
         var coach_name = $('input[name="coach_name"]').val();
         var expire_time = $('input[name="expire_time"]').val();
@@ -94,8 +104,9 @@
                 expire_time: expire_time,
                 type: type,
             },
-            page: { curr: 1 }
+            page: { curr: curr }
         })
+        curr = 1;
     })
 </script>
 

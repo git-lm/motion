@@ -41,7 +41,7 @@
 
         })
     })
-    table.render({
+    var tableShow = table.render({
         elem: '#productTable',
         url: '{:url("$classuri/get_lists")}', //数据接口 
         page: true, //开启分页
@@ -67,6 +67,8 @@
         }
     }
     );
+
+    var curr = 1;
     //搜索按钮绑定事件
     form.on('submit(product_search)', function () {
         var name = $('input[name="name"]').val();
@@ -74,8 +76,11 @@
             where: {
                 name: name,
             },
-            page: { curr: 1 }
+            page: {
+                curr: curr
+            }
         })
+        curr = 1;
     })
 </script>
 <script type="text/html" id="productHandle">
