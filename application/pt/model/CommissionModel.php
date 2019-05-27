@@ -139,7 +139,7 @@ class CommissionModel extends Model
             $cem = new CourseExpensesModel();
 
             $expenses = $cem
-                ->where(array('course_id' => $course_id, 'coach_id' => $coach_id))
+                ->where(array('course_id' => $course_id, 'coach_id' => $coach_id, 'status' => 1))
                 ->where('floor_num', '<=', $number)
                 ->where('upper_num', '>=', $number)
                 ->order('id desc')
