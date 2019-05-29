@@ -161,13 +161,10 @@ class WechatService
                     $snsapi = empty($fullMode) ? 'snsapi_base' : 'snsapi_userinfo';
                     $param = (strpos($url, '?') !== false ? '&' : '?') . 'rcode=' . encode($url);
                     $OauthUrl = $wechat->getOauthRedirect($url . $param, $appid, $snsapi);
-                    write_log('访问地址：' . $OauthUrl);
                     $isRedirect && redirect($OauthUrl, [], 301)->send();
                     exit("window.location.href='{$OauthUrl}'");
                 }
-                write_log('参数信息：' .json_encode(request()->get()));
                 $token = $wechat->getOauthAccessToken();
-                write_log('token' . json_encode($token));
                 if (isset($token['openid'])) {
                     session("{$appid}_openid", $openid = $token['openid']);
                     if (empty($fullMode) && request()->get('rcode')) {
