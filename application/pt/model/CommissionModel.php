@@ -37,6 +37,11 @@ class CommissionModel extends Model
         return $this->belongsTo('orderModel', 'order_id', 'id');
     }
 
+
+    public function orderProduct(){
+        return $this->belongsTo('orderProductModel', 'order_id', 'order_id');
+    }
+
     /**
      * 关联私教支出
      */
@@ -100,7 +105,7 @@ class CommissionModel extends Model
             }
         }
         if (!empty($param['coach_id'])) {
-            $where[] = ['coach_id', '=', $param['coach_id']];
+            $where[] = ['c.coach_id', '=', $param['coach_id']];
         }
 
         $query = $this->where($where)->alias('c')
