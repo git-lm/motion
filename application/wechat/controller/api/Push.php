@@ -3,6 +3,7 @@
 namespace app\wechat\controller\api;
 
 use app\wechat\service\FansService;
+use app\wechat\service\WifiService;
 use app\wechat\service\MediaService;
 use service\DataService;
 use service\WechatService;
@@ -147,6 +148,8 @@ class Push
                     return $this->keys("wechat_keys#keys#{$this->receive['EventKey']}");
                 }
                 return false;
+            case 'WifiConnected':
+                $this->addWifiConnected($this->receive);
         }
         return false;
     }
@@ -313,5 +316,14 @@ class Push
             DataService::save('WechatFans', $fans, 'openid', [['appid', 'eq', $this->appid]]);
         }
     }
-
+    /**
+     * 添加连网信息
+     * 
+     */
+    protected function addWifiConnected()
+    {
+        $userInfo = WechatService::WeChatUser()->getUserInfo($this->openid);
+        $receive = $this->receive;
+        WifiService::set($userInfo, $receive);
+    }
 }
