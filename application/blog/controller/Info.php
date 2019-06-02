@@ -178,8 +178,8 @@ class Info extends BasicAdmin
         if (!empty($info) && !empty($info['domain'])) {
             $blogUrl =  request()->scheme() . '://' . $info['domain'] . '.' . request()->rootDomain();
             $qrCode = new QrCode();
-            $url = url($blogUrl, '', true, true);
-            $qrCode->setText($url)
+       
+            $qrCode->setText($blogUrl)
                 ->setSize(300)
                 ->setPadding(10)
                 ->setErrorCorrection('high')
