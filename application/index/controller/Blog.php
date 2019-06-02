@@ -7,12 +7,13 @@ use app\blog\model\InfoModel;
 use app\blog\model\SkillModel;
 use app\motion\model\Company;
 use app\blog\model\MessageModel;
+use think\Controller;
 
 /**
  * 应用入口控制器
  * @author Anyon
  */
-class Blog
+class Blog extends Controller
 {
 
     /**
