@@ -65,6 +65,11 @@ class InfoModel extends Model
             $this->error = $validate;
             return false;
         }
+        $info = $this->get(array('domain' => $param['domain']));
+        if (!empty($info)) {
+            $this->error = '个人域名已被使用，请更换';
+            return false;
+        }
         $this->full_name = $param['full_name'];
         $this->email = $param['email'];
         $this->position = $param['position'];
@@ -92,7 +97,11 @@ class InfoModel extends Model
             $this->error = $validate;
             return false;
         }
-
+        $infoOld = $this->where(array('domain' => $param['domain']))->where('user_id', 'neq', $this->userId)->find();
+        if (!empty($infoOld)) {
+            $this->error = '个人域名已被使用，请更换';
+            return false;
+        }
         $info = $this->get(array('user_id' => $this->userId));
         $info->full_name = $param['full_name'];
         $info->email = $param['email'];
@@ -105,7 +114,7 @@ class InfoModel extends Model
         $info->user_id = $this->userId;
         $info->wx_picture = $param['wx_picture'];
         $info->domain = $param['domain'];
-        $code = $info->save();
+        $code = $info->force()->save();
         if ($code) {
             return true;
         } else {
