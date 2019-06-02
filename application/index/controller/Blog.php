@@ -5,7 +5,6 @@ namespace app\index\controller;
 use app\blog\model\ImgModel;
 use app\blog\model\InfoModel;
 use app\blog\model\SkillModel;
-use app\index\controller\MobileBase;
 use app\motion\model\Company;
 use app\blog\model\MessageModel;
 
@@ -13,13 +12,8 @@ use app\blog\model\MessageModel;
  * 应用入口控制器
  * @author Anyon
  */
-class Blog extends MobileBase
+class Blog
 {
-
-    public function initialize()
-    {
-        parent::initialize();
-    }
 
     /**
      *  首页
@@ -47,7 +41,7 @@ class Blog extends MobileBase
         return $this->fetch();
     }
 
-    
+
 
     /**
      * 提交申请
