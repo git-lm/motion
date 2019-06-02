@@ -80,9 +80,9 @@
 						{/if}
 						{if !empty($info.wx_picture)}
 						<li>
-							<ul class="address-text">
+							<ul class="address-text" id="wx_picture">
 								<li><b>个人微信 </b></li>
-								<li><a data-url="{$info.email}">请点击预览二维码长按添加好友→</a></li>
+								<li><a data-url="{$info.wx_picture}">请点击预览二维码长按添加好友→</a></li>
 							</ul>
 						</li>
 						{/if}
@@ -242,6 +242,21 @@
 		$(document).ready(function () {
 			layui.use('layer', function () {
 				var layer = layui.layer;
+				$('#wx_picture').click(function () {
+					var url = $(this).find('[data-url]').attr('data-url');
+					layer.photos({
+						photos: {
+							"title": "个人微信", //相册标题
+							"data": [   //相册包含的图片，数组格式
+								{
+									"alt": "个人微信",
+									"src": url, //原图地址
+								}
+							]
+						}
+						, anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+					});
+				})
 				$('#submitFrom').click(function () {
 					var name = $('input[name="name"]').val();
 					var phone = $('input[name="phone"]').val();
