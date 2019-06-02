@@ -36,7 +36,15 @@
         title: '会员列表',
         cols: [[//表头
             { title: '序号', fixed: 'left', type: 'numbers' },
-            { field: 'name', title: '教练名称' },
+            {
+                title: '教练名称', templet: function (d) {
+                    if (d.blogUrl) {
+                        return '<a href="' + d.blogUrl + '" target="_blank">' + d.name + '</a>';
+                    } else {
+                        return d.name;
+                    }
+                }
+            },
             { field: 'username', title: '所属账号' },
             { field: 'phone', title: '手机号码' },
             { field: 'status_show', title: '状态' },

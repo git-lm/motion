@@ -42,6 +42,7 @@ class MobileBase extends Controller
         if (empty($openid)) {
             return;
         }
+        session('member_openid' , $openid);
         $memberModel = new Member();
         $where['openid'] = $openid;
 

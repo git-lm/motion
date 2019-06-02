@@ -1,0 +1,128 @@
+{extend name="admin@public/content"}
+
+{block name="content"}
+<form autocomplete="off" onsubmit="return false;" action="{:url('info')}" data-auto="true" method="post"
+    class='form-horizontal layui-form padding-top-20'>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            姓名
+        </label>
+        <div class='col-sm-8'>
+            <input name="full_name" required="required" title="请输入姓名" maxlength="5" placeholder="请输入姓名"
+                value="{$info.full_name}" class="layui-input">
+            <p class="help-block">教练姓名</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            个人域名
+        </label>
+        <div class='col-sm-8'>
+            <input name="domain" required="required" maxlength="20" minlength="4" title="请输入域名" maxlength="5"
+                placeholder="请输入域名" value="{$info.domain}" class="layui-input">
+            <p class="help-block">个人域名 4-20个字母或数字</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            邮箱
+        </label>
+        <div class='col-sm-8'>
+            <input name="email" title="请输入邮箱" maxlength="20" placeholder="请输入邮箱" value="{$info.email}"
+                class="layui-input">
+            <p class="help-block">教练邮箱</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            职位
+        </label>
+        <div class='col-sm-8'>
+            <input name="position" title="请输入职位" maxlength="20" placeholder="请输入职位" value="{$info.position}"
+                class="layui-input">
+            <p class="help-block">职位</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            联系电话
+        </label>
+        <div class='col-sm-8'>
+            <input name="phone" required="number" maxlength="11" title="请输入联系电话" placeholder="请输入联系电话"
+                value="{$info.phone}" class="layui-input">
+            <p class="help-block">联系电话</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            联系地址
+        </label>
+        <div class='col-sm-8'>
+            <input name="address" maxlength="30" title="请输入联系地址" placeholder="请输入联系地址" value="{$info.address}"
+                class="layui-input">
+            <p class="help-block">联系地址</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            个人简介
+        </label>
+        <div class='col-sm-8'>
+            <textarea name="content" maxlength="10000" class="form-control"
+                placeholder="展示自己吧">{$info.content}</textarea>
+            <p class="help-block">个人简介</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            个人头像<br>
+        </label>
+        <div class='col-sm-8'>
+            <img data-tips-image style="height:auto;max-height:32px;min-width:32px" src="{$info.photo}" />
+            <input type="hidden" name="photo" onchange="$(this).prev('img').attr('src', this.value)"
+                value="{$info.photo}" class="layui-input">
+            <a class="btn btn-link" data-filetype="10" data-file="one" data-uptype="local" data-type="jpg,png"
+                data-field="photo">上传图片</a>
+            <p class="help-block">个人头像</p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            个人微信<br>
+        </label>
+        <div class='col-sm-8'>
+            <img data-tips-image style="height:auto;max-height:32px;min-width:32px" src="{$info.wx_picture}" />
+            <input type="hidden" name="wx_picture" onchange="$(this).prev('img').attr('src', this.value)"
+                value="{$info.wx_picture}" class="layui-input">
+            <a class="btn btn-link" data-filetype="11" data-file="one" data-uptype="local" data-type="jpg,png"
+                data-field="wx_picture">上传图片</a>
+            <p class="help-block">个人微信</p>
+        </div>
+    </div>
+    {if(!empty($info.blogUrl))}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">
+            个人网站二维码<br>
+        </label>
+        <div class='col-sm-8'>
+            <p><a href="{$info.blogUrl}" target="_blank">个人网站</a></p>
+            <img data-tips-image style="height:auto;max-height:32px;min-width:32px"
+                src="{:url('createQrCode')}?coach_id={$info.coach.id}" />
+
+            <p class="help-block">个人网站二维码</p>
+        </div>
+    </div>
+    {/if}
+    <div class="hr-line-dashed"></div>
+
+    <div class="col-sm-4 col-sm-offset-2">
+        <div class="layui-form-item text-center">
+            <button class="layui-btn" type="submit">保存配置</button>
+        </div>
+    </div>
+
+</form>
+
+{/block}

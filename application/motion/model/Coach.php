@@ -15,6 +15,11 @@ class Coach extends Model
     {
         return $this->hasOne('member', 'coach_id', 'id');
     }
+
+    public function coachInfo()
+    {
+        return $this->hasOne('\app\blog\model\InfoModel', 'coach_id', 'id');
+    }
     /**
      * 时间获取器
      * @param type $val  转换数据
@@ -67,7 +72,8 @@ class Coach extends Model
         $db->alias('c');
         $db->leftJoin(['system_user' => 'u'], 'u.id=c.u_id');
         $db->leftJoin(['motion_member' => 'm'], 'm.coach_id = c.id');
-        $db->field('c.* , u.id uid , u.username , m.id member_id');
+        $db->leftJoin(['blog_coach_info' => 'ci'], 'ci.coach_id = c.id');
+        $db->field('c.* , u.id uid , u.username , m.id member_id ,ci.domain');
         if (empty($order)) $order['c.create_time'] = 'desc';
         if (!isset($where['c.status'])) $where[] = ['c.status', '=', 1];
         $lists = DbService::queryALL($db, $where, $order, $page, $limit);

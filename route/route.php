@@ -12,8 +12,10 @@ foreach (scandir(env('app_path')) as $dir) {
     }
 }
 //绑定admin 为后台
+Route::domain('*', 'index/blog');
 Route::domain('admin', 'admin');
 Route::domain('wx', 'index');
+Route::domain('www', 'index');
 //绑定前台index 模块  Login 控制器  别名
 Route::alias('login', 'index/login');
 //绑定前台index 模块  Member 控制器 别名

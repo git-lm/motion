@@ -1,0 +1,48 @@
+{extend name='admin@public/content'}
+{block name="button"}
+<!--{if auth("$classuri/addSkill")}-->
+<button data-modal='{:url("$classuri/addSkill")}' data-title="添加技能"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加技能</button>
+{/block}
+
+{block name="content"}
+<table id="table" lay-filter="table"></table>
+{/block}
+{block name="script"}
+<script>
+    $(function () {
+        $.layuitable('table');
+        var tableShow = table.render({
+            elem: '#table',
+            url: '{:url("$classuri/getSkill")}', //数据接口 
+            page: true, //开启分页
+            toolbar: '<div>专业技能</div>',
+            loading: true,
+            title: '专业技能',
+            cols: [[//表头
+                { title: '序号', fixed: 'left', type: 'numbers' },
+                { field: 'skill_name', title: '技能名称' },
+                { field: 'ratio', title: '熟悉程度' },
+                {
+                    fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#handle'
+                }
+            ]],
+            parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            }
+        });
+    })
+</script>
+<script type="text/html" id="handle">
+
+    <!--{if auth("$classuri/del")}-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('delSkill')}" data-field="id" data-title="删除证书" lay-event="del">删除</a>
+    <!--{/if}-->
+</script>
+
+{/block}

@@ -356,7 +356,7 @@ h2.resp-accordion {
 	display: none;
 }
 .resp-tab-content {
-	display: none;
+	display: block;
 }
 .resp-content-active, .resp-accordion-active {
    display: block;
@@ -543,11 +543,24 @@ h2.resp-accordion {
     display: inline-block;
 }
 .contact-form input[type="text"].email {
-    margin: 3em 0 1em 0.5em;
+    margin: 3em 0 1em 0em;
 }
 .contact-form input[type="text"].phone {
     width: 100%;
     margin-bottom: 1em;
+}
+.contact-form input {
+    width: 49%;
+    margin-bottom: 1em;
+    color: #fff;
+    background: none;
+    outline: none;
+    font-size: 1em;
+    padding: .8em 1em;
+    border: 1px solid #8C8C8C;
+    -webkit-appearance: none;
+    display: inline-block;
+    margin: 3em 0 1em 0em;
 }
 .contact-form textarea {
     width: 100%;
@@ -560,7 +573,7 @@ h2.resp-accordion {
     min-height: 10em;
     -webkit-appearance: none;
 }
-.contact-form input[type="submit"] {
+.contact-form input[type="button"] {
     outline: none;
     color: #fff;
     padding: 0.6em 1em;
@@ -575,7 +588,7 @@ h2.resp-accordion {
     -moz-transition: 0.5s all;
     width: 100%;
 }
-.contact-form input[type="submit"]:hover {
+.contact-form input[type="button"]:hover {
     background: none;
     color: #008B8B;
 }
@@ -892,6 +905,9 @@ h3.title {
 .contact-form input[type="text"] {
     padding: .6em 1em;
 }
+.contact-form input{
+    padding: .6em 1em;
+}
 .footer {
     padding: 1.5em 0;
 }
@@ -982,6 +998,11 @@ p {
     margin-top: 1em;
 }
 .contact-form input[type="text"].email {
+    margin: 1em 0 0 0;
+}
+.contact-form input{
+    width: 100%;
+    margin-top: 1em;
     margin: 1em 0 0 0;
 }
 .address-left {

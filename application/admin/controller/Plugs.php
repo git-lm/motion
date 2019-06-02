@@ -110,6 +110,12 @@ class Plugs extends BasicAdmin
             $pr = "{$dir}/music/{$uid}";
         } else if ($filetype == 9) {
             $pr = "{$dir}/class/{$uid}";
+        } else if ($filetype == 10) {
+            $pr = "{$dir}/blog/coachPhoto/{$uid}";
+        } else if ($filetype == 11) {
+            $pr = "{$dir}/blog/coachWx/{$uid}";
+        } else if ($filetype == 12) {
+            $pr = "{$dir}/blog/img/{$uid}";
         } else {
             $pr = "{$dir}/others/{$uid}";
         }

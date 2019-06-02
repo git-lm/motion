@@ -41,6 +41,13 @@ class Coach extends BasicAdmin
 
         $where[] = ['c.status', '<>', 0];
         $lists = $this->coachModel->get_coachs($where, [], $page, $limit);
+        foreach ($lists as &$list) {
+            if ($list['domain']) {
+                $list['blogUrl'] =  request()->scheme() . '://' . $list['domain'] . '.' . request()->rootDomain();
+            } else {
+                $list['blogUrl'] =  '';
+            }
+        }
         $count = count($this->coachModel->get_coachs($where));
         echo $this->tableReturn($lists, $count);
     }
