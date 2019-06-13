@@ -86,6 +86,8 @@ body {
     -o-background-size:cover; */
     background-size: cover;
     font-family: 'Muli', sans-serif;
+    background-size: 100% 100%;
+    background-attachment: fixed;
 }
 .clear {
     clear:both;
