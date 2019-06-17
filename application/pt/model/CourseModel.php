@@ -111,7 +111,7 @@ class CourseModel extends Model
     public function validate($data)
     {
         $rule = [
-            'name' => 'require|max:11|min:2',
+            'name' => 'require|max:20|min:2',
         ];
         $message = [
             'name.require' => '产品名称必填',
