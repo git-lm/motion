@@ -1078,7 +1078,7 @@ class Lesson extends BasicAdmin
             }
         }
         $where[] = ['status', '=', 1];
-        $order['create_time'] = 'asc';
+        $order['create_time'] = 'desc';
 
         $lists = $this->lessonModel->get_batch_lessons($where, $order, $page, $limit);
         $count = count($this->lessonModel->get_batch_lessons($where));
@@ -1305,45 +1305,48 @@ class Lesson extends BasicAdmin
         if (empty($little)) {
             $this->error('未添加计划详情');
         }
+        Db::startTrans();
+        try {
+            //获取批量信息
+            $lessonIdArr = array(); //定义一个空数据数组 记录每次添加的自增ID
+            if (!empty($lesson['member_ids'])) {
+                $member_ids = explode(',', $lesson['member_ids']);
+                unset($lesson['id']); //去除ID 防止添加时ID字段
+                foreach ($member_ids as $v) {
+                    $lesson['m_id'] = $v;
+                    $code = $this->lessonModel->add($lesson);
+                    $lessonIdArr[] = $code;
+                }
 
-        //获取批量信息
-        $lessonIdArr = array(); //定义一个空数据数组 记录每次添加的自增ID
-        if (!empty($lesson['member_ids'])) {
-            $member_ids = explode(',', $lesson['member_ids']);
-            unset($lesson['id']); //去除ID 防止添加时ID字段
-            foreach ($member_ids as $v) {
-                $lesson['m_id'] = $v;
-                $code = $this->lessonModel->add($lesson);
-                $lessonIdArr[] = $code;
+                $lessonids = implode(',', $lessonIdArr);
+                $where['id'] = $lid;
+                $data['lesson_ids'] = $lessonids;
+                $data['is_dispense'] = 1;
+                $this->lessonModel->edit_batch_lesson($data, $where);
             }
-            $lessonids = implode(',', $lessonIdArr);
-            $where['id'] = $lid;
-            $data['lesson_ids'] = $lessonids;
-            $data['is_dispense'] = 1;
-            $this->lessonModel->edit_batch_lesson($data, $where);
-        }
 
-        $data = array(); //初始化 data 数据
-        foreach ($little as $l) {
-            $littleIdArr = array(); //定义一个空数据数组 记录每次添加的自增ID
-            $little_id = $l['id'];
-            unset($l['id']); //去除ID 防止添加时ID字段
-            foreach ($lessonIdArr as $v) {
-                $l['l_id'] = $v;
-                $code = $this->lessonModel->little_add($l);
-                $littleIdArr[] = $code;
+            $data = array(); //初始化 data 数据
+            foreach ($little as $l) {
+                $littleIdArr = array(); //定义一个空数据数组 记录每次添加的自增ID
+                $little_id = $l['id'];
+                unset($l['id']); //去除ID 防止添加时ID字段
+                foreach ($lessonIdArr as $v) {
+                    $l['l_id'] = $v;
+                    $code = $this->lessonModel->little_add($l);
+                    $littleIdArr[] = $code;
+                }
+                $littleids = implode(',', $littleIdArr);
+                $where['id'] = $little_id;
+                $data['lesson_course_ids'] = $littleids;
+                $this->lessonModel->batch_little_edit($data, $where);
             }
-            $littleids = implode(',', $littleIdArr);
-            $where['id'] = $little_id;
-            $data['lesson_course_ids'] = $littleids;
-            $this->lessonModel->batch_little_edit($data, $where);
-        }
-
-        if ($code) {
-            $this->success('分发成功', '');
-        } else {
+        } catch (\Exception $e) {
+            Db::rollback();
+            // 回滚事务
             $this->error('分发失败');
         }
+        Db::commit();
+        $this->success('分发成功', '');
     }
 
     /**
