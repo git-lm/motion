@@ -36,6 +36,24 @@
                 class="layui-input">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属类型</label>
+        <div class="layui-input-block">
+            <select required="" lay-verify="required" class="layui-select full-width block" name="type_id" id="type_id"
+                lay-ignore="">
+                <option {eq name="$list.coach_id" value="0" }selected{/eq} value=""> - 请选择类型 -</option>
+                <!--{volist name="types" id="type"}-->
+                <option {eq name="$list.type_id" value="$type.id" }selected{/eq} value="{$type.id}"> - {$type.name}
+                    -
+                </option>
+                <!--{/volist}-->
+
+            </select>
+        </div>
+        <div class="layui-input-block">
+            <p style="color: red">备注：如果不选择教练 则解绑</p>
+        </div>
+    </div>
     <div class="hr-line-dashed"></div>
     {if isset($list.id)}<input type='hidden' value='{$list.id}' name='mid'>{/if}
     <div class="layui-form-item text-center">

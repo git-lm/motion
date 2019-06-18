@@ -22,6 +22,8 @@ class Member extends BasicAdmin
     public function index()
     {
         $this->assign('title', '会员列表');
+        $types = $this->memberModel->getMemberTypes();
+        $this->assign('types', $types);
         return $this->fetch();
     }
 
@@ -35,8 +37,12 @@ class Member extends BasicAdmin
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $cname = request()->has('cname', 'get') ? request()->get('cname/s') : '';
         $expire_time = request()->has('expire_time', 'get') ? request()->get('expire_time/s') : '';
+        $type_id = request()->has('type_id', 'get') ? request()->get('type_id/d') : 0;
         if ($name) {
             $where[] = ['m.name', 'like', '%' . $name . '%'];
+        }
+        if ($type_id) {
+            $where[] = ['m.type_id', '=', $type_id];
         }
         if ($cname) {
             $where[] = ['c.name', 'like', '%' . $cname . '%'];
@@ -66,6 +72,8 @@ class Member extends BasicAdmin
     {
         $coachModel = new \app\motion\model\Coach;
         $coachs =  $coachModel->get_coachs_for_member();
+        $types =  $this->memberModel->getMemberTypes();
+        $this->assign('types', $types);
         $this->assign('coachs', $coachs);
         return $this->fetch();
     }
@@ -78,10 +86,12 @@ class Member extends BasicAdmin
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
         $phone = request()->has('phone', 'post') ? request()->post('phone/s') : '';
         $coach_id = request()->has('coach_id', 'post') ? request()->post('coach_id/d') : 0;
+        $type_id = request()->has('type_id', 'post') ? request()->post('type_id/d') : 0;
         //验证数据有效性
         $data['name'] = $name;
         $data['phone'] = $phone;
         $data['coach_id'] = $coach_id;
+        $data['type_id'] = $type_id;
         $validate = $this->memberModel->validate($data);
         if ($validate) {
             $this->error($validate);
@@ -109,6 +119,8 @@ class Member extends BasicAdmin
         $coachModel = new \app\motion\model\Coach;
         $coachs =  $coachModel->get_coachs_for_member($mid);
         $this->assign('coachs', $coachs);
+        $types =  $this->memberModel->getMemberTypes();
+        $this->assign('types', $types);
         return $this->fetch();
     }
 

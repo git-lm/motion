@@ -34,7 +34,20 @@
                 maxlength="11" title="请输入手机号码" placeholder="请输入手机号码" class="layui-input">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属类型</label>
+        <div class="layui-input-block">
+            <select required="" lay-verify="required" required class="layui-select full-width block" name="type_id"
+                id="coach_id" lay-ignore="">
+                <option value="0"> - 请选择类型 -</option>
+                <!--{volist name="types" id="type"}-->
+                <option value="{$type.id}"> - {$type.name} -
+                </option>
+                <!--{/volist}-->
 
+            </select>
+        </div>
+    </div>
     <div class="hr-line-dashed"></div>
 
     <div class="layui-form-item text-center">

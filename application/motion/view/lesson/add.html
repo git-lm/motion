@@ -6,12 +6,34 @@
         <label class="layui-form-label">选择会员</label>
         <div class="layui-input-block">
             <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
-                xm-select="add_coach" lay-verify="required" class="layui-select full-width block" name="mid"
-                lay-ignore="">
+                xm-select="member" lay-verify="required" class="layui-select full-width block" name="mid" lay-ignore="">
                 <option value=""> - 请选择会员 -</option>
-                <!--{volist name="members" id="member"}-->
-                <option value="{$member.id}">{$member.name}</option>
-                <!--{/volist}-->
+                <!-- {volist name="memberTypes" id="type"} -->
+                <optgroup label="{$type.name}">
+                    <!-- {volist name="type.member" id="m"} -->
+                    <option value="{$m.id}">{$m.name}</option>
+                    <!-- {/volist} -->
+                </optgroup>
+                <!-- {/volist} -->
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">热身视频</label>
+        <div class="layui-input-block">
+            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
+                xm-select="add_warmup_mids" lay-verify="required" class="layui-select full-width block"
+                name="warmup_mids" lay-ignore="">
+                <option value=""> - 请选择类型 -</option>
+
+                <!-- {volist name="memberTypes" id="type"} -->
+                <optgroup label="{$type.name}">
+                    <!-- {volist name="type.member" id="m"} -->
+                    <option value="{$m.id}" selected="selected">{$m.name}</option>
+                    <!-- {/volist} -->
+                </optgroup>
+                <!-- {/volist} -->
+
             </select>
         </div>
     </div>
@@ -95,6 +117,7 @@
 {block name="script"}
 <script>
     $(function () {
+
         formSelects.render('add_warmup_mids', {
             template: function (name, value, selected, disabled) {
                 var mid = value.value;
@@ -107,7 +130,7 @@
                 return value.name + '<a data-value="' + mid + '"  class="selecthref" style="position: absolute; right: 0; color: #A0A0A0; font-size: 12px;">点击查看</a>';
             }
         });
-        formSelects.render('add_coach');
+        formSelects.render('member');
         $('.selecthref').on('click', function () {
             var mid = $(this).attr('data-value');
             $.post('{:url("get_motion_url")}', { 'mid': mid }, function (data) {

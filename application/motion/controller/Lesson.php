@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use think\db;
 use think\facade\Request;
+use app\motion\model\MemberType;
 
 class Lesson extends BasicAdmin
 {
@@ -1104,7 +1105,17 @@ class Lesson extends BasicAdmin
         $lwhere[] = ['m.status', '=', 1];
         $lwhere[] = ['t.end_time', '>', time()];
         $members = $this->memberModel->get_members($lwhere);
-        $this->assign('members', $members);
+        $memberTypes = MemberType::where(array('status' => 1))->select();
+        foreach ($memberTypes as $key => &$value) {
+            $member = [];
+            foreach ($members as $k => $v) {
+                if ($value['id'] == $v['type_id']) {
+                    $member[] = $v;
+                }
+            }
+            $value['member'] = $member;
+        }
+        $this->assign('memberTypes', $memberTypes);
         $motionModel = new \app\motion\model\Motion();
         $types = $motionModel->get_type_motions();
         $this->assign('types', $types);

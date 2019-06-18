@@ -16,6 +16,8 @@ class Member extends Model
     {
         return $this->hasOne('memberInfo', 'm_id', 'id');
     }
+
+
     /**
      * 时间获取器
      * @param type $val  转换数据
@@ -39,6 +41,13 @@ class Member extends Model
     public function getThumbPhotoAttr($val)
     {
         return get_thumb($val, 200, 150);
+    }
+
+    public function getMemberTypeAttr($val)
+    {
+        $where['id'] = $val;
+        $list =  $this->getMemberType($where);
+        return !empty($list['name']) ? $list['name'] : '';
     }
 
     /**
@@ -97,6 +106,7 @@ class Member extends Model
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
+            $list['member_type'] = $this->getMemberTypeAttr($list['type_id']);
             if (empty($list['end_time'])) {
                 $list['end_time_show'] = '未开通';
             } else {
@@ -142,6 +152,16 @@ class Member extends Model
         return $list;
     }
 
+    public function getMemberTypes()
+    {
+        $lists = Db::table('motion_member_type')->where(array('status' => 1))->select();
+        return $lists;
+    }
+    public function getMemberType($where = [])
+    {
+        $list = Db::table('motion_member_type')->where(array('status' => 1))->where($where)->find();
+        return $list;
+    }
     /**
      * 编辑或者更新会员信息
      */
