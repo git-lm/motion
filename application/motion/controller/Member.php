@@ -134,6 +134,7 @@ class Member extends BasicAdmin
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
         $phone = request()->has('phone', 'post') ? request()->post('phone/s') : '';
         $coach_id = request()->has('coach_id', 'post') ? request()->post('coach_id/d') : 0;
+        $type_id = request()->has('type_id', 'post') ? request()->post('type_id/d') : 0;
         if (!$mid) {
             $this->error('请正确选择会员');
         }
@@ -143,6 +144,7 @@ class Member extends BasicAdmin
         $data['name'] = $name;
         $data['phone'] = $phone;
         $data['coach_id'] = $coach_id;
+        $data['type_id'] = $type_id;
         $validate = $this->memberModel->validate($data);
         if ($validate) {
             $this->error($validate);
