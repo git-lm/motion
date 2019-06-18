@@ -99,13 +99,21 @@ class Classes extends BasicAdmin
     //获取首页日历信息
     public function get_calendar_lists()
     {
+        $user = session('user');
+
         $startDate = input('post.startStr/s', date('Y-m-01'));
         $endDate = input('post.endStr/s', date('Y-m-31'));
-        $classes = $this->csm::withJoin(['coach', 'course'], 'left')
+        $query = $this->csm::withJoin(['coach', 'course'], 'left')
             ->where(array('classes_model.status' => 1))
-            ->whereTime('class_at', 'between', [$startDate, $endDate])
-            ->select();
-
+            ->whereTime('class_at', 'between', [$startDate, $endDate]);
+        if ($user['username'] != 'admin' && $user['username'] != 'superadmin') {
+            $coach = CoachModel::get(array('u_id' => $user['id']));
+            if (empty($coach)) {
+                return json([]);
+            }
+            $query->where(array('coach_id' => $coach['id']));
+        }
+        $classes = $query->select();
         return json($classes);
     }
 
@@ -363,7 +371,7 @@ class Classes extends BasicAdmin
             $highestColumn = $worksheet->getHighestColumn(); // 总列数
             $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn); //把列的字母转成数字
 
-            $end_title = (string) $worksheet->getCellByColumnAndRow(1, $highestRow)->getValue(); //获取最后一行的文字
+            $end_title = (string)$worksheet->getCellByColumnAndRow(1, $highestRow)->getValue(); //获取最后一行的文字
 
             if ('结束日程' != $end_title) {
                 unlink($path);
@@ -376,23 +384,23 @@ class Classes extends BasicAdmin
                 //定义一个日程数组
                 $valArr = array();
                 //获取日程时间
-                $date = (string) $worksheet->getCellByColumnAndRow($column, 2)->getValue();
+                $date = (string)$worksheet->getCellByColumnAndRow($column, 2)->getValue();
                 if (empty($date)) {
                     break;
                 }
                 $valArr['date'] = $date;
                 $detail = array(); //日程详情
                 for ($row = 3; $row <= $highestRow; $row++) {
-                    $end = (string) $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    $end = (string)$worksheet->getCellByColumnAndRow(1, $row)->getValue();
                     if ($end == '结束日程') {
                         break;
                     }
-                    $time = (string) $worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                    $time = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
                     if (empty($time)) {
                         continue;
                     }
-                    $course = (string) $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
-                    $coach = (string) $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+                    $course = (string)$worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+                    $coach = (string)$worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
                     $detail['time'] = $time;
                     $detail['course'] = $course;
                     $detail['coach'] = $coach;
@@ -408,10 +416,8 @@ class Classes extends BasicAdmin
             } else {
                 return ['code' => 1, 'msg' => '', 'data' => $sheet];
             }
-
         } else {
             return ['code' => 0, 'msg' => '文件不存在', 'data' => array()];
         }
     }
-
 }
