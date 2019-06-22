@@ -30,6 +30,7 @@ class Classes extends BasicAdmin
     public function get_lists()
     {
         $get = input('get.');
+        $this->csm->setOrder(array('begin_at' => 'desc'));
         $lists = $this->csm->lists($get);
         echo $this->tableReturn($lists->all(), $lists->total());
     }
