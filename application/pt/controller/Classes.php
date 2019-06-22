@@ -306,6 +306,43 @@ class Classes extends BasicAdmin
         }
     }
 
+    public function editOther()
+    {
+        if (request()->isGet()) {
+            $class_id = input('class_id/d');
+            if (empty($class_id)) {
+                $this->error('请正确选择课程');
+            };
+            //获取教练信息
+            $user = session('user');
+            $cm = new CoachModel();
+            if (!empty($user['is_admin'])) {
+                $coaches = $cm->where(array('status' => 1))->select();
+                $this->assign('coaches', $coaches);
+            } else {
+                $coach = $cm->where(array('u_id' => $user['id']))->find();
+                if (empty($coach)) {
+                    $this->error('无教练信息');
+                }
+                $this->assign('cocah', $coach);
+            }
+            $class = $this->csm::with(['coach', 'course', 'classesOther'])->where(array('status' => 1, 'id' => $class_id))->find();
+            $this->assign('list', $class);
+            return $this->fetch();
+        } else {
+            $post = input('post.');
+            $post['class_date'] = input('post.class_date/s', '');
+            $post['class_time'] = input('post.class_time/s', '');
+            $post['type'] = 3;
+            $this->csm->edit($post);
+            if ($this->csm->error) {
+                $this->error($this->csm->error);
+            } else {
+                $this->success('修改成功', '');
+            }
+        }
+    }
+
     /**
      * 上传日程
      * @param $data 数据

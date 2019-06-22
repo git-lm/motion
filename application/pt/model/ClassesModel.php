@@ -195,6 +195,8 @@ class ClassesModel extends Model
             $this->error = $validate;
             return false;
         }
+
+
         $res = $this->checkClassTime($param['coach_id'], $param['begin_at'], $param['end_at'], $param['id']);
         if ($res) {
             $this->error = '该时间段该教练已有课';
@@ -212,8 +214,20 @@ class ClassesModel extends Model
             return false;
         }
         $class = $this->get($id);
+
         $code = $class->save($param);
+
         if ($code) {
+            if ($class['type'] == 3) {
+                $com = new ClassesOtherModel();
+                $Other =  $com->get(array('class_id' => $id));
+                if (isset($param['status']) && $param['status'] == 0) {
+                    $Other->status = 0;
+                } else {
+                    $Other->remark = $param['remark'];
+                }
+                $Other->save();
+            }
             return true;
         } else {
             $this->error = '操作失败';

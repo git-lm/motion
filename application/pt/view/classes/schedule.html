@@ -90,8 +90,10 @@
                 var class_type = info.event.extendedProps.class_type;
                 if (class_type == 2) {
                     $.form.modal("{:url('editGroup')}?class_id=" + class_id, '', '编辑团课')
-                } else {
+                } else if (class_type == 1) {
                     $.form.modal("{:url('editPrivate')}?class_id=" + class_id, '', '编辑私教')
+                } else if (class_type == 3) {
+                    $.form.modal("{:url('editOther')}?class_id=" + class_id, '', '编辑日程')
                 }
             },
             events: function (fetchInfo, successCallback, failureCallback) {
