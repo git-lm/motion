@@ -12,6 +12,10 @@
 <button data-modal='{:url("$classuri/addPrivate")}' data-title="添加私教"
     class='layui-btn layui-btn-sm layui-btn-primary'>添加私教</button>
 <!-- {/if} -->
+<!--{if auth("$classuri/addOther")}-->
+<button data-modal='{:url("$classuri/addOther")}' data-title="添加提醒"
+    class='layui-btn layui-btn-sm layui-btn-primary'>添加提醒</button>
+<!-- {/if} -->
 {/block}
 
 {block name="content"}
@@ -103,15 +107,18 @@
                         startStr: startStr,
                     },
                     success: function (json) { // 获取当前月的数据
-                    console.log(json)
+                        console.log(json)
                         var events = [];
                         $.each(json, function (i, c) {
                             if (c.type == 1) {
                                 var color = '#ff0099';
                                 var title = '\n 教练：' + c.coach.name + '\n' + '时间：' + c.begin_at.substr(10) + '-' + c.end_at.substr(10);
-                            } else {
+                            } else if (c.type == 2) {
                                 var color = '#6600ff';
                                 var title = '\n 教练：' + c.coach.name + ' \n ' + '团课：' + c.course.name + '\n' + '时间：' + c.begin_at.substr(10) + '-' + c.end_at.substr(10);
+                            } else if (c.type == 3) {
+                                var color = '#cc9999';
+                                var title = '\n 教练：' + c.coach.name + ' \n ' + '时间：' + c.begin_at.substr(10) + '-' + c.end_at.substr(10) + ' \n ' + '备注：' + c.classesOther.remark;
                             }
                             events.push({
                                 title: title,

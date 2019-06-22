@@ -115,6 +115,11 @@ class Classes extends BasicAdmin
             $query->where(array('coach_id' => $coach['id']));
         }
         $classes = $query->select();
+        foreach ($classes as &$value) {
+            if ($value['type'] == 3) {
+                $value['classesOther'];
+            }
+        }
         return json($classes);
     }
 
@@ -264,6 +269,39 @@ class Classes extends BasicAdmin
                 $this->error($this->csm->error);
             } else {
                 $this->success('修改成功', '');
+            }
+        }
+    }
+
+    //添加其他信息
+    public function addOther()
+    {
+        if (request()->isGet()) {
+            //获取教练信息
+            $user = session('user');
+            $cm = new CoachModel();
+            if (!empty($user['is_admin'])) {
+                $coaches = $cm->where(array('status' => 1))->select();
+                $this->assign('coaches', $coaches);
+            } else {
+                $coach = $cm->where(array('u_id' => $user['id']))->find();
+                if (empty($coach)) {
+                    $this->error('无教练信息');
+                }
+                $this->assign('coach', $coach);
+            }
+            return $this->fetch();
+        } else {
+            //获取课程信息 先添加
+            $post = input('post.');
+            $post['class_date'] = input('post.class_date/s', '');
+            $post['class_time'] = input('post.class_time/s', '');
+            $post['type'] = 3;
+            $this->csm->add($post);
+            if ($this->csm->error) {
+                $this->error($this->csm->error);
+            } else {
+                $this->success('添加成功', '');
             }
         }
     }

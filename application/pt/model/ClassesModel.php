@@ -36,7 +36,13 @@ class ClassesModel extends Model
     {
         return $this->hasOne('classesPrivateModel', 'class_id', 'id');
     }
-
+    /**
+     * 关联团课上课记录
+     */
+    public function classesOther()
+    {
+        return $this->hasOne('ClassesOtherModel', 'class_id', 'id');
+    }
     /**
      * 关联教练
      */
@@ -74,7 +80,8 @@ class ClassesModel extends Model
     /**
      * 获取单个课程
      */
-    function list($param) {
+    function list($param)
+    {
         if (empty($param['status'])) {
             $where[] = ['status', '=', 1];
         } else {
@@ -159,6 +166,12 @@ class ClassesModel extends Model
         // }
 
         $code = $this->create($param, true);
+        if ($param['type'] == 3) {
+            $com = new ClassesOtherModel();
+            $com->remark = $param['remark'];
+            $com->class_id = $code->id;
+            $com->save();
+        }
         if ($code) {
             return;
         } else {
@@ -225,8 +238,8 @@ class ClassesModel extends Model
             ['end_at', '<', $end],
         ];
         $query = $this
-        // ->whereOr([$map1, $map2, $map3])
-        ->where('coach_id', $coach_id)
+            // ->whereOr([$map1, $map2, $map3])
+            ->where('coach_id', $coach_id)
             ->where(function ($query) use ($map1, $map2, $map3) {
                 $query->whereOr([$map1, $map2, $map3]);
             });
@@ -251,9 +264,10 @@ class ClassesModel extends Model
             'class_at' => 'require|date',
             'begin_at' => 'require|date',
             'end_at' => 'require|date',
-            'type' => 'require|in:1,2',
+            'type' => 'require|in:1,2,3',
             'coach_id' => 'require|number',
             'course_id' => 'number',
+            'remark' => 'max:100',
         ];
         $message = [
             'class_at.require' => '课程日期必填',
@@ -267,6 +281,7 @@ class ClassesModel extends Model
             'coach_id.require' => '教练必选',
             'coach_id.number' => '请正确选择教练',
             'course_id.number' => '请正确选择课程',
+            'remark.max' => '备注最多100个字'
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);
