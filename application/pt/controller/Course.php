@@ -74,8 +74,8 @@ class Course extends BasicAdmin
 
     public function del()
     {
-        $cid = input('post.cid/s');
-        $param['status'] = 1;
+        $cid = input('post.cid/d');
+        $param['status'] = 0;
         $this->cm->updateTable($param, $cid);
         if ($this->cm->error) {
             $this->error($this->cm->error);
@@ -83,5 +83,4 @@ class Course extends BasicAdmin
             $this->success('删除成功', '');
         }
     }
-   
 }

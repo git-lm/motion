@@ -18,25 +18,6 @@
             </select>
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">热身视频</label>
-        <div class="layui-input-block">
-            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
-                xm-select="add_warmup_mids" lay-verify="required" class="layui-select full-width block"
-                name="warmup_mids" lay-ignore="">
-                <option value=""> - 请选择类型 -</option>
-
-                <!-- {volist name="memberTypes" id="type"} -->
-                <optgroup label="{$type.name}">
-                    <!-- {volist name="type.member" id="m"} -->
-                    <option value="{$m.id}" selected="selected">{$m.name}</option>
-                    <!-- {/volist} -->
-                </optgroup>
-                <!-- {/volist} -->
-
-            </select>
-        </div>
-    </div>
     <input type="hidden" name="is_batch" value="{$is_batch}">
     {/if}
 
