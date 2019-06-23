@@ -1,113 +1,150 @@
 {extend name="admin@public/content"}
 
 {block name="content"}
-<form autocomplete="off" onsubmit="return false;" action="{:request()->url()}" data-auto="true" method="post"
-    class='form-horizontal layui-form padding-top-20'>
+<div class="layui-tab">
+    <ul class="layui-tab-title">
+        <li class="layui-this">网站设置</li>
+        <li>时间提醒设置</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">
-            AppName<br><span class="nowrap color-desc">程序名称</span>
-        </label>
-        <div class='col-sm-8'>
-            <input name="app_name" required="required" title="请输入程序名称" placeholder="请输入程序名称"
-                value="{:sysconf('app_name')}" class="layui-input">
-            <p class="help-block">当前程序名称，在后台主标题上显示</p>
+            <form autocomplete="off" onsubmit="return false;" action="{:request()->url()}" data-auto="true"
+                method="post" class='form-horizontal layui-form padding-top-20'>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        AppName<br><span class="nowrap color-desc">程序名称</span>
+                    </label>
+                    <div class='col-sm-8'>
+                        <input name="app_name" required="required" title="请输入程序名称" placeholder="请输入程序名称"
+                            value="{:sysconf('app_name')}" class="layui-input">
+                        <p class="help-block">当前程序名称，在后台主标题上显示</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        AppVersion<br><span class="nowrap color-desc">程序版本</span>
+                    </label>
+                    <div class='col-sm-8'>
+                        <input name="app_version" required="required" title="请输入程序版本" placeholder="请输入程序版本"
+                            value="{:sysconf('app_version')}" class="layui-input">
+                        <p class="help-block">当前程序版本号，在后台主标题上标显示</p>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        SiteName<br><span class="nowrap color-desc">网站名称</span>
+                    </label>
+                    <div class='col-sm-8'>
+                        <input name="site_name" required="required" title="请输入网站名称" placeholder="请输入网站名称"
+                            value="{:sysconf('site_name')}" class="layui-input">
+                        <p class="help-block">网站名称，显示在浏览器标签上</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Copyright<br><span class="nowrap color-desc">版权信息</span>
+                    </label>
+                    <div class='col-sm-8'>
+                        <input name="site_copy" required="required" title="请输入版权信息" placeholder="请输入版权信息"
+                            value="{:sysconf('site_copy')}" class="layui-input">
+                        <p class="help-block">程序的版权信息设置，在后台登录页面显示</p>
+                    </div>
+                </div>
+
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Browser<br><span class="nowrap color-desc">浏览器图标</span>
+                    </label>
+                    <div class='col-sm-8'>
+                        <img data-tips-image style="height:auto;max-height:32px;min-width:32px"
+                            src="{:sysconf('browser_icon')}" />
+                        <input type="hidden" name="browser_icon" onchange="$(this).prev('img').attr('src', this.value)"
+                            value="{:sysconf('browser_icon')}" class="layui-input">
+                        <a class="btn btn-link" data-filetype="1" data-file="one" data-uptype="local"
+                            data-type="ico,png" data-field="browser_icon">上传图片</a>
+                        <p class="help-block">建议上传ICO图标的尺寸为128x128px，此图标用于网站标题前，<a
+                                href="http://www.favicon-icon-generator.com/" target="_blank">ICON在线制作</a></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Browser<br><span class="nowrap color-desc">LOGO</span>
+                    </label>
+                    <div class='col-sm-8'>
+                        <img data-tips-image style="height:auto;max-height:32px;min-width:32px"
+                            src="{:sysconf('site_logo')}" />
+                        <input type="hidden" name="site_logo" onchange="$(this).prev('img').attr('src', this.value)"
+                            value="{:sysconf('site_logo')}" class="layui-input">
+                        <a class="btn btn-link" data-filetype="1" data-file="one" data-uptype="local"
+                            data-type="jpg,png,mp4" data-field="site_logo">上传图片</a>
+                        <p class="help-block">建议上传PNG图片的尺寸为80x60px，此图片用户前端头部LOGO展示</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Miitbeian<br><span class="nowrap color-desc">网站备案</span>
+                    </label>
+                    <div class='col-sm-8'>
+                        <input name="miitbeian" title="请输入网站备案号" placeholder="请输入网站备案号" value="{:sysconf('miitbeian')}"
+                            class="layui-input">
+                        <p class="help-block">网站备案号，可以在<a target="_blank"
+                                href="http://www.miitbeian.gov.cn">备案管理中心</a>查询获取</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Miitbeian<br><span class="nowrap color-desc">运动音乐</span>
+                    </label>
+                    <div class='col-sm-8'>
+                        <input type="text" name="timer_music" value="{:sysconf('timer_music')}" class="layui-input">
+                        <a class="btn btn-link" data-filetype="8" data-file="one" data-uptype="local" data-type="mp3"
+                            data-field="timer_music">上传图片</a>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+
+                <div class="col-sm-4 col-sm-offset-2">
+                    <div class="layui-form-item text-center">
+                        <button class="layui-btn" type="submit">保存配置</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="layui-tab-item">
+            <form autocomplete="off" onsubmit="return false;" action="{:request()->url()}" data-auto="true"
+                method="post" class='form-horizontal layui-form padding-top-20'>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        教练日程提醒<br>
+                    </label>
+                    <div class='col-sm-8'>
+                        <input name="coach_schedule_time" required="required" lay-verify="required|number"
+                            title="请输入教练日程提醒" placeholder="请输入教练日程提醒" value="{:sysconf('coach_schedule_time')}"
+                            class="layui-input">
+                        <p class="help-block">教练日程提前多少分钟提醒</p>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="col-sm-4 col-sm-offset-2">
+                    <div class="layui-form-item text-center">
+                        <button class="layui-btn" type="submit">保存配置</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-
-    <div class="form-group">
-        <label class="col-sm-2 control-label">
-            AppVersion<br><span class="nowrap color-desc">程序版本</span>
-        </label>
-        <div class='col-sm-8'>
-            <input name="app_version" required="required" title="请输入程序版本" placeholder="请输入程序版本"
-                value="{:sysconf('app_version')}" class="layui-input">
-            <p class="help-block">当前程序版本号，在后台主标题上标显示</p>
-        </div>
-    </div>
-
-    <div class="hr-line-dashed"></div>
-
-    <div class="form-group">
-        <label class="col-sm-2 control-label">
-            SiteName<br><span class="nowrap color-desc">网站名称</span>
-        </label>
-        <div class='col-sm-8'>
-            <input name="site_name" required="required" title="请输入网站名称" placeholder="请输入网站名称"
-                value="{:sysconf('site_name')}" class="layui-input">
-            <p class="help-block">网站名称，显示在浏览器标签上</p>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-2 control-label">
-            Copyright<br><span class="nowrap color-desc">版权信息</span>
-        </label>
-        <div class='col-sm-8'>
-            <input name="site_copy" required="required" title="请输入版权信息" placeholder="请输入版权信息"
-                value="{:sysconf('site_copy')}" class="layui-input">
-            <p class="help-block">程序的版权信息设置，在后台登录页面显示</p>
-        </div>
-    </div>
-
-    <div class="hr-line-dashed"></div>
-
-    <div class="form-group">
-        <label class="col-sm-2 control-label">
-            Browser<br><span class="nowrap color-desc">浏览器图标</span>
-        </label>
-        <div class='col-sm-8'>
-            <img data-tips-image style="height:auto;max-height:32px;min-width:32px" src="{:sysconf('browser_icon')}" />
-            <input type="hidden" name="browser_icon" onchange="$(this).prev('img').attr('src', this.value)"
-                value="{:sysconf('browser_icon')}" class="layui-input">
-            <a class="btn btn-link" data-filetype="1" data-file="one" data-uptype="local" data-type="ico,png"
-                data-field="browser_icon">上传图片</a>
-            <p class="help-block">建议上传ICO图标的尺寸为128x128px，此图标用于网站标题前，<a href="http://www.favicon-icon-generator.com/"
-                    target="_blank">ICON在线制作</a></p>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">
-            Browser<br><span class="nowrap color-desc">LOGO</span>
-        </label>
-        <div class='col-sm-8'>
-            <img data-tips-image style="height:auto;max-height:32px;min-width:32px" src="{:sysconf('site_logo')}" />
-            <input type="hidden" name="site_logo" onchange="$(this).prev('img').attr('src', this.value)"
-                value="{:sysconf('site_logo')}" class="layui-input">
-            <a class="btn btn-link" data-filetype="1" data-file="one" data-uptype="local" data-type="jpg,png,mp4"
-                data-field="site_logo">上传图片</a>
-            <p class="help-block">建议上传PNG图片的尺寸为80x60px，此图片用户前端头部LOGO展示</p>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-2 control-label">
-            Miitbeian<br><span class="nowrap color-desc">网站备案</span>
-        </label>
-        <div class='col-sm-8'>
-            <input name="miitbeian" title="请输入网站备案号" placeholder="请输入网站备案号" value="{:sysconf('miitbeian')}"
-                class="layui-input">
-            <p class="help-block">网站备案号，可以在<a target="_blank" href="http://www.miitbeian.gov.cn">备案管理中心</a>查询获取</p>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">
-            Miitbeian<br><span class="nowrap color-desc">运动音乐</span>
-        </label>
-        <div class='col-sm-8'>
-            <input type="text" name="timer_music" value="{:sysconf('timer_music')}" class="layui-input">
-            <a class="btn btn-link" data-filetype="8" data-file="one" data-uptype="local" data-type="mp3"
-                data-field="timer_music">上传图片</a>
-        </div>
-    </div>
-    <div class="hr-line-dashed"></div>
-
-    <div class="col-sm-4 col-sm-offset-2">
-        <div class="layui-form-item text-center">
-            <button class="layui-btn" type="submit">保存配置</button>
-        </div>
-    </div>
-
-</form>
+</div>
 
 {/block}
