@@ -31,7 +31,16 @@
         cols: [[//表头
             { title: '序号', fixed: 'left', type: 'numbers' },
             { field: 'name', title: '教练名称' },
-            { title: '所属账号', templet: '<div>{{ d.system_user.username}}</div>' },
+            {
+                title: '所属账号', templet: function (d) {
+                    if (d.system_user == null) {
+                        return '<div>未分配</div>';
+                    } else {
+                        return '<div>' + d.system_user.username + '</div>';
+                    }
+
+                }
+            },
             { field: 'phone', title: '手机号码' },
             { fixed: 'right', title: '操作', width: '30%', align: 'center', toolbar: '#coachhandle' }
         ]],
