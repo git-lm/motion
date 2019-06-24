@@ -55,6 +55,14 @@ class CoachModel extends Model
     }
 
     /**
+     * 关联用户
+     */
+    public function member()
+    {
+        return $this->hasOne('app\motion\model\Member', 'coach_id', 'id');
+    }
+
+    /**
      * 分页获取所有数据
      */
     public function lists($param)
@@ -85,5 +93,13 @@ class CoachModel extends Model
             $query->whereIn('id', $member_ids);
         })->where('status', 1)->select();
         return $lists;
+    }
+
+    /**
+     * 根据教练ID获取openid
+     */
+    public function getOpenidForId()
+    {
+        $coach_id = $this->getCoachId();
     }
 }

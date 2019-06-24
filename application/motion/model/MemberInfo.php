@@ -10,4 +10,9 @@ class MemberInfo extends Model
 {
 
     protected $table = 'motion_member_info';
+
+    public function fans()
+    {
+        return $this->belongsTo('Fans', 'f_id', 'id');
+    }
 }
