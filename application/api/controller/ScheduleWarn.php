@@ -74,7 +74,6 @@ class ScheduleWarn
             }
             $data['class_id'] = $v['id'];
             $data['coach_id'] = $coach['id'];
-            $openid = 'oeejS1dteha-OxeYcvgnuaAF8zxI';
             if ($v['type'] == 1) {
                 //私教课程
                 if ($v['begin_at'] < date('Y-m-d H:i:s', strtotime("+ {$wechat_coach_pt_time} minute"))) {
