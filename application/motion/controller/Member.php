@@ -171,6 +171,7 @@ class Member extends BasicAdmin
         $this->check_data($mid);
         $where['id'] = $mid;
         $data['status'] = 0;
+        $data['coach_id'] = 0;
         $code = $this->memberModel->edit($data, $where);
         if ($code) {
             $this->success('删除成功', '');
