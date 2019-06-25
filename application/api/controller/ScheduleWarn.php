@@ -39,6 +39,9 @@ class ScheduleWarn
             $fans = $v['coach']['member']['memberInfo']['fans'];
             $openid = $v['coach']['member']['memberInfo']['fans']['openid'];
             $count = Db::table('motion_template_log')->where(array('byid' => $v['id'], 'status' => 1))->count();
+            if ($count != 0) {
+                continue;
+            }
             $member = $v['coach'];
             if ($v['type'] == 1) {
                 $templateId = $wechat_coach_class_id;
@@ -77,30 +80,24 @@ class ScheduleWarn
             if ($v['type'] == 1) {
                 //私教课程
                 if ($v['begin_at'] < date('Y-m-d H:i:s', strtotime("+ {$wechat_coach_pt_time} minute"))) {
-                    if ($count == 0) {
-                        $data['begin_at'] = $v['begin_at'];
-                        $this->send($openid, $templateId, $data, 3);
-                    }
+                    $data['begin_at'] = $v['begin_at'];
+                    $this->send($openid, $templateId, $data, 3);
                 }
             } else if ($v['type'] == 2) {
                 //团课课程
                 if ($v['begin_at'] < date('Y-m-d H:i:s', strtotime("+ {$wechat_coach_group_time} minute"))) {
-                    if ($count == 0) {
-                        $course = $v['course'];
-                        $data['begin_at'] = $v['begin_at'];
-                        $data['course'] = !empty($course['name']) ? $course['name']  : "团课";
-                        $this->send($openid, $templateId, $data, 4);
-                    }
+                    $course = $v['course'];
+                    $data['begin_at'] = $v['begin_at'];
+                    $data['course'] = !empty($course['name']) ? $course['name']  : "团课";
+                    $this->send($openid, $templateId, $data, 4);
                 }
             } else if ($v['type'] == 3) {
                 //日程
                 if ($v['begin_at'] < date('Y-m-d H:i:s', strtotime("+ {$wechat_coach_schedule_time} minute"))) {
-                    if ($count == 0) {
-                        $classesOther = $v['classesOther'];
-                        $data['begin_at'] = $v['begin_at'];
-                        $data['remark'] = !empty($classesOther['remark']) ? $classesOther['remark']  : "备注说明";
-                        $this->send($openid, $templateId, $data, 5);
-                    }
+                    $classesOther = $v['classesOther'];
+                    $data['begin_at'] = $v['begin_at'];
+                    $data['remark'] = !empty($classesOther['remark']) ? $classesOther['remark']  : "备注说明";
+                    $this->send($openid, $templateId, $data, 5);
                 }
             }
         }
