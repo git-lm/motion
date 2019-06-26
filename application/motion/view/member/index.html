@@ -65,6 +65,9 @@
             }, 'json')
 
         })
+        $('body').on('mouseleave', '.end_time_show', function () {
+            layer.closeAll()
+        })
     })
     var tableShow = table.render({
         elem: '#memberTable',
