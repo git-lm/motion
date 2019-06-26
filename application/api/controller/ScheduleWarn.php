@@ -144,7 +144,7 @@ class ScheduleWarn
             if ($res['errmsg'] == 'ok') {
                 Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('status' => 1, 'error' => '发送成功'));
             }
-            echo json_encode($logdata);
+            echo json_encode($logdata); //18151487535 
         } catch (Exception $exc) {
             echo json_encode($logdata);
         }
