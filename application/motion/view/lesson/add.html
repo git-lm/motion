@@ -5,8 +5,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">选择会员</label>
         <div class="layui-input-block">
-            <select required="" xm-select-search xm-select-search-type="dl" xm-select-direction="down"
-                xm-select="member" lay-verify="required" class="layui-select full-width block" name="mid" lay-ignore="">
+            <select required="" xm-select-show-count="10" xm-select-search xm-select-search-type="dl"
+                xm-select-direction="down" xm-select="member" lay-verify="required"
+                class="layui-select full-width block" name="mid" lay-ignore="">
                 <option value=""> - 请选择会员 -</option>
                 <!-- {volist name="memberTypes" id="type"} -->
                 <optgroup label="{$type.name}">
