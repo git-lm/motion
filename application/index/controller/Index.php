@@ -3,6 +3,7 @@
 namespace app\index\controller;
 
 use app\index\controller\MobileBase;
+use WeChat\Script;
 
 /**
  * 应用入口控制器
@@ -38,8 +39,12 @@ class Index extends MobileBase
     }
 
 
-    public function test()
+    public function getJsSign()
     {
-        echo request()->url(true);
+        $options['appid'] = sysconf('wechat_appid');
+        $options['appsecret'] = sysconf('wechat_appkey');
+        $script = new Script($options);
+        $sign = $script->getJsSign(url('index/classes/affirm', '', true, true));
+        return $sign;
     }
 }

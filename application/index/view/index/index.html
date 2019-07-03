@@ -1,18 +1,22 @@
 {extend name="public:main"}
 {block name="main"}
+<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 <!--choose_nav  开始-->
 <div class="choose_nav">
     <div class="choose_nav_c width">
         <div class="choose_nav_c_span">
-            <span class=' {eq name=' $type' value='upcomming' }span_cur{/eq}'><a href="{:url('/list')}">upcomming
+            <span class=' {eq name=' $type' value='upcomming' }span_cur{/eq}'> <a href="{:url('/list')}">upcomming
                 </a></span>
             <span class=' {eq name=' $type' value='past' }span_cur{/eq}'> <a href="{:url('/list')}?type=past">past
                 </a></span>
         </div>
 
         <!--        <div class="R"><img src="__STATIC__/index/images/icon_w.png" alt="">History</div>-->
-
+        <!-- <div class="" style="float: right" id="saoma">
+            <img src="__STATIC__/index/images/saoma.png" style="width: 0.6rem ; height : 0.6rem " alt="">
+        </div> -->
     </div>
+
 </div>
 <!--main 开始-->
 <div class='main  index width'>
@@ -92,6 +96,9 @@
 <script>
 
     $(function () {
+        // $.get('{:url("getJsSign")}', function (res) {
+        //     wx.config(res);
+        // }, 'json')
         layui.use(['flow', 'laytpl'], function () {
 
             var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。

@@ -43,16 +43,31 @@
                             <p>{$list.end_at}</p>
                         </label>
                     </div>
+                    {if !empty($list.classesPrivate.is_affirm )}
+                    <div class="lablediv">
+                        <label>
+                            <span>确认时间</span>
+                            <p>{$list.classesPrivate.affirm_at}</p>
+                        </label>
+                    </div>
+                    {/if}
                 </div>
             </div>
             <p>签到距离<span id="distance">1000米</span></p>
             <p>距离场馆还有<span id="position">1000米</span></p>
             <!-- infor_r_top 结束 -->
         </div>
+        <input name="id" value="{$list.id|default=0}" />
         <!--infor_r 结束-->
+        {if empty($list.classesPrivate.is_affirm)}
         <div class="infor_r_bot">
-            <button class="layui-btn margin20 layui-btn-normal layui-btn-disabled">确认上课</button>
+            <button class="layui-btn margin20 layui-btn-normal layui-btn-disabled affirm">确认上课</button>
         </div>
+        {else /}
+        <div class="infor_r_bot">
+            <button class="layui-btn margin20 layui-btn-normal layui-btn-disabled">该课程已确认</button>
+        </div>
+        {/if}
     </div>
 </div>
 <!--main 结束-->
@@ -66,12 +81,14 @@
             var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
             var layer = layui.layer;
             $.get('{:url("getJsSign")}', function (res) {
-                console.log(res)
                 wx.config(res);
             }, 'json')
         });
-        $(document).on('.affirm', 'click', function () {
-            alert();
+        $(document).on('click', '.affirm', function () {
+            var id = $('input[name="id"]').val();
+            $.post('{:url("affirm_info")}', { 'id': id }, function (res) {
+
+            })
         })
     })
     wx.ready(function () {

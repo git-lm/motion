@@ -268,6 +268,38 @@ class ClassesModel extends Model
     }
 
     /**
+     * 确认上课
+     */
+    public function affirm($class_id)
+    {
+        $class = $this->get($class_id);
+        if (empty($class)) {
+            $this->error = '无此课程';
+            return false;
+        }
+        if ($class['type'] != 1) {
+            $this->error = '该课程无需确认';
+            return false;
+        }
+        $info = $class['classesPrivate'];
+        $user = session('user');
+        db('pt_member')->where(array(''));
+        if (empty($info)) {
+            $this->error = '该课程未上课';
+            return false;
+        }
+        if (empty($info['begin_at'])) {
+            $this->error = '该课程未开课';
+            return false;
+        }
+        if (!empty($info['is_affirm'])) {
+            $this->error = '该课程已确认';
+            return false;
+        }
+        $info->where(array('id' => $info['id']))->update(array('is_affirm' => 1, 'affirm_at' => date('Y-m-d H:i:s')));
+    }
+
+    /**
      * 验证类型数据有效性
      * @param type $data 需要验证的数据
      */

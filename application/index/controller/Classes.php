@@ -136,11 +136,26 @@ class Classes extends MobileBase
     public function affirm()
     {
         $classId = input('get.id/d', 0);
-        $classId = 409;
+        $classId = 408;
         $model  = new ClassesModel();
         $list = $model->list(array('id' => $classId));
         $this->assign('list', $list);
         return $this->fetch();
+    }
+
+    public function affirm_info()
+    {
+        $classId = input('post.id/d', 0);
+        if (empty($classId)) {
+            $this->error('请选择要确认的课程');
+        }
+        $model  = new ClassesModel();
+        $res = $model->affirm($classId);
+        if (!empty($model->error)) {
+            $this->error($model->error);
+        } else {
+            $this->success('确认成功', '');
+        }
     }
 
     public function getJsSign()
