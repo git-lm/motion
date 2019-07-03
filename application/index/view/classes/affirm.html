@@ -1,15 +1,66 @@
 {extend name="public:main"}
 {block name="main"}
 <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
-<p id="latitude"></p>
-<p id="longitude"></p>
-<p id="position"></p>
-<p id="distance"></p>
+<!--main 开始-->
+<div class='main infor '>
+    <div class="infor_in">
+        <h3>课程确认</h3>
+        <!--infor_r 开始-->
+        <div class="infor_r">
+            <!-- infor_r_top 开始 -->
+            <div class="infor_r_top">
+                <div class="infor_r_top_l">
+                    <div class="lablediv">
+                        <label>
+                            <span>课程类型</span>
+                            <p>{$list.type_text}</p>
+                        </label>
+                    </div>
+                    {if $list.type == 2 }
+                    <div class="lablediv">
+                        <label>
+                            <span>课程名称</span>
+                            <p>{$list.course.name}</p>
+                        </label>
+                    </div>
+                    {/if}
+                    <div class="lablediv">
+                        <label>
+                            <span>课程教练</span>
+                            <p>{$list.coach.name}</p>
+                        </label>
+                    </div>
+
+                    <div class="lablediv">
+                        <label>
+                            <span>开始时间</span>
+                            <p>{$list.begin_at}</p>
+                        </label>
+                    </div>
+                    <div class="lablediv">
+                        <label>
+                            <span>结束时间</span>
+                            <p>{$list.end_at}</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <p>签到距离<span id="distance">1000米</span></p>
+            <p>距离场馆还有<span id="position">1000米</span></p>
+            <!-- infor_r_top 结束 -->
+        </div>
+        <!--infor_r 结束-->
+        <div class="infor_r_bot">
+            <button class="layui-btn margin20 layui-btn-normal layui-btn-disabled">确认上课</button>
+        </div>
+    </div>
+</div>
+<!--main 结束-->
 {/block}
-{block name="script" }
-<script>
-    var position;
-    var distance;
+{block name="script"}
+<script type="text/javascript">
+    var position = '1000米';
+    var distance = '1000米';
     $(function () {
         layui.use(['layer'], function () {
             var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
@@ -18,8 +69,10 @@
                 console.log(res)
                 wx.config(res);
             }, 'json')
-
         });
+        $(document).on('.affirm', 'click', function () {
+            alert();
+        })
     })
     wx.ready(function () {
         wx.getLocation({
@@ -33,8 +86,11 @@
                     if (res.code == 1) {
                         position = res.data.position;
                         distance = res.data.distance;
-                        $('#position').html(position);
-                        $('#distance').html(distance);
+                        if (distance > position) {
+                            $('.layui-btn').removeClass('layui-btn-disabled').addClass('affirm');
+                        }
+                        $('#position').html(position + '米');
+                        $('#distance').html(distance + '米');
                     } else {
                         layer.msg(res.msg)
                     }

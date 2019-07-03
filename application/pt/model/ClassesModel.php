@@ -90,8 +90,7 @@ class ClassesModel extends Model
         if (!empty($param['id'])) {
             $where[] = ['id', '=', $param['id']];
         }
-
-        $list = $this->with(['coach', 'course', 'commission'])->order()->where($where)->find();
+        $list = $this->with(['coach', 'course', 'commission'])->where($where)->find();
 
         return $list;
     }

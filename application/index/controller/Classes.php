@@ -135,7 +135,11 @@ class Classes extends MobileBase
      */
     public function affirm()
     {
-
+        $classId = input('get.id/d', 0);
+        $classId = 409;
+        $model  = new ClassesModel();
+        $list = $model->list(array('id' => $classId));
+        $this->assign('list', $list);
         return $this->fetch();
     }
 
