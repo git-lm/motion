@@ -3,9 +3,13 @@
 <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 <p id="latitude"></p>
 <p id="longitude"></p>
+<p id="position"></p>
+<p id="distance"></p>
 {/block}
 {block name="script" }
 <script>
+    var position;
+    var distance;
     $(function () {
         layui.use(['layer'], function () {
             var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
@@ -25,10 +29,16 @@
                 var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
                 $('#latitude').html(latitude);
                 $('#longitude').html(longitude);
-                $.get('{:url("getDistance")}', function (res) {
-                    console.log(res)
+                $.post('{:url("getDistance")}', { 'latitude': latitude, 'longitude': longitude }, function (res) {
+                    if (res.code == 1) {
+                        position = res.data.position;
+                        distance = res.data.distance;
+                        $('#position').html(position);
+                        $('#distance').html(distance);
+                    } else {
+                        layer.msg(res.msg)
+                    }
                 }, 'json')
-
             }
         });
     });

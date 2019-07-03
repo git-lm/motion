@@ -155,17 +155,24 @@ class Classes extends MobileBase
         $latitude1 = input('post.latitude/s', '');
         $longitude1 = input('post.longitude/s', '');
         $coordinate = sysconf('coordinate');
+        $distance = sysconf('distance');
+
         if (empty($latitude1) || empty($longitude1)) {
             $this->error('请先打开定位，获取允许获取位置');
         }
         if (empty($coordinate)) {
             $this->error('未配置场馆位置，请联系管理员');
         }
+        if (empty($distance)) {
+            $this->error('未配置距离限制');
+        }
         list($latitude2, $longitude2) = explode(',', $coordinate);
         if (empty($latitude2) || empty($longitude2)) {
             $this->error('场馆位置配置错误，请联系管理员');
         }
-        $distance = getdistance($longitude1, $latitude1, $longitude2, $latitude2);
-        $this->success('获取成功', '', $distance);
+        $position = getdistance($longitude1, $latitude1, $longitude2, $latitude2);
+        $data['position'] =  round($position, 2);
+        $data['distance'] =  $distance;
+        $this->success('获取成功', '', $data);
     }
 }
