@@ -1,0 +1,19 @@
+{extend name="public:main"}
+{block name="main"}
+<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+{/block}
+{block name="script" }
+<script>
+    $(function () {
+        layui.use(['layer'], function () {
+            var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
+            var layer = layui.layer;
+        });
+    })
+    wx.ready(function () {
+        $.get('{:url()}', function (res) {
+            wx.config(res);
+        })
+    })
+</script>
+{/block}

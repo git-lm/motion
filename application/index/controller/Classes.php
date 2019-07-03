@@ -6,6 +6,7 @@ use app\index\controller\MobileBase;
 use app\pt\model\ClassesModel;
 use app\pt\model\CoachModel;
 use app\pt\model\ClassesPrivateModel;
+use WeChat\Script;
 
 /**
  * 应用入口控制器
@@ -128,5 +129,19 @@ class Classes extends MobileBase
         } else {
             $this->success('更新失败');
         }
+    }
+    /**
+     * 确认上课信息
+     */
+    public function affirm()
+    {
+        if (request()->isGet()) {
+            $options['appid'] = sysconf('wechat_appid');
+            $options['appsecret'] = sysconf('wechat_appkey');
+            $script = new Script($options);
+            $sign = $script->getJsSign(url('', '', true, true));
+            $this->assign('sign', json_encode($sign));
+        }
+        return $this->fetch();
     }
 }
