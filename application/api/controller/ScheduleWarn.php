@@ -112,14 +112,14 @@ class ScheduleWarn
                 'keyword1' => array('value' => '私教课程', 'color' => '#cc0000'),
                 'keyword2' => array('value' => $data['begin_at'], 'color' => '#cc0000'),
                 'remark' => array('value' => '请尽快准备', 'color' => '#cc0000'),
-                'url' => url('index/classes/index'),
+
             ),
             4 => array(
                 'first' => array('value' => '团课课程提醒', 'color' => '#0000ff'),
                 'keyword1' => array('value' => !empty($data['course']) ? $data['course'] : '', 'color' => '#cc0000'),
                 'keyword2' => array('value' => $data['begin_at'], 'color' => '#cc0000'),
                 'remark' => array('value' => '请尽快准备', 'color' => '#cc0000'),
-                'url' => url('index/classes/index'),
+
             ),
             5 => array(
                 'first' => array('value' => '日程提醒', 'color' => '#0000ff'),
@@ -127,9 +127,10 @@ class ScheduleWarn
                 'keyword2' => array('value' => !empty($data['remark']) ? $data['remark'] : '', 'color' => '#cc0000'),
                 'keyword3' => array('value' => $data['begin_at'], 'color' => '#cc0000'),
                 'remark' => array('value' => '请尽快准备', 'color' => '#cc0000'),
-                'url' => url('index/classes/index'),
+
             )
         );
+        $url = url('index/classes/index', '', true, true);
         $logdata['byid'] = $data['class_id'];
         $logdata['data'] = json_encode($template[$type]);
         $logdata['openid'] = $touser;
