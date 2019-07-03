@@ -147,4 +147,25 @@ class Classes extends MobileBase
         $sign = $script->getJsSign(url('index/classes/affirm', '', true, true));
         return $sign;
     }
+    /**
+     * 获取距离
+     */
+    public function getDistance()
+    {
+        $latitude1 = input('post.latitude/s', '');
+        $longitude1 = input('post.longitude/s', '');
+        $coordinate = sysconf('coordinate');
+        if (empty($latitude1) || empty($longitude1)) {
+            $this->error('请先打开定位，获取允许获取位置');
+        }
+        if (empty($coordinate)) {
+            $this->error('未配置场馆位置，请联系管理员');
+        }
+        list($latitude2, $longitude2) = explode(',', $coordinate);
+        if (empty($latitude2) || empty($longitude2)) {
+            $this->error('场馆位置配置错误，请联系管理员');
+        }
+        $distance = getdistance($longitude1, $latitude1, $longitude2, $latitude2);
+        $this->success('获取成功', '', $distance);
+    }
 }
