@@ -135,13 +135,16 @@ class Classes extends MobileBase
      */
     public function affirm()
     {
-        if (request()->isGet()) {
-            $options['appid'] = sysconf('wechat_appid');
-            $options['appsecret'] = sysconf('wechat_appkey');
-            $script = new Script($options);
-            $sign = $script->getJsSign(url('', '', true, true));
-            $this->assign('sign', json_encode($sign));
-        }
+
         return $this->fetch();
+    }
+
+    public function getJsSign()
+    {
+        $options['appid'] = sysconf('wechat_appid');
+        $options['appsecret'] = sysconf('wechat_appkey');
+        $script = new Script($options);
+        $sign = $script->getJsSign(url('index/classes/affirm', '', true, true));
+        return $sign;
     }
 }
