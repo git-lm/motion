@@ -178,10 +178,11 @@ class Classes extends MobileBase
 
     public function getJsSign()
     {
+        $id = input('get.id/d', 0);
         $options['appid'] = sysconf('wechat_appid');
-        $options['appsecret'] = sysconf('wechat_appkey');
+        $options['appsecret'] = sysconf('wechat_appsecret');
         $script = new Script($options);
-        $sign = $script->getJsSign(url('index/classes/affirm', '', true, true));
+        $sign = $script->getJsSign(url('index/classes/affirm', 'id=' . $id, true, true));
         return $sign;
     }
     /**

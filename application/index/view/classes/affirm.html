@@ -61,7 +61,7 @@
         <!--infor_r 结束-->
         {if empty($list.classesPrivate.is_affirm)}
         <div class="infor_r_bot">
-            <button class="layui-btn margin20 layui-btn-normal layui-btn-disabled affirm">确认上课</button>
+            <button class="layui-btn margin20 layui-btn-normal layui-btn-disabled">确认上课</button>
         </div>
         {else /}
         <div class="infor_r_bot">
@@ -80,7 +80,8 @@
         layui.use(['layer'], function () {
             var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。
             var layer = layui.layer;
-            $.get('{:url("getJsSign")}', function (res) {
+            var id = $('input[name="id"]').val();
+            $.get('{:url("getJsSign")}', { 'id': id }, function (res) {
                 wx.config(res);
             }, 'json')
         });
