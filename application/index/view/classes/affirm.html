@@ -53,8 +53,10 @@
                     {/if}
                 </div>
             </div>
-            <p>签到距离<span id="distance">1000米</span></p>
-            <p>距离场馆还有<span id="position">1000米</span></p>
+            <div id="position">
+                <p style="color: red">请先打开定位并且允许获取地理位置</p>
+            </div>
+
             <!-- infor_r_top 结束 -->
         </div>
         <input name="id" value="{$list.id|default=0}" />
@@ -107,8 +109,7 @@
                         if (distance > position) {
                             $('.layui-btn').removeClass('layui-btn-disabled').addClass('affirm');
                         }
-                        $('#position').html(position + '米');
-                        $('#distance').html(distance + '米');
+                        $('#position').html(" <p>签到距离" + distance + "米</p> <p>距离场馆" + position + "米</p>");
                     } else {
                         layer.msg(res.msg)
                     }

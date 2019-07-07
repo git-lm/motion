@@ -282,7 +282,6 @@ class ClassesModel extends Model
             return false;
         }
         $info = $class['classesPrivate'];
-        $user = session('user');
         db('pt_member')->where(array(''));
         if (empty($info)) {
             $this->error = '该课程未上课';
@@ -296,7 +295,7 @@ class ClassesModel extends Model
             $this->error = '该课程已确认';
             return false;
         }
-        $info->where(array('id' => $info['id']))->update(array('is_affirm' => 1, 'affirm_at' => date('Y-m-d H:i:s')));
+        // $info->where(array('id' => $info['id']))->update(array('is_affirm' => 1, 'affirm_at' => date('Y-m-d H:i:s')));
     }
 
     /**
