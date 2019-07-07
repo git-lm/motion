@@ -7,6 +7,7 @@ use app\pt\model\ClassesModel;
 use app\pt\model\CoachModel;
 use app\pt\model\ClassesPrivateModel;
 use WeChat\Script;
+use Endroid\QrCode\QrCode;
 
 /**
  * 应用入口控制器
@@ -130,13 +131,30 @@ class Classes extends MobileBase
             $this->success('更新失败');
         }
     }
+
+    public function qrcode()
+    {
+        $site_name = sysconf('site_name');
+        $id = input('get.id/d', 0);
+        $qrCode = new QrCode();
+        $qrCode->setText(url('affirm', 'id=' . $id, true, true))
+            ->setSize(300)
+            ->setPadding(10)
+            ->setErrorCorrection('high')
+            ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
+            ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0))
+            ->setLabel($site_name)
+            ->setLabelFontSize(16)
+            ->setImageType($qrCode::IMAGE_TYPE_PNG);
+        $qrCode->render();
+    }
+
     /**
      * 确认上课信息
      */
     public function affirm()
     {
         $classId = input('get.id/d', 0);
-        $classId = 408;
         $model  = new ClassesModel();
         $list = $model->list(array('id' => $classId));
         $this->assign('list', $list);
