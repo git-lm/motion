@@ -717,7 +717,7 @@ class Member extends Model
     {
         $rule = [
             'name' => 'require|max:5|min:2|chsAlpha',
-            'phone' => 'require|mobile|unique:motion_member',
+            'phone' => 'require|mobile|checkPhone:',
         ];
         $message = [
             'name.require' => '会员名称必填',
@@ -726,9 +726,16 @@ class Member extends Model
             'name.chsAlpha' => '会员名称只能汉子和字母',
             'phone.require' => '手机号码必填',
             'phone.mobile' => '手机号码格式不正确',
-            'phone.unique' => '该手机号码已存在',
+            'phone.checkPhone' => '该手机号码已存在',
         ];
         $validate = new \think\Validate();
+        $validate->extend('checkPhone', function ($value, $rule) {
+            $member = Db::name('motion_member')->where(array('status' => 1, 'phone' => $value))->find();
+            if (!empty($member)) {
+                return false;
+            }
+            return true;
+        });
         $validate->rule($rule)->message($message)->check($data);
         return $validate->getError();
     }
@@ -764,15 +771,5 @@ class Member extends Model
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);
         return $validate->getError();
-    }
-
-    protected  function checkPhone($value, $rule, $data = [])
-    {
-        $member = Db::name('motion_member')->where(array('status' => 1, 'phone' => $value))->find();
-        if (!empty($member)) {
-            return '该手机号码已存在1';
-        } else {
-            return true;
-        }
     }
 }
