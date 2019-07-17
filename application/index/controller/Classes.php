@@ -168,7 +168,7 @@ class Classes extends MobileBase
             $this->error('请选择要确认的课程');
         }
         $model  = new ClassesModel();
-        $res = $model->affirm($classId);
+        $res = $model->affirmPrivate($classId);
         if (!empty($model->error)) {
             $this->error($model->error);
         } else {

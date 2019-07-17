@@ -95,16 +95,41 @@ $(function () {
         };
         // 自动处理显示Think返回的Json数据
         this.auto = function (data, time) {
-            return (parseInt(data.code) === 1) ? self.success(data.msg, time, function () {
-                !!data.url ? (window.location.href = data.url) : typeof tableShow == "undefined" ? $.form.reload() : curr = tableShow.config.page.curr; $.form.submit()
-                for (var i in self.dialogIndexs) {
-                    layer.close(self.dialogIndexs[i]);
-                }
-                self.dialogIndexs = [];
-            }) : self.error(data.msg, 3, function () {
-                !!data.url && (window.location.href = data.url);
+            if (parseInt(data.code) === 1) {
+                self.success(data.msg, time, function () {
+                    if (!!data.url) {
+                        window.location.href = data.url
+                    } else {
+                        if (typeof tableShow == "undefined") {
+                            $.form.reload();
+                        } else {
+                            curr = tableShow.config.page.curr;
+                            $.form.submit()
+                        }
+                    }
+                    for (var i in self.dialogIndexs) {
+                        layer.close(self.dialogIndexs[i]);
+                    }
+                    self.dialogIndexs = [];
+                })
+            } else {
+                self.error(data.msg, 3, function () {
+                    !!data.url && (window.location.href = data.url);
 
-            });
+                });
+            }
+            return;
+            // return (parseInt(data.code) === 1) ? self.success(data.msg, time, function () {
+
+            //     !!data.url ? (window.location.href = data.url) : typeof tableShow == "undefined" ? $.form.reload() : curr = tableShow.config.page.curr; $.form.submit()
+            //     for (var i in self.dialogIndexs) {
+            //         layer.close(self.dialogIndexs[i]);
+            //     }
+            //     self.dialogIndexs = [];
+            // }) : self.error(data.msg, 3, function () {
+            //     !!data.url && (window.location.href = data.url);
+
+            // });
         };
     };
 

@@ -58,6 +58,12 @@ class ClassesModel extends Model
         return $this->belongsTo('courseModel', 'course_id', 'id');
     }
 
+
+    public function classAffirm()
+    {
+        return $this->hasOne('ClassAffirm', 'class_id', 'id');
+    }
+
     /**
      * 关联教练费用
      */
@@ -270,7 +276,7 @@ class ClassesModel extends Model
     /**
      * 确认上课
      */
-    public function affirm($class_id)
+    public function affirmPrivate($class_id)
     {
         $class = $this->get($class_id);
         if (empty($class)) {
@@ -282,7 +288,6 @@ class ClassesModel extends Model
             return false;
         }
         $info = $class['classesPrivate'];
-        db('pt_member')->where(array(''));
         if (empty($info)) {
             $this->error = '该课程未上课';
             return false;
@@ -291,11 +296,17 @@ class ClassesModel extends Model
             $this->error = '该课程未开课';
             return false;
         }
-        if (!empty($info['is_affirm'])) {
+        $affirm = $class['classAffirm'];
+        if (!empty($affirm)) {
             $this->error = '该课程已确认';
             return false;
         }
-        // $info->where(array('id' => $info['id']))->update(array('is_affirm' => 1, 'affirm_at' => date('Y-m-d H:i:s')));
+        $member = session('motion_member');
+        $data['class_id'] = $class_id;
+        $data['type'] = 1;
+        $data['detail_id'] = $info['id'];
+        $data['member_id'] = $member['id'];
+        ClassesAffirm::save($data);
     }
 
     /**

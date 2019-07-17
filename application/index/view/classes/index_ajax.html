@@ -35,14 +35,16 @@
                                 class="layui-icon">&#x1007;</i> 未结束</span> {else /}
                         <span class="mbs tag is-missed ember-view class_begin" itemid="{$list.id}"><i
                                 class="layui-icon">&#x1007;</i>
-                            未开始</span> {/if} {else /}
+                            未开始</span> {/if}
+                        <img class="saoma" src="__STATIC__/index/images/saoma.png" alt="" itemid="{$list.id}">
+                        {else /}
                         <!-- 团课开始 -->
                         {if !empty($list.classesGroup)}
                         <span class="mbs tag is-completed ember-view"><i class="layui-icon">&#x1005;</i> 已完成 </span>
                         {else /}
                         <span class="mbs tag is-missed ember-view"><i class="layui-icon">&#x1007;</i> 未完成</span> {/if}
                         {/if}
-                        <!-- <img class="saoma" src="__STATIC__/index/images/saoma.png" alt="" itemid="{$list.id}"> -->
+
                     </div>
                 </div>
                 <!--上面部分 结束-->
