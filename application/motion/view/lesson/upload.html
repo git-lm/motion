@@ -38,7 +38,6 @@
                     if(data.code == 1 ){
                         $('.uploadmsg').html(data.msg.replace(new RegExp("\n", "gm"), '<br/>'));
                     }else{
-                        alert();
                         _this.val('');
                         $.msg.error(data.msg);
                         return false;

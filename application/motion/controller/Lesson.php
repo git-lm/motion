@@ -452,7 +452,7 @@ class Lesson extends BasicAdmin
                     unlink($path);
                     return ['code' => 0, 'msg' => "第{$sheetIndex}个工作表名错误", 'data' => array()];
                 }
-                $member_id = (int)$sheetNameArr[0];
+                $member_id = (int) $sheetNameArr[0];
                 $member_name = trim($sheetNameArr[1]);
                 $where['m.id'] = ['=', $member_id];
                 $where['m.name'] = ['=', $member_name];
@@ -467,21 +467,21 @@ class Lesson extends BasicAdmin
                 $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
                 $sheet = array();
 
-                $title = (string)$worksheet->getCellByColumnAndRow(1, 2)->getValue();
+                $title = (string) $worksheet->getCellByColumnAndRow(1, 2)->getValue();
                 if ('计划任务-' . date('Y-m-d') != $title) {
                     unlink($path);
                     return ['code' => 0, 'msg' => '计划表错误', 'data' => array()];
                 }
-                $end_row_title = (string)$worksheet->getCellByColumnAndRow(1, $highestRow)->getValue();
+                $end_row_title = (string) $worksheet->getCellByColumnAndRow(1, $highestRow)->getValue();
                 if ('结束计划' != $end_row_title) {
                     unlink($path);
-                    return ['code' => 0, 'msg' => '计划表错误，无--最后一行结束计划--标签，请重新下载', 'data' => array()];
+                    return ['code' => 0, 'msg' => '计划表错误，无--最后一行结束计划--标签，总行数：' . $highestRow . '，请重新下载', 'data' => array()];
                 }
 
-                $end_column_title = (string)$worksheet->getCellByColumnAndRow($highestColumnIndex, 3)->getValue();
+                $end_column_title = (string) $worksheet->getCellByColumnAndRow($highestColumnIndex, 3)->getValue();
                 if ('结束计划' != $end_column_title) {
                     unlink($path);
-                    return ['code' => 0, 'msg' => '计划表错误，无--最后一列结束计划--标签，请重新下载', 'data' => array()];
+                    return ['code' => 0, 'msg' => '计划表错误，无--最后一列结束计划--标签，总列数：' . $highestColumn . '，请重新下载', 'data' => array()];
                 }
                 //循环列 去掉说明列
                 $index = 1; //第几个计划
@@ -495,43 +495,46 @@ class Lesson extends BasicAdmin
                     //循环行，第一行 日期 第二行计划名称 第三行热身语  最后一行冷身语  其他为计划详情
                     $detail = array(); //动作详情
 
-                    $date = (string)$worksheet->getCellByColumnAndRow($column, 3)->getValue();
+                    $date = (string) $worksheet->getCellByColumnAndRow($column, 3)->getValue();
+                    if ($date == '结束计划') {
+                        break;
+                    }
                     if (empty($date)) {
                         unlink($path);
                         return ['code' => 0, 'msg' => "第{$sheetIndex}个工作表中,第{$index}个计划，时间格式格式错误", 'data' => array()];
                     }
                     $valArr['date'] = $date;
-                    $name = (string)$worksheet->getCellByColumnAndRow($column, 4)->getValue();
+                    $name = (string) $worksheet->getCellByColumnAndRow($column, 4)->getValue();
                     if (empty($name)) {
                         unlink($path);
                         return ['code' => 0, 'msg' => "第{$sheetIndex}个工作表中,第{$index}个计划，计划名称错误", 'data' => array()];
                     }
                     $valArr['name'] = $name;
 
-                    $warmUp = (string)$worksheet->getCellByColumnAndRow($column, 5)->getValue();
+                    $warmUp = (string) $worksheet->getCellByColumnAndRow($column, 5)->getValue();
                     if (empty($warmUp)) {
                         $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，热身语为空##@@##";
                     }
                     $valArr['warmUp'] = $warmUp;
-                    $warmUpVideo = (string)$worksheet->getCellByColumnAndRow($column, 6)->getValue();
+                    $warmUpVideo = (string) $worksheet->getCellByColumnAndRow($column, 6)->getValue();
                     if (empty($warmUpVideo)) {
                         $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，热身视频为空##@@##";
                     }
                     $valArr['warmUpVideo'] = $warmUpVideo;
 
-                    $collDown = (string)$worksheet->getCellByColumnAndRow($column, 7)->getValue();
+                    $collDown = (string) $worksheet->getCellByColumnAndRow($column, 7)->getValue();
                     if (empty($collDown)) {
                         $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，冷身语为空##@@##";
                     }
                     $valArr['collDown'] = $collDown;
-                    $collDownVideo = (string)$worksheet->getCellByColumnAndRow($column, 8)->getValue();
+                    $collDownVideo = (string) $worksheet->getCellByColumnAndRow($column, 8)->getValue();
                     if (empty($collDownVideo)) {
                         $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，冷身视频为空##@@##";
                     }
                     $valArr['collDownVideo'] = $collDownVideo;
                     for ($row = 9; $row < $highestRow; $row++) {
                         //结束信息
-                        $end = (string)$worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                        $end = (string) $worksheet->getCellByColumnAndRow(1, $row)->getValue();
                         if ($end == '结束计划') {
                             break;
                         }
@@ -541,15 +544,15 @@ class Lesson extends BasicAdmin
                         $explainLetter = Coordinate::stringFromColumnIndex($detail_explain_column);
 
                         //获取计划详情内容
-                        $detail_num = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue(); //计划详情编号
+                        $detail_num = (string) $worksheet->getCellByColumnAndRow($column, $row)->getValue(); //计划详情编号
                         if (empty($detail_num)) {
                             $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，详情编号为空##@@##";
                         }
-                        $detail_video = (string)$worksheet->getCellByColumnAndRow($detail_video_column, $row)->getValue();
+                        $detail_video = (string) $worksheet->getCellByColumnAndRow($detail_video_column, $row)->getValue();
                         if (empty($detail_video)) {
                             $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，详情视频为空##@@##";
                         }
-                        $detail_explain = (string)$worksheet->getCellByColumnAndRow($detail_explain_column, $row)->getValue();
+                        $detail_explain = (string) $worksheet->getCellByColumnAndRow($detail_explain_column, $row)->getValue();
                         if (empty($detail_video)) {
                             $msg .= "第{$sheetIndex}个工作表中,第{$index}个计划，详情说明为空##@@##";
                         }
