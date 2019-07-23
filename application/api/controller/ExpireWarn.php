@@ -57,6 +57,7 @@ class ExpireWarn
                 $logdata['openid'] = $time['openid'];
                 $logdata['templateId'] = $wechat_expire_id;
                 $logdata['create_at'] = time();
+                $logdata['create_time'] = date('Y-m-d H:i:s');
                 $logdata['m_id'] = $time['m_id'];
                 $logdata['error'] = '发送失败';
                 $logdata['type'] = 1;

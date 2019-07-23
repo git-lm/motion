@@ -51,6 +51,7 @@ class ClassWarn
                 $logdata['openid'] = $class['openid'];
                 $logdata['templateId'] = $wechat_class_id;
                 $logdata['create_at'] = time();
+                $logdata['create_time'] = date('Y-m-d H:i:s');
                 $logdata['m_id'] = $class['m_id'];
                 $logdata['error'] = '发送失败';
                 $logdata['type'] = 2;

@@ -52,27 +52,27 @@ class ScheduleWarn
             }
             if (empty($coach)) {
                 Db::table('motion_template_log')
-                    ->insert(array('coach_id' => $coach['id'], 'status' => 1, 'error' => '无此教练coach', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
+                    ->insert(array('coach_id' => $coach['id'], 'status' => 0, 'error' => '无此教练coach', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
                 continue;
             }
             if (empty($member)) {
                 Db::table('motion_template_log')
-                    ->insert(array('coach_id' => $coach['id'], 'status' => 1, 'error' => '无此教练member', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
+                    ->insert(array('coach_id' => $coach['id'], 'status' => 0, 'error' => '无此教练member', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
                 continue;
             }
             if (empty($memberInfo)) {
                 Db::table('motion_template_log')
-                    ->insert(array('coach_id' => $coach['id'], 'status' => 1, 'error' => '无此教练memberInfo', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
+                    ->insert(array('coach_id' => $coach['id'], 'status' => 0, 'error' => '无此教练memberInfo', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
                 continue;
             }
             if (empty($fans)) {
                 Db::table('motion_template_log')
-                    ->insert(array('coach_id' => $coach['id'], 'status' => 1, 'error' => '无此教练fans', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
+                    ->insert(array('coach_id' => $coach['id'], 'status' => 0, 'error' => '无此教练fans', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
                 continue;
             }
             if (empty($openid)) {
                 Db::table('motion_template_log')
-                    ->insert(array('coach_id' => $coach['id'], 'status' => 1, 'error' => '无此教练openid', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
+                    ->insert(array('coach_id' => $coach['id'], 'status' => 0, 'error' => '无此教练openid', 'create_at' => time(), 'byid' => $v['id'], 'templateId' => $templateId, 'type' => 4));
                 continue;
             }
             $data['class_id'] = $v['id'];
@@ -136,6 +136,7 @@ class ScheduleWarn
         $logdata['openid'] = $touser;
         $logdata['templateId'] = $templateId;
         $logdata['create_at'] = time();
+        $logdata['create_time'] = date('Y-m-d H:i:s');
         $logdata['coach_id'] = $data['coach_id'];
         $logdata['error'] = '发送失败';
         $logdata['type'] = $type;

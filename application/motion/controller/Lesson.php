@@ -1321,6 +1321,7 @@ class Lesson extends BasicAdmin
         }
         Db::startTrans();
         try {
+            $memberModel = new memberModel();
             //获取批量信息
             $lessonIdArr = array(); //定义一个空数据数组 记录每次添加的自增ID
             if (!empty($lesson['member_ids'])) {
@@ -1328,6 +1329,9 @@ class Lesson extends BasicAdmin
                 unset($lesson['id']); //去除ID 防止添加时ID字段
                 foreach ($member_ids as $v) {
                     $lesson['m_id'] = $v;
+                    $mwhere['m.id'] = $v;
+                    $member =  $memberModel->get_member($mwhere);
+                    $lesson['coach_id'] = $member['c_id'];
                     $code = $this->lessonModel->add($lesson);
                     $lessonIdArr[] = $code;
                 }
