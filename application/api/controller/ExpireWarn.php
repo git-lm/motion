@@ -52,19 +52,22 @@ class ExpireWarn
                 'remark' => array('value' => '请注意时间，防止过期失效。', 'color' => '#cc0000'),
             );
             try {
-                $touser = $time['openid'];
-                $templateId = $wechat_expire_id;
-                $url = '';
-                Template::sendTemplateMessage($data, $touser, $templateId, $url);
                 $logdata['byid'] = $time['id'];
                 $logdata['data'] = json_encode($data);
                 $logdata['openid'] = $time['openid'];
                 $logdata['templateId'] = $wechat_expire_id;
                 $logdata['create_at'] = time();
                 $logdata['m_id'] = $time['m_id'];
-                $logdata['error'] = '发送成功';
+                $logdata['error'] = '发送失败';
                 $logdata['type'] = 1;
-                Db::table('motion_template_log')->insertGetId($logdata);
+                $log_id = Db::table('motion_template_log')->insertGetId($logdata);
+                $touser = $time['openid'];
+                $templateId = $wechat_expire_id;
+                $url = '';
+                $res =  Template::sendTemplateMessage($data, $touser, $templateId, $url);
+                if ($res['errmsg'] == 'ok') {
+                    Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('status' => 1, 'error' => '发送成功'));
+                }
                 echo json_encode($logdata);
             } catch (Exception $exc) {
                 $logdata['byid'] = $time['id'];

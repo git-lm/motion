@@ -36,10 +36,6 @@ class MessageWarn
         dump($data);
         exit;
         try {
-            $touser = $this->touser;
-            $templateId = $this->templateId;
-            $url = '';
-            Template::sendTemplateMessage($data, $touser, $templateId, $url);
             $logdata['byid'] = $this->byid;
             $logdata['data'] = json_encode($data);
             $logdata['openid'] = $this->touser;
@@ -48,7 +44,14 @@ class MessageWarn
             $logdata['m_id'] = $this->m_id;
             $logdata['error'] = '发送成功';
             $logdata['type'] = 3;
-            Db::table('motion_template_log')->insertGetId($logdata);
+            $log_id = Db::table('motion_template_log')->insertGetId($logdata);
+            $touser = $this->touser;
+            $templateId = $this->templateId;
+            $url = '';
+            $res = Template::sendTemplateMessage($data, $touser, $templateId, $url);
+            if ($res['errmsg'] == 'ok') {
+                Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('status' => 1, 'error' => '发送成功'));
+            }
             echo json_encode($logdata);
         } catch (Exception $exc) {
             $logdata['byid'] = $this->byid;

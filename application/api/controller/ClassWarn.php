@@ -46,19 +46,22 @@ class ClassWarn
                 'remark' => array('value' => '请按时按标准完成动作', 'color' => '#cc0000'),
             );
             try {
-                $touser = $class['openid'];
-                $templateId = $wechat_class_id;
-                $url = url('/lesson/detile', ['id' => $class['id']] ,'html' ,true);
-                Template::sendTemplateMessage($data, $touser, $templateId, $url);
                 $logdata['byid'] = $class['id'];
                 $logdata['data'] = json_encode($data);
                 $logdata['openid'] = $class['openid'];
                 $logdata['templateId'] = $wechat_class_id;
                 $logdata['create_at'] = time();
                 $logdata['m_id'] = $class['m_id'];
-                $logdata['error'] = '发送成功';
+                $logdata['error'] = '发送失败';
                 $logdata['type'] = 2;
-                Db::table('motion_template_log')->insertGetId($logdata);
+                $log_id =  Db::table('motion_template_log')->insertGetId($logdata);
+                $touser = $class['openid'];
+                $templateId = $wechat_class_id;
+                $url = url('/lesson/detile', ['id' => $class['id']], 'html', true);
+                $res = Template::sendTemplateMessage($data, $touser, $templateId, $url);
+                if ($res['errmsg'] == 'ok') {
+                    Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('status' => 1, 'error' => '发送成功'));
+                }
                 echo json_encode($logdata);
             } catch (Exception $exc) {
                 $logdata['byid'] = $class['id'];
