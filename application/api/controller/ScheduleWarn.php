@@ -145,8 +145,9 @@ class ScheduleWarn
         try {
             $res =  Template::sendTemplateMessage($template[$type], $touser, $templateId, $url);
             if ($res['errmsg'] == 'ok') {
-                Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('return_info' => json_encode($res), 'status' => 1, 'error' => '发送成功'));
+                Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('status' => 1, 'error' => '发送成功'));
             }
+            Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('return_info' => json_encode($res)));
             echo json_encode($logdata); //18151487535 
         } catch (Exception $exc) {
             echo json_encode($logdata);
