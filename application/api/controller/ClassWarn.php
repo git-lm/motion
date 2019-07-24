@@ -69,8 +69,5 @@ class ClassWarn
                 echo json_encode($logdata);
             }
         }
-        // //会员计划提前时间
-        // $wechat_member_plan_time = !empty(sysconf('wechat_member_plan_time'))  ? sysconf('wechat_member_plan_time') : 30;
-        // Db::table('motion_lesson')->where(array('is_send' => 0, 'status' => 1, 'state' => 0))->whereTime('class_time', '>=', time())->whereTime('class_time', '<=', strtotime("+{$wechat_member_plan_time} minute"))->select();
     }
 }
