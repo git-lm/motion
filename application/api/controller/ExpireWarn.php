@@ -72,15 +72,6 @@ class ExpireWarn
                 }
                 echo json_encode($logdata);
             } catch (Exception $exc) {
-                $logdata['byid'] = $time['id'];
-                $logdata['data'] = json_encode($data);
-                $logdata['openid'] = $time['openid'];
-                $logdata['templateId'] = $wechat_expire_id;
-                $logdata['create_at'] = time();
-                $logdata['m_id'] = $time['m_id'];
-                $logdata['error'] = $exc->getMessage();
-                $logdata['type'] = 1;
-                Db::table('motion_template_log')->insertGetId($logdata);
                 echo json_encode($logdata);
             }
         }
