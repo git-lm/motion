@@ -51,23 +51,24 @@ class ExpireWarn
                 'expDate' => array('value' => date('Y-m-d', $time['end_time']), 'color' => '#cc0000'),
                 'remark' => array('value' => '请注意时间，防止过期失效。', 'color' => '#cc0000'),
             );
+            $logdata['byid'] = $time['id'];
+            $logdata['data'] = json_encode($data);
+            $logdata['openid'] = $time['openid'];
+            $logdata['templateId'] = $wechat_expire_id;
+            $logdata['create_at'] = time();
+            $logdata['create_time'] = date('Y-m-d H:i:s');
+            $logdata['m_id'] = $time['m_id'];
+            $logdata['error'] = '发送失败';
+            $logdata['type'] = 1;
+            $logdata['source'] = 1;
+            $log_id = Db::table('motion_template_log')->insertGetId($logdata);
             try {
-                $logdata['byid'] = $time['id'];
-                $logdata['data'] = json_encode($data);
-                $logdata['openid'] = $time['openid'];
-                $logdata['templateId'] = $wechat_expire_id;
-                $logdata['create_at'] = time();
-                $logdata['create_time'] = date('Y-m-d H:i:s');
-                $logdata['m_id'] = $time['m_id'];
-                $logdata['error'] = '发送失败';
-                $logdata['type'] = 1;
-                $log_id = Db::table('motion_template_log')->insertGetId($logdata);
                 $touser = $time['openid'];
                 $templateId = $wechat_expire_id;
                 $url = '';
                 $res =  Template::sendTemplateMessage($data, $touser, $templateId, $url);
                 if ($res['errmsg'] == 'ok') {
-                    Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('status' => 1, 'error' => '发送成功'));
+                    Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('return_info' => json_encode($res), 'status' => 1, 'error' => '发送成功'));
                 }
                 echo json_encode($logdata);
             } catch (Exception $exc) {

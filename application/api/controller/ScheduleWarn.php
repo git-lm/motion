@@ -140,11 +140,12 @@ class ScheduleWarn
         $logdata['coach_id'] = $data['coach_id'];
         $logdata['error'] = '发送失败';
         $logdata['type'] = $type;
+        $logdata['source'] = 2;
+        $log_id = Db::table('motion_template_log')->insertGetId($logdata);
         try {
-            $log_id = Db::table('motion_template_log')->insertGetId($logdata);
             $res =  Template::sendTemplateMessage($template[$type], $touser, $templateId, $url);
             if ($res['errmsg'] == 'ok') {
-                Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('status' => 1, 'error' => '发送成功'));
+                Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('return_info' => json_encode($res), 'status' => 1, 'error' => '发送成功'));
             }
             echo json_encode($logdata); //18151487535 
         } catch (Exception $exc) {

@@ -71,6 +71,7 @@ class Config extends BasicAdmin
             sysconf('wechat_coach_schedule_time', $this->request->post('wechat_coach_schedule_time'));
             sysconf('wechat_coach_pt_time', $this->request->post('wechat_coach_pt_time'));
             sysconf('wechat_coach_group_time', $this->request->post('wechat_coach_group_time'));
+            sysconf('wechat_member_pt_time', $this->request->post('wechat_member_pt_time'));
             // 第三方平台配置
             sysconf('wechat_thr_appid', $this->request->post('wechat_thr_appid'));
             sysconf('wechat_thr_appkey', $this->request->post('wechat_thr_appkey'));
