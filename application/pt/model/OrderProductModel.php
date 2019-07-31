@@ -118,8 +118,8 @@ class OrderProductModel extends Model
         $this->duration = $this->orderData['duration'];
         $this->give_time = $this->orderData['give_time'];
         $this->begin_at = $this->orderData['begin_at'];
-        $end_at = $this->orderData['end_at'];
-        $this->end_at = date('Y-m-d', strtotime('+' . $this->give_time . ' day', strtotime($end_at)));
+        $end_at = $this->orderData['end_at'] . ' 23:59:59';
+        $this->end_at = date('Y-m-d H:i:s', strtotime('+' . $this->give_time . ' day', strtotime($end_at)));
         $this->save();
     }
     /**
