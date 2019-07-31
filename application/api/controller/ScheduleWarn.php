@@ -38,7 +38,7 @@ class ScheduleWarn
             $memberInfo = $v['coach']['member']['memberInfo'];
             $fans = $v['coach']['member']['memberInfo']['fans'];
             $openid = $v['coach']['member']['memberInfo']['fans']['openid'];
-            $count = Db::table('motion_template_log')->where(array('byid' => $v['id'], 'status' => 1, 'source' => 2))->count();
+            $count = Db::table('motion_template_log')->where(array('byid' => $v['id'],  'source' => 2))->count();
             if ($count != 0) {
                 continue;
             }
