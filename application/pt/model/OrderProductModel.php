@@ -69,7 +69,8 @@ class OrderProductModel extends Model
     /**
      * 获取单个项目订单
      */
-    function list($param) {
+    function list($param)
+    {
         $where[] = ['status', '=', 1];
         if (!empty($param['id'])) {
             $where[] = ['id', '=', $param['id']];
@@ -99,7 +100,7 @@ class OrderProductModel extends Model
      */
     public static function getProductForMemberId($member_id)
     {
-        $list = self::join('pt_order o', 'order_id = o.id')->where('o.order_status', 1)->where('o.pay_status', 1)->where('o.member_id', $member_id)
+        $list = self::join('pt_order o', 'order_id = o.id')->where('o.order_status', 1)->where('o.pay_status', 1)->where('o.member_id', $member_id)->whereBetweenTimeField('begin_at', 'end_at')
             ->find();
         return $list;
     }
