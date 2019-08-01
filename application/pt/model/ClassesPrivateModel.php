@@ -46,6 +46,7 @@ class ClassesPrivateModel extends Model
         $classPrivate->class_id = $class['id'];
         $classPrivate->member_id = $param['member_id'];
         $classPrivate->product_id = $orderProduct['product_id'];
+        $classPrivate->order_product_id = $orderProduct['id'];
         $classPrivate->begin_at = !empty($param['begin_at']) ? $param['begin_at'] : null;
         $classPrivate->end_at = !empty($param['end_at']) ? $param['end_at'] : null;
         try {

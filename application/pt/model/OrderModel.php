@@ -103,14 +103,14 @@ class OrderModel extends Model
         }
 
         $limit = !empty($param['limit']) ? $param['limit'] : 10;
-        $subsql = ClassesPrivateModel::where('status', 1)->group('product_id')->field('count(0) count , product_id')->buildSql();
+        $subsql = ClassesPrivateModel::where('status', 1)->group('order_product_id')->field('count(0) count , order_product_id')->buildSql();
 
         $query = $this->where($where)->alias('o')
             ->leftJoin('pt_member m', 'm.id = o.member_id') //关联会员
             ->leftJoin('pt_order_product op', 'op.order_id = o.id') //关联私教订单
             ->leftjoin('motion_coach c', 'c.id = op.coach_id') //关联私教
             ->leftjoin('pt_product p', 'p.id = op.product_id') //关联私教项目
-            ->leftjoin([$subsql => 't'], 't.product_id= p.id')
+            ->leftjoin([$subsql => 't'], 't.order_product_id= op.id')
             ->field('m.name mname , p.name pname , p.price pprice , p.number , ifnull(t.count , 0) count ,  c.name cname ,o.create_at , o.pay_status , op.begin_at , op.end_at ,o.id ');
         if (!empty($this->searchOrder)) {
             $query->order($this->searchOrder);
