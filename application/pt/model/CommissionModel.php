@@ -38,7 +38,8 @@ class CommissionModel extends Model
     }
 
 
-    public function orderProduct(){
+    public function orderProduct()
+    {
         return $this->belongsTo('orderProductModel', 'order_id', 'order_id');
     }
 
@@ -171,9 +172,9 @@ class CommissionModel extends Model
             $oder_id = 0;
         }
         $cm = new CommissionModel();
-        $commissio = $cm->where(array('class_id' => $class['id']))->find();
-        if (empty($commissio)) {
-            $commissio = $this;
+        $commission = $cm->where(array('class_id' => $class['id']))->find();
+        if (empty($commission)) {
+            $commission = $this;
         } else {
             $param['update_at'] = date('Y-m-d H:i:s');
         }
@@ -187,7 +188,7 @@ class CommissionModel extends Model
         $param['type'] = $class['type'];
         $param['coach_class_at'] = $coach_class_at;
         $param['unit_price'] = $unit_price;
-        $code = $commissio->save($param);
+        $code = $commission->save($param);
 
         if ($code) {
             return true;
