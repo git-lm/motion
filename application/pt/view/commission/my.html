@@ -6,6 +6,12 @@
 <!-- 表单搜索 开始 -->
 <form autocomplete="off" class="layui-form layui-form-pane form-search" onsubmit="return false" method="get">
     <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">会员名称</label>
+        <div class="layui-input-inline">
+            <input name="member_name" value="" placeholder="会员名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-inline">
         <label class="layui-form-label">课程类型</label>
         <div class="layui-input-inline">
             <select name="type">
@@ -55,6 +61,15 @@
                     }
                 }
             },
+            {
+                title: '会员/人数', templet: function (d) {
+                    if (d.type == 1) {
+                        return '<div>' + d.mname + '</div>';
+                    } else {
+                        return '<div>' + d.number + '</div>';
+                    }
+                }
+            },
             { field: 'coach_name', title: '所属教练' },
             { field: 'price', title: '佣金金额', totalRow: true },
             { field: 'expenses', title: '课程金额', totalRow: true },
@@ -83,11 +98,13 @@
         var coach_name = $('input[name="coach_name"]').val();
         var expire_time = $('input[name="expire_time"]').val();
         var type = $('select[name="type"]').val();
+        var member_name = $('input[name="member_name"]').val();
         table.reload('Table', {
             where: {
                 coach_name: coach_name,
                 expire_time: expire_time,
                 type: type,
+                member_name: member_name,
             },
             page: { curr: curr }
         })

@@ -91,6 +91,9 @@ class CommissionModel extends Model
         if (!empty($param['coach_name'])) {
             $where[] = ['coach.name', 'like', '%' . $param['coach_name'] . '%'];
         }
+        if (!empty($param['member_name'])) {
+            $where[] = ['m.name', 'like', '%' . $param['member_name'] . '%'];
+        }
 
         if (!empty($param['type'])) {
             $where[] = ['c.type', '=', $param['type']];
