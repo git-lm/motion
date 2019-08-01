@@ -90,6 +90,11 @@
                     }
 
                 }
+            }, {
+                title: '已上课时/总课时', templet: function (d) {
+                    return '<div>' + d.number + '/' + d.count + '</div>';
+
+                }
             },
             {
                 fixed: 'right', title: '操作', width: '10%', align: 'center', toolbar: '#Handle'
@@ -130,11 +135,11 @@
 </script>
 <script type="text/html" id="Handle">
     <!--{if auth("$classuri/edit")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('edit')}" data-field="oid" lay-event="open">编辑</a>
-    <!--{/if}-->
-    <!--{if auth("$classuri/del")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="oid" lay-event="del">删除</a>
-    <!--{/if}-->
+<a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('edit')}" data-field="oid" lay-event="open">编辑</a>
+<!--{/if}-->
+<!--{if auth("$classuri/del")}-->
+<a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="oid" lay-event="del">删除</a>
+<!--{/if}-->
 </script>
 
 {/block}
