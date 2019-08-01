@@ -149,6 +149,7 @@ class CommissionModel extends Model
             //获取会员会员身份识别
             $orderProduct = OrderProductModel::getProductForMemberId($member_id);
             $oder_id = $orderProduct['order_id'];
+            $order_product_id = $orderProduct['order_product_id'];
         } else if ($class['type'] == 2) { //说明是团课
             $classesGroup = $class->classesGroup;
 
@@ -170,6 +171,7 @@ class CommissionModel extends Model
                 return false;
             }
             $oder_id = 0;
+            $order_product_id = 0;
         }
         $cm = new CommissionModel();
         $commission = $cm->where(array('class_id' => $class['id']))->find();
@@ -181,6 +183,7 @@ class CommissionModel extends Model
         $param['coach_id'] = $coach_id;
         $param['class_id'] = $class['id'];
         $param['order_id'] = $oder_id;
+        $param['order_product_id'] = $order_product_id;
         $param['expenses_id'] = $expenses['id'];
         $param['expenses'] = $expenses['expenses'];
         $param['award'] = $expenses['award'];

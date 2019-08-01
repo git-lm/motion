@@ -100,7 +100,7 @@ class OrderProductModel extends Model
      */
     public static function getProductForMemberId($member_id)
     {
-        $list = self::join('pt_order o', 'order_id = o.id')->where('o.order_status', 1)->where('o.pay_status', 1)->where('o.member_id', $member_id)->whereBetweenTimeField('begin_at', 'end_at')
+        $list = self::alias('op')->join('pt_order o', 'order_id = o.id')->field('o.id order_id ,op.id order_product_id, op.product_id')->where('o.order_status', 1)->where('o.pay_status', 1)->where('o.member_id', $member_id)->whereBetweenTimeField('begin_at', 'end_at')
             ->find();
         return $list;
     }
