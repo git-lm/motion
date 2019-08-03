@@ -107,7 +107,7 @@ class Classes extends BasicAdmin
         $query = $this->csm::withJoin(['coach', 'course'], 'left')
             ->where(array('classes_model.status' => 1))
             ->whereTime('class_at', 'between', [$startDate, $endDate]);
-        if ($user['username'] != 'admin' && $user['username'] != 'superadmin') {
+        if ($user['username'] != 'admin' && $user['username'] != 'superadmin' && $user['username'] != 'chenyuan') {
             $coach = CoachModel::get(array('u_id' => $user['id']));
             if (empty($coach)) {
                 return json([]);
