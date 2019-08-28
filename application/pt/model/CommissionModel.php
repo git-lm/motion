@@ -112,7 +112,7 @@ class CommissionModel extends Model
             $where[] = ['c.coach_id', '=', $param['coach_id']];
         }
 
-        $query = $this->where($where)->alias('c')
+        $query = $this->with(['order_product', 'order_product.product'])->where($where)->alias('c')
             ->field('c.* , course.name course_name ,coach.name coach_name ,class.class_at ,class.begin_at , class.end_at ,m.name mname , cg.number , p.name pname')
             ->leftJoin('motion_coach coach', 'coach.id = c.coach_id')
             ->leftJoin('pt_classes class', 'class.id = c.class_id')
