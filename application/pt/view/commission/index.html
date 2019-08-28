@@ -71,7 +71,7 @@
             {
                 title: '会员/人数', templet: function (d) {
                     if (d.type == 1) {
-                        return '<div>' + d.mname + '</div>';
+                        return '<div>' + d.mname + '/+' + d.order_product.product.name + '</div>';
                     } else {
                         return '<div>' + d.number + '</div>';
                     }
