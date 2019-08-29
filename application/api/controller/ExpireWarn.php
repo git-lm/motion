@@ -45,6 +45,10 @@ class ExpireWarn
             echo 'nodata';
         }
         foreach ($times as $time) {
+            $diff =  $this->getDiff($time['end_time']);
+            if ($diff != 15 || $diff != 7 || $diff != 1) {
+                continue;
+            }
             $data = array(
                 'first' => array('value' => '时间到期提醒', 'color' => '#0000ff'),
                 'name' => array('value' => '私教时间', 'color' => '#cc0000'),
@@ -76,5 +80,14 @@ class ExpireWarn
                 echo json_encode($logdata);
             }
         }
+    }
+
+    public function getDiff($end_time)
+    {
+
+        $today = strtotime(date('Y-m-d'));
+        $past = strtotime(date('Y-m-d', $end_time));
+        $dif = ceil(($past - $today) / 86400); //60s*60min*24h   
+        return $dif;
     }
 }
