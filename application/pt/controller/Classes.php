@@ -385,7 +385,7 @@ class Classes extends BasicAdmin
                                 $course = $courseModel->where(array('name' => $course_name, 'status' => 1))->find();
                                 if (empty($course) || empty($course['id'])) {
                                     Db::rollback();
-                                    return ['code' => 0, 'msg' => "无此{$coach_name}团课课程"];
+                                    return ['code' => 0, 'msg' => "无此{$course_name}团课课程"];
                                     $this->error("无此{$course_name}团课课程");
                                 }
                                 $param['course_id'] = $course['id'];
