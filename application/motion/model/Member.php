@@ -729,8 +729,9 @@ class Member extends Model
             'phone.checkPhone' => '该手机号码已存在',
         ];
         $validate = new \think\Validate();
-        $validate->extend('checkPhone', function ($value, $rule) {
-            $member = Db::name('motion_member')->where(array('status' => 1, 'phone' => $value))->find();
+        $validate->extend('checkPhone', function ($value, $rule, $data) {
+            $mid = !empty($data['mid']) ? $data['mid'] : 0;
+            $member = Db::name('motion_member')->where(array('status' => 1, 'phone' => $value))->where('id', '<>', $mid)->find();
             if (!empty($member)) {
                 return false;
             }

@@ -145,10 +145,12 @@ class Member extends BasicAdmin
         $data['phone'] = $phone;
         $data['coach_id'] = $coach_id;
         $data['type_id'] = $type_id;
+        $data['mid'] = $mid;
         $validate = $this->memberModel->validate($data);
         if ($validate) {
             $this->error($validate);
         }
+        unset($data['mid']);
         $where['id'] = $mid;
         $code = $this->memberModel->edit($data, $where);
         if ($code) {
