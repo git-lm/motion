@@ -36,6 +36,7 @@ class Member extends BasicAdmin
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/s') : '';
         $cname = request()->has('cname', 'get') ? request()->get('cname/s') : '';
+        $phone = request()->has('phone', 'get') ? request()->get('phone/s') : '';
         $expire_time = request()->has('expire_time', 'get') ? request()->get('expire_time/s') : '';
         $type_id = request()->has('type_id', 'get') ? request()->get('type_id/d') : 0;
         if ($name) {
@@ -46,6 +47,9 @@ class Member extends BasicAdmin
         }
         if ($cname) {
             $where[] = ['c.name', 'like', '%' . $cname . '%'];
+        }
+        if ($phone) {
+            $where[] = ['m.phone', '=', $phone];
         }
         if ($expire_time) {
             $et = explode(' - ', $expire_time);

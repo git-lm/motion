@@ -15,6 +15,12 @@
         </div>
     </div>
     <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">手机号码</label>
+        <div class="layui-input-inline">
+            <input name="phone" value="" placeholder="请输入手机号码" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-inline">
         <label class="layui-form-label">教练名称</label>
         <div class="layui-input-inline">
             <input name="cname" value="" placeholder="请输入教练名称" class="layui-input">
@@ -107,12 +113,14 @@
         var cname = $('input[name="cname"]').val();
         var expire_time = $('input[name="expire_time"]').val();
         var type_id = $('select[name="type_id"]').val();
+        var phone = $('input[name="phone"]').val();
         table.reload('memberTable', {
             where: {
                 name: name,
                 cname: cname,
                 expire_time: expire_time,
-                type_id: type_id
+                type_id: type_id,
+                phone: phone,
             },
             page: { curr: curr }
         })
@@ -121,35 +129,42 @@
 </script>
 <script type="text/html" id="memberhandle">
     <!--{if auth("$classuri/time_add")}-->
-    <a class="layui-btn layui-btn-xs" data-action="{:url('time_add')}" data-field="mid" data-title="添加时间" lay-event="open">添加时间</a>
-    <!--{/if}-->
-    <!--{if auth("$classuri/edit")}-->
-    <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="mid" data-title="编辑会员" lay-event="open">编辑</a>
-    <!--{/if}-->
-    <!--{if auth("$classuri/del")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="mid" lay-event="del">删除</a>
-    <!--{/if}-->
-    <!--{if auth("$classuri/pas")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('pas')}" data-field="mid" lay-event="update">重置密码</a>
-    <!--{/if}-->
-    
-    {{#if (d.status == 1){}}
-    <!--{if auth("$classuri/handle")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-value="-1" data-action="{:url('handle')}" data-field="mid" lay-event="update">禁用</a>
-    <!--{/if}-->
-    {{#}else{}}
-    <!--{if auth("$classuri/handle")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-value="1" data-action="{:url('handle')}" data-field="mid" lay-event="update">启用</a>
-    <!--{/if}-->
-    {{#}}}
-    <!--{if auth("$classuri/dis")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('dis')}" data-field="mid" lay-event="open">分配教练</a>
-    <!--{/if}-->
-    <!--{if auth("$classuri/initializeClass")}-->
-    {{#if (!d.sid && !d.is_system){}}
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('initializeClass')}" data-field="mid" lay-event="open">初始化课程</a>
-    {{#}}}
-    <!--{/if}-->
+<a class="layui-btn layui-btn-xs" data-action="{:url('time_add')}" data-field="mid" data-title="添加时间"
+    lay-event="open">添加时间</a>
+<!--{/if}-->
+<!--{if auth("$classuri/edit")}-->
+<a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="mid" data-title="编辑会员"
+    lay-event="open">编辑</a>
+<!--{/if}-->
+<!--{if auth("$classuri/del")}-->
+<a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="mid" lay-event="del">删除</a>
+<!--{/if}-->
+<!--{if auth("$classuri/pas")}-->
+<a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('pas')}" data-field="mid"
+    lay-event="update">重置密码</a>
+<!--{/if}-->
+
+{{#if (d.status == 1){}}
+<!--{if auth("$classuri/handle")}-->
+<a class="layui-btn layui-btn-danger layui-btn-xs" data-value="-1" data-action="{:url('handle')}" data-field="mid"
+    lay-event="update">禁用</a>
+<!--{/if}-->
+{{#}else{}}
+<!--{if auth("$classuri/handle")}-->
+<a class="layui-btn layui-btn-danger layui-btn-xs" data-value="1" data-action="{:url('handle')}" data-field="mid"
+    lay-event="update">启用</a>
+<!--{/if}-->
+{{#}}}
+<!--{if auth("$classuri/dis")}-->
+<a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('dis')}" data-field="mid"
+    lay-event="open">分配教练</a>
+<!--{/if}-->
+<!--{if auth("$classuri/initializeClass")}-->
+{{#if (!d.sid && !d.is_system){}}
+<a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('initializeClass')}" data-field="mid"
+    lay-event="open">初始化课程</a>
+{{#}}}
+<!--{/if}-->
 </script>
 <script type="text/html" id="end_time_show">
     {{#if(d.end_time == '' || d.end_time == null){  }}
