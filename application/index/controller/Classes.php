@@ -99,9 +99,11 @@ class Classes extends MobileBase
         }
         $cpm = new ClassesPrivateModel();
         $cpm->add($param);
+        $classPrivate = $cpm->getClassPrivate();
         if ($cpm->error) {
             $this->error($cpm->error);
         } else {
+            (new \app\api\controller\ScheduleWarn)->sendAdmin($classPrivate);
             $this->success('课程开始');
         }
     }

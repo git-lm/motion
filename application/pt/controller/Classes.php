@@ -401,6 +401,7 @@ class Classes extends BasicAdmin
                                 $this->error("无此{$coach_name}教练");
                             }
                             $param['coach_id'] = $coach['id'];
+                            $param['member_name'] = $v['member_name'];
                             $classesModel->add($param);
                             if ($classesModel->error) {
                                 Db::rollback();
@@ -447,7 +448,7 @@ class Classes extends BasicAdmin
             $highestColumn = $worksheet->getHighestColumn(); // 总列数
             $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn); //把列的字母转成数字
 
-            $end_title = (string)$worksheet->getCellByColumnAndRow(1, $highestRow)->getValue(); //获取最后一行的文字
+            $end_title = (string) $worksheet->getCellByColumnAndRow(1, $highestRow)->getValue(); //获取最后一行的文字
 
             if ('结束日程' != $end_title) {
                 unlink($path);
@@ -455,31 +456,33 @@ class Classes extends BasicAdmin
             }
             $sheet = array();
             for ($column = 1; $column <= $highestColumnIndex - 1; $column++) { //$highestRow
-                //每次循环 读取三列 生成一个日程
-                $columnNext = $column + 2;
+                //每次循环 读取四列 生成一个日程
+                $columnNext = $column + 3;
                 //定义一个日程数组
                 $valArr = array();
                 //获取日程时间
-                $date = (string)$worksheet->getCellByColumnAndRow($column, 2)->getValue();
+                $date = (string) $worksheet->getCellByColumnAndRow($column, 2)->getValue();
                 if (empty($date)) {
                     break;
                 }
                 $valArr['date'] = $date;
                 $detail = array(); //日程详情
                 for ($row = 3; $row <= $highestRow; $row++) {
-                    $end = (string)$worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    $end = (string) $worksheet->getCellByColumnAndRow(1, $row)->getValue();
                     if ($end == '结束日程') {
                         break;
                     }
-                    $time = (string)$worksheet->getCellByColumnAndRow($column, $row)->getValue();
+                    $time = (string) $worksheet->getCellByColumnAndRow($column, $row)->getValue();
                     if (empty($time)) {
                         continue;
                     }
-                    $course = (string)$worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
-                    $coach = (string)$worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+                    $course = (string) $worksheet->getCellByColumnAndRow($column + 1, $row)->getValue();
+                    $coach = (string) $worksheet->getCellByColumnAndRow($column + 2, $row)->getValue();
+                    $member_name = (string) $worksheet->getCellByColumnAndRow($column + 3, $row)->getValue();
                     $detail['time'] = $time;
                     $detail['course'] = $course;
                     $detail['coach'] = $coach;
+                    $detail['member_name'] = $member_name;
                     $valArr['detail'][] = $detail;
                 }
 

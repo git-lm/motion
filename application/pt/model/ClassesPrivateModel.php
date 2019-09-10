@@ -13,6 +13,12 @@ class ClassesPrivateModel extends Model
     protected $updateTime = 'update_at';
     protected $createTime = 'create_at';
     protected $table = 'pt_classes_private';
+    protected $classPrivate;
+
+    public function getClassPrivate()
+    {
+        return $this->classPrivate;
+    }
 
 
     public function member()
@@ -22,6 +28,10 @@ class ClassesPrivateModel extends Model
     public function product()
     {
         return $this->belongsTo('productModel', 'product_id', 'id');
+    }
+    public function class()
+    {
+        return $this->belongsTo('classesModel', 'class_id', 'id');
     }
 
     public function add($param)
@@ -53,6 +63,7 @@ class ClassesPrivateModel extends Model
         try {
             Db::startTrans();
             $classPrivate->save();
+            $this->classPrivate = $classPrivate;
             $cm = new CommissionModel();
             $cm->add($class);
             if ($cm->error) {

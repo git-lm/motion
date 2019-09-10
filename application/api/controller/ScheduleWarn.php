@@ -104,6 +104,44 @@ class ScheduleWarn
     }
 
 
+    public function sendAdmin($classPrivate)
+    {
+        $templateId = sysconf('wechat_coach_class_id');              //课程提醒模板
+        $touser = ['oeejS1T-6ZcmvZNR9ikpagGsll_0', 'oeejS1ZXrbzmxGqaCDpiWtNcEvgk'];
+        // $touser = ['oeejS1e-kva6LWJRygqguExt6cRI'];
+        $data = array(
+            'first' => array('value' => '教练私教上课通知', 'color' => '#0000ff'),
+            'keyword1' => array('value' => '私教课程管理员提醒', 'color' => '#cc0000'),
+            'keyword2' => array('value' => $classPrivate['begin_at'], 'color' => '#cc0000'),
+            'remark' => array('value' => '教练名称：' . $classPrivate['class']['coach']['name'] . '，会员名称：' . $classPrivate['member']['name'] . '，所属项目：' . $classPrivate['product']['name'], 'color' => '#cc0000'),
+        );
+        foreach ($touser as $val) {
+            $url = '';
+            $logdata['byid'] = $classPrivate['id'];
+            $logdata['data'] = json_encode($data);
+            $logdata['openid'] = $val;
+            $logdata['templateId'] = $templateId;
+            $logdata['create_at'] = time();
+            $logdata['create_time'] = date('Y-m-d H:i:s');
+            $logdata['coach_id'] = $classPrivate['class']['coach']['id'];
+            $logdata['error'] = '发送失败';
+            $logdata['type'] = 6;
+            $logdata['source'] = 2;
+            $log_id = Db::table('motion_template_log')->insertGetId($logdata);
+            try {
+                $res =  Template::sendTemplateMessage($data, $val, $templateId, $url);
+                if ($res['errmsg'] == 'ok') {
+                    Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('status' => 1, 'error' => '发送成功'));
+                }
+                Db::table('motion_template_log')->where(array('id' => $log_id))->update(array('return_info' => json_encode($res)));
+                echo json_encode($logdata); //18151487535 
+            } catch (Exception $exc) {
+                echo json_encode($logdata);
+            }
+        }
+    }
+
+
     public function send($touser, $templateId, $data,  $type, $url = '')
     {
         $template =  array(

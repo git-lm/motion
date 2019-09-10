@@ -323,6 +323,7 @@ class ClassesModel extends Model
             'coach_id' => 'require|number',
             'course_id' => 'number',
             'remark' => 'max:100',
+            'member_name' => 'max:11',
         ];
         $message = [
             'class_at.require' => '课程日期必填',
@@ -336,7 +337,8 @@ class ClassesModel extends Model
             'coach_id.require' => '教练必选',
             'coach_id.number' => '请正确选择教练',
             'course_id.number' => '请正确选择课程',
-            'remark.max' => '备注最多100个字'
+            'remark.max' => '备注最多100个字',
+            'member_name.max' => '会员名称最多11个字'
         ];
         $validate = new \think\Validate();
         $validate->rule($rule)->message($message)->check($data);

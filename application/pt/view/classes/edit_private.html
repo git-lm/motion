@@ -39,6 +39,13 @@
                 name="class_time" title="请选择上课时间" placeholder="请选择上课时间" class="layui-input">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员名称</label>
+        <div class="layui-input-block">
+            <input type="text" autofocus name="member_name" value='{$list.member_name|default=""}' maxlength="11"
+                title="请输入会员名称" placeholder="请输入会员名称" class="layui-input">
+        </div>
+    </div>
     <input type="hidden" name="id" value="{$list.id}">
     <div class="hr-line-dashed"></div>
 
