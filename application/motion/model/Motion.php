@@ -6,7 +6,8 @@ use think\Model;
 use think\Db;
 use service\DbService;
 
-class Motion extends Model {
+class Motion extends Model
+{
 
     //动作库表
     protected $table = 'motion_bank';
@@ -16,7 +17,8 @@ class Motion extends Model {
      * @param type $val  转换数据
      * @param type $type 转换类型  d 天   h 小时  m 分钟  s秒
      */
-    protected function getDateAttr($val, $type = 'd') {
+    protected function getDateAttr($val, $type = 'd')
+    {
         if ($type == 'd') {
             return date('Y-m-d', $val);
         } else if ($type == 'h') {
@@ -34,7 +36,8 @@ class Motion extends Model {
      * 状态获取器
      * @param type $val  转换数据
      */
-    protected function getStatusAttr($val) {
+    protected function getStatusAttr($val)
+    {
         if ($val == 1) {
             return '正常';
         } else if ($val == 0) {
@@ -55,13 +58,14 @@ class Motion extends Model {
      * @param int $limit    每页显示条数
      * @param bool $isWhere 是否直接查询
      */
-    public function get_motions($where = [], $order = [], $page = 0, $limit = 0) {
+    public function get_motions($where = [], $order = [], $page = 0, $limit = 0, $orderRaw = '')
+    {
         $db = Db::table($this->table);
         $db->alias('mb');
         $buildSql = Db::table('motion_type')->field('id mtid, name mtname ,sort mtsort')->where('status', '=', 1)->buildSql();
         $db->leftJoin([$buildSql => 'mt'], 'mt.mtid = mb.tid');
 
-        $lists = DbService::queryALL($db, $where, $order, $page, $limit);
+        $lists = DbService::queryALL($db, $where, $order, $page, $limit, [], true, $orderRaw);
         foreach ($lists as &$list) {
             $list['create_time_show'] = $this->getDateAttr($list['create_time']);
             $list['status_show'] = $this->getStatusAttr($list['status']);
@@ -77,7 +81,8 @@ class Motion extends Model {
      * @param Array $where  查询条件
      * @param Array $order  排序条件
      */
-    public function get_motion($where = [], $order = []) {
+    public function get_motion($where = [], $order = [])
+    {
         $list = DbService::queryOne($this->table, $where, $order);
 
         return $list;
@@ -87,11 +92,12 @@ class Motion extends Model {
      * 新增动作库
      * @param type $data 保存的数据
      */
-    public function add($data = []) {
+    public function add($data = [])
+    {
         if (empty($data['create_time'])) {
             $data['create_time'] = time();
         }
-        DbService::save_log('motion_log', '', json_encode($data), '', '新增动作库' , $this->table);
+        DbService::save_log('motion_log', '', json_encode($data), '', '新增动作库', $this->table);
         $code = DbService::save($this->table, $data);
         return $code;
     }
@@ -101,12 +107,13 @@ class Motion extends Model {
      * @param type $data    保存的数据
      * @param type $where   编辑条件
      */
-    public function edit($data = [], $where = []) {
+    public function edit($data = [], $where = [])
+    {
         $motion = $this->get_motion($where);
         if (empty($data['update_time'])) {
             $data['update_time'] = time();
         }
-        DbService::save_log('motion_log', json_encode($motion), json_encode($data), json_encode($where), '编辑动作库' , $this->table);
+        DbService::save_log('motion_log', json_encode($motion), json_encode($data), json_encode($where), '编辑动作库', $this->table);
         $code = DbService::update($this->table, $data, $where);
         return $code;
     }
@@ -114,13 +121,14 @@ class Motion extends Model {
     /**
      * 获取分组视频
      */
-    public function get_type_motions() {
+    public function get_type_motions()
+    {
         //所有带视频的子查询
         $types = Db::table($this->table)
-                ->field('tid , name ')
-                ->where('status', 1)
-                ->group('tid')
-                ->select();
+            ->field('tid , name ')
+            ->where('status', 1)
+            ->group('tid')
+            ->select();
         foreach ($types as &$type) {
             $where['tid'] = $type['tid'];
             $where['status'] = 1;
@@ -133,7 +141,8 @@ class Motion extends Model {
      * 验证类型数据有效性
      * @param type $data 需要验证的数据
      */
-    public function validate($data) {
+    public function validate($data)
+    {
         $rule = [
             'tid' => 'require',
             'name' => 'require|max:50|min:2',
@@ -151,5 +160,4 @@ class Motion extends Model {
         $validate->rule($rule)->message($message)->check($data);
         return $validate->getError();
     }
-
 }

@@ -318,7 +318,8 @@ class Lesson extends MobileBase
     {
         $vwhere[] = ['mb.id', 'in', $ids];
         $vwhere[] = ['mb.status', '=', 1];
-        $motion = $this->motionModel->get_motions($vwhere);
+        $corder = " INSTR('" . $ids . "',CONCAT(',',mb.id,',')) ";
+        $motion = $this->motionModel->get_motions($vwhere,  [],  0,  0, $corder);
         return $motion;
     }
 }

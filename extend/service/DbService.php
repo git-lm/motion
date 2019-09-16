@@ -26,7 +26,7 @@ class DbService
      * @param bool $isWhere     是否构造子查询
      * @return Array/String     返回查询结果集/子查询
      */
-    public static function queryALL($dbQuery, $where = [], $order = [], $page = 0, $limit = 0, $field = [], $isWhere = true)
+    public static function queryALL($dbQuery, $where = [], $order = [], $page = 0, $limit = 0, $field = [], $isWhere = true, $orderRaw = '')
     {
         $db = is_string($dbQuery) ? Db::table($dbQuery) : $dbQuery;
         if ($where) {
@@ -43,6 +43,9 @@ class DbService
         }
         if ($field) {
             $db->field($field);
+        }
+        if ($orderRaw) {
+            $db->orderRaw($orderRaw);
         }
         if ($isWhere) {
             $lists = $db->select();
