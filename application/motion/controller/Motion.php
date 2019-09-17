@@ -95,6 +95,9 @@ class Motion extends BasicAdmin
             $this->error('请选择类型');
         }
         preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $url, $matched);
+        if (empty($matched[1])) {
+            $this->error('视频地址错误');
+        }
         $src = $matched[1];
         //验证数据
         $data['tid'] = $tid;
@@ -152,6 +155,9 @@ class Motion extends BasicAdmin
             $this->error('请正确选择动作库');
         }
         preg_match('/<iframe[^>]*\s+src="([^"]*)"[^>]*>/is', $url, $matched);
+        if (empty($matched[1])) {
+            $this->error('视频地址错误');
+        }
         $src = $matched[1];
         //判断类型是否存在
         $this->check_data($id);
