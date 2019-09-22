@@ -95,9 +95,19 @@ class Classes extends BasicAdmin
     {
         $this->assign('title', '课程记录');
         $post = input('post.');
-        $this->assign('type', input('get.type/d', 0));
         return $this->fetch();
     }
+    /**
+     * 渲染课程记录
+     */
+    public function my_schedule()
+    {
+        $this->assign('title', '课程记录');
+        $post = input('post.');
+        $this->assign('type', 1);
+        return $this->fetch('schedule');
+    }
+
     //获取首页日历信息
     public function get_calendar_lists()
     {
