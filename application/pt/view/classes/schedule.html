@@ -1,5 +1,6 @@
 {extend name='admin@public/content'}
 {block name="button"}
+<!-- {if(!$type)} -->
 <!--{if auth("$classuri/upload")}-->
 <button data-modal='{:url("$classuri/upload")}' data-title="上传课程日程"
     class='layui-btn layui-btn-sm layui-btn-primary'>上传课程日程</button>
@@ -7,6 +8,7 @@
 <!--{if auth("$classuri/addGroup")}-->
 <button data-modal='{:url("$classuri/addGroup")}' data-title="添加团课"
     class='layui-btn layui-btn-sm layui-btn-primary'>添加团课</button>
+<!-- {/if} -->
 <!-- {/if} -->
 <!--{if auth("$classuri/addPrivate")}-->
 <button data-modal='{:url("$classuri/addPrivate")}' data-title="添加私教"
@@ -41,6 +43,7 @@
             搜 索</button>
     </div>
 </form> -->
+<input type="hidden" name="type" value="{$type}">
 <div id="calendar">
 
 </div>
@@ -51,7 +54,7 @@
 <script>
     $(function () {
         laydate.render({ elem: '#search_time' });
-
+        var type = $('input[name="type"]').val();
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             plugins: ['interaction', 'dayGrid', 'timeGrid'],
@@ -100,16 +103,17 @@
                 // var date = this.getDate().format('YYYY-MM');
                 var endStr = fetchInfo.endStr;
                 var startStr = fetchInfo.startStr;
+
                 $.ajax({
                     url: "{:url('get_calendar_lists')}",
                     dataType: 'json',
                     type: 'POST',
                     data: {
+                        type: type,
                         endStr: endStr,
                         startStr: startStr,
                     },
                     success: function (json) { // 获取当前月的数据
-                        console.log(json)
                         var events = [];
                         $.each(json, function (i, c) {
                             if (c.type == 1) {

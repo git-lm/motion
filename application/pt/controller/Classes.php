@@ -95,19 +95,21 @@ class Classes extends BasicAdmin
     {
         $this->assign('title', '课程记录');
         $post = input('post.');
+        $this->assign('type', input('get.type/d', 0));
         return $this->fetch();
     }
     //获取首页日历信息
     public function get_calendar_lists()
     {
         $user = session('user');
-
+        $type = input('post.type/d', 1);
         $startDate = input('post.startStr/s', date('Y-m-01'));
         $endDate = input('post.endStr/s', date('Y-m-31'));
         $query = $this->csm::withJoin(['coach', 'course'], 'left')
             ->where(array('classes_model.status' => 1))
             ->whereTime('class_at', 'between', [$startDate, $endDate]);
-        if ($user['username'] != 'admin' && $user['username'] != 'superadmin' && $user['username'] != 'chenyuan') {
+        // if ($user['username'] != 'admin' && $user['username'] != 'superadmin' && $user['username'] != 'chenyuan') {
+        if ($type) {
             $coach = CoachModel::get(array('u_id' => $user['id']));
             if (empty($coach)) {
                 return json([]);
