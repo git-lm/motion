@@ -95,6 +95,7 @@ class Classes extends BasicAdmin
     {
         $this->assign('title', '课程记录');
         $post = input('post.');
+        $this->assign('type', 0);
         return $this->fetch();
     }
     /**
