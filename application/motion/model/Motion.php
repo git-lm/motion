@@ -72,6 +72,7 @@ class Motion extends Model
             if (empty($list['mtname'])) {
                 $list['mtname'] = '异常状态';
             }
+            $list['name'] = strtolower($list['name']);
         }
         return $lists;
     }
@@ -133,6 +134,7 @@ class Motion extends Model
             $where['tid'] = $type['tid'];
             $where['status'] = 1;
             $type['motion'] = $this->get_motions($where);
+            $type['name'] = strtolower($type['name']);
         }
         return $types;
     }
