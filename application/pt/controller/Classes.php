@@ -137,7 +137,6 @@ class Classes extends BasicAdmin
                 $value['classesPrivate'];
             }
         }
-        dump($classes);exit;
         return json($classes);
     }
 
