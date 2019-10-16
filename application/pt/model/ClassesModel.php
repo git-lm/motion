@@ -30,7 +30,7 @@ class ClassesModel extends Model
         return $this->hasOne('classesGroupModel', 'class_id', 'id');
     }
     /**
-     * 关联团课上课记录
+     * 关联私教上课记录
      */
     public function classesPrivate()
     {

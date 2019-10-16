@@ -131,8 +131,13 @@ class Classes extends BasicAdmin
         foreach ($classes as &$value) {
             if ($value['type'] == 3) {
                 $value['classesOther'];
+            } else if ($value['type'] == 2) {
+                $value['classesGroup'];
+            } else if ($value['type'] == 1) {
+                $value['classesPrivate'];
             }
         }
+        dump($classes);exit;
         return json($classes);
     }
 

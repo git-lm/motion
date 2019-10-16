@@ -121,7 +121,12 @@
                                 if (c.member_name != null && c.member_name != '') {
                                     member_name = '\n' + '预计会员：' + c.member_name;
                                 }
-                                var color = '#ff0099';
+                                if (c.classesPrivate == null) {
+                                    var color = '#ff0099';
+                                } else {
+                                    var color = '#00FF99';
+                                }
+
                                 var title = '\n 教练：' + c.coach.name + '\n' + '时间：' + c.begin_at.substr(10) + '-' + c.end_at.substr(10) + member_name;
                             } else if (c.type == 2) {
                                 var color = '#6600ff';
