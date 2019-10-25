@@ -93,7 +93,11 @@ class Login extends BasicAdmin
             return true;
         }
         $ip = $this->request->ip();
-        $allowed_ip = array('122.192.255.228');
+        if (empty(sysconf('ip'))) {
+            $allowed_ip = [];
+        } else {
+            $allowed_ip = explode(',', sysconf('ip'));
+        }
         $check_ip_arr = explode('.', $ip); //要检测的ip拆分成数组  
         if (!in_array($ip, $allowed_ip)) {
             foreach ($allowed_ip as $val) {
