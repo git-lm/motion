@@ -56,6 +56,7 @@ class MotionType extends BasicAdmin
     public function add()
     {
         $where[] = ['status', '<>', 0];
+        $where[] = ['parent_id', '=', 0];
         $order['sort'] = 'asc';
         $order['create_time'] = 'desc';
         //获取所有菜单
@@ -104,6 +105,7 @@ class MotionType extends BasicAdmin
         $list = $this->check_data($tid);
         $order['sort'] = 'asc';
         $where[] = ['status', '<>', 0];
+        $where[] = ['parent_id', '=', 0];
         $order['create_time'] = 'desc';
         //获取所有菜单
         $lists = $this->motionTypeModel->get_motion_types($where, $order);
