@@ -4,6 +4,7 @@ namespace app\motion\controller;
 
 use controller\BasicAdmin;
 use app\motion\model\MotionType as motionTypeModel;
+use service\ToolsService;
 
 /**
  * 系统用户管理控制器
@@ -12,16 +13,19 @@ use app\motion\model\MotionType as motionTypeModel;
  * @author Anyon 
  * @date 2017/02/15 18:12
  */
-class MotionType extends BasicAdmin {
+class MotionType extends BasicAdmin
+{
 
-    public function initialize() {
+    public function initialize()
+    {
         $this->motionTypeModel = new motionTypeModel();
     }
 
     /**
      * 渲染类型页面
      */
-    public function index() {
+    public function index()
+    {
         $this->assign('title', '类型列表');
         return $this->fetch();
     }
@@ -29,7 +33,8 @@ class MotionType extends BasicAdmin {
     /**
      * 类型页面获取所有数据
      */
-    public function get_lists() {
+    public function get_lists()
+    {
         $page = request()->has('page', 'get') ? request()->get('page/d') : 1;
         $limit = request()->has('limit', 'get') ? request()->get('limit/d') : 10;
         $name = request()->has('name', 'get') ? request()->get('name/d') : '';
@@ -40,6 +45,7 @@ class MotionType extends BasicAdmin {
         $order['sort'] = 'asc';
         $order['create_time'] = 'desc';
         $lists = $this->motionTypeModel->get_motion_types($where, $order, $page, $limit);
+        $lists = ToolsService::arr2table($lists, 'id', 'parent_id');
         $count = count($this->motionTypeModel->get_motion_types($where));
         echo $this->tableReturn($lists, $count);
     }
@@ -47,7 +53,8 @@ class MotionType extends BasicAdmin {
     /**
      * 渲染新增窗口
      */
-    public function add() {
+    public function add()
+    {
         $where[] = ['status', '<>', 0];
         $order['sort'] = 'asc';
         $order['create_time'] = 'desc';
@@ -62,7 +69,8 @@ class MotionType extends BasicAdmin {
     /**
      * 新增类型数据
      */
-    public function add_info() {
+    public function add_info()
+    {
         //获取数据
         $parent_id = request()->has('parent_id', 'post') ? request()->post('parent_id/d') : 0;
         $name = request()->has('name', 'post') ? request()->post('name/s') : '';
@@ -86,7 +94,8 @@ class MotionType extends BasicAdmin {
     /**
      * 渲染编辑窗口
      */
-    public function edit() {
+    public function edit()
+    {
         $tid = request()->has('tid', 'get') ? request()->get('tid/d') : 0;
         if (!$tid) {
             $this->error('请正确选择类型');
@@ -108,8 +117,9 @@ class MotionType extends BasicAdmin {
     /**
      * 编辑类型数据
      */
-    public function edit_info() {
-        
+    public function edit_info()
+    {
+
         //获取数据
         $tid = request()->has('tid', 'post') ? request()->post('tid/d') : 0;
         $parent_id = request()->has('parent_id', 'post') ? request()->post('parent_id/d') : 0;
@@ -128,7 +138,7 @@ class MotionType extends BasicAdmin {
         if ($validate) {
             $this->error($validate);
         }
-        
+
         $where['id'] = $tid;
         $code = $this->motionTypeModel->edit($data, $where);
         if ($code) {
@@ -138,7 +148,8 @@ class MotionType extends BasicAdmin {
         }
     }
 
-    public function del() {
+    public function del()
+    {
         //获取数据
         $tid = request()->has('tid', 'post') ? request()->post('tid/d') : 0;
         if (!$tid) {
@@ -158,7 +169,8 @@ class MotionType extends BasicAdmin {
     /**
      * 判断类型是否存在
      */
-    public function check_data($tid = 0) {
+    public function check_data($tid = 0)
+    {
         //判断类型是否存在
         $twhere['id'] = $tid;
         $list = $this->motionTypeModel->get_motion_type($twhere);
@@ -167,5 +179,4 @@ class MotionType extends BasicAdmin {
         }
         return $list;
     }
-
 }
