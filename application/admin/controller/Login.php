@@ -24,9 +24,9 @@ class Login extends BasicAdmin
      */
     public function initialize()
     {
-//        if (session('user.id') && $this->request->action() !== 'out') {
-//            $this->redirect('@admin');
-//        }
+        //        if (session('user.id') && $this->request->action() !== 'out') {
+        //            $this->redirect('@admin');
+        //        }
     }
 
     /**
@@ -63,6 +63,8 @@ class Login extends BasicAdmin
         empty($user) && $this->error('登录账号不存在，请重新输入!');
         empty($user['status']) && $this->error('账号已经被禁用，请联系管理员!');
         $user['password'] !== md5($data['password']) && $this->error('登录密码错误，请重新输入!');
+        $res = $this->checkIp($user);
+        empty($res) && $this->error('IP限制，无权登录');
         // 更新登录信息
         Db::name('SystemUser')->where(['id' => $user['id']])->update([
             'login_at'  => Db::raw('now()'),
@@ -85,4 +87,37 @@ class Login extends BasicAdmin
         $this->success('退出登录成功！', '@admin/login');
     }
 
+    public function checkIp($user = [])
+    {
+        if (!$user['is_ip']) {
+            return true;
+        }
+        $ip = $this->request->ip();
+        if (empty(sysconf('ip'))) {
+            $allowed_ip = [];
+        } else {
+            $allowed_ip = explode(',', sysconf('ip'));
+        }
+        $check_ip_arr = explode('.', $ip); //要检测的ip拆分成数组  
+        if (!in_array($ip, $allowed_ip)) {
+            foreach ($allowed_ip as $val) {
+                $arr = explode('.', $val);
+                $bl = true; //用于记录循环检测中是否有匹配成功的 
+                for ($i = 0; $i < 4; $i++) {
+                    if ($arr[$i] != '*') { //不等于*  就要进来检测，如果为*符号替代符就不检查 
+                        if ($arr[$i] != $check_ip_arr[$i]) {
+                            $bl = false;
+                            break; //终止检查本个ip 继续检查下一个ip 
+                        }
+                    }
+                } //end for  
+                if ($bl) { //如果是true则找到有一个匹配成功的就返回 
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

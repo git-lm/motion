@@ -110,6 +110,15 @@
                             data-field="timer_music">上传图片</a>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Miitbeian<br><span class="nowrap color-desc">IP白名单</span>
+                    </label>
+                    <div class='col-sm-8'>
+                        <textarea type="text" name="ip" class="layui-textarea">{:sysconf('ip')}</textarea>
+                        <p class="help-block">动态IP填写前面两个地址其他用*号代替，多个用英文逗号隔开：192.168.*.*,127.0.0.*</p>
+                    </div>
+                </div>
                 <div class="hr-line-dashed"></div>
 
                 <div class="col-sm-4 col-sm-offset-2">
@@ -120,7 +129,7 @@
 
             </form>
         </div>
-        
+
     </div>
 </div>
 
