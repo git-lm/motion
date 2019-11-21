@@ -53,6 +53,10 @@ class ClassesPrivateModel extends Model
         }
 
         $orderProduct = OrderProductModel::getProductForMemberId($param['member_id']);
+        if (empty($orderProduct)) {
+            $this->error = '无购买信息不能上课';
+            return false;
+        }
         $classPrivate->class_id = $class['id'];
         $classPrivate->member_id = $param['member_id'];
         $classPrivate->product_id = $orderProduct['product_id'];

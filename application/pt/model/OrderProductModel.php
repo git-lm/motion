@@ -2,6 +2,7 @@
 
 namespace app\pt\model;
 
+use think\Db;
 use think\Model;
 
 class OrderProductModel extends Model
@@ -100,7 +101,22 @@ class OrderProductModel extends Model
      */
     public static function getProductForMemberId($member_id)
     {
-        $list = self::alias('op')->join('pt_order o', 'order_id = o.id')->field('o.id order_id ,op.id order_product_id, op.product_id')->where('o.order_status', 1)->where('o.pay_status', 1)->where('o.member_id', $member_id)->whereBetweenTimeField('begin_at', 'end_at')
+        $subQuery  = Db::table('pt_classes_private')
+            ->group('order_id')
+            ->where(['status' => 1])
+            ->where(['member_id' => $member_id])
+            ->field(['count(0) count', 'order_id', 'member_id', 'product_id'])
+            ->buildSql();
+        $list = self::alias('op')
+            ->join('pt_order o', 'order_id = o.id')
+            ->join([$subQuery => 't'], 't.order_id = o.id')
+            ->join('pt_product p', 'p.id = t.product_id ')
+            ->field('o.id order_id ,op.id order_product_id, op.product_id')
+            ->where('o.order_status', 1)
+            ->where('o.pay_status', 1)
+            ->where('o.member_id', $member_id)
+            ->where('t.count < p.number')
+            ->whereBetweenTimeField('begin_at', 'end_at')
             ->find();
         return $list;
     }
