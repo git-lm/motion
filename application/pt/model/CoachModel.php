@@ -86,14 +86,14 @@ class CoachModel extends Model
         $lists = $mm->where(function ($query) {
             $opm = new OrderProductModel();
             $subQuery  = Db::table('pt_classes_private')->group('order_id')->where(['status' => 1])->field(['count(0) count', 'order_id', 'member_id', 'product_id'])->buildSql();
-            $member_ids = $opm->join('pt_order o', 'o.id = order_id')
-                ->join([$subQuery => 't'], 't.order_id = o.id')
-                ->join('pt_product p',  'p.id = t.product_id')
+            $member_ids = $opm->join('pt_order o', 'o.id = order_id', 'left')
+                ->join([$subQuery => 't'], 't.order_id = o.id', 'left')
+                ->join('pt_product p',  'p.id = t.product_id', 'left')
                 ->where(array('o.order_status' => 1, 'o.pay_status' => 1))
                 ->where(array('coach_id' => $this->coach_id))
                 ->whereBetweenTimeField('begin_at', 'end_at')
                 ->where('t.count < p.number')
-                ->field('o.member_id')->fetchsql()->column('o.member_id');
+                ->field('o.member_id')->column('o.member_id');
             $query->whereIn('id', $member_ids);
         })->where('status', 1)->select();
         return $lists;

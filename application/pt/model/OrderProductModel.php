@@ -108,9 +108,9 @@ class OrderProductModel extends Model
             ->field(['count(0) count', 'order_id', 'member_id', 'product_id'])
             ->buildSql();
         $list = self::alias('op')
-            ->join('pt_order o', 'order_id = o.id')
-            ->join([$subQuery => 't'], 't.order_id = o.id')
-            ->join('pt_product p', 'p.id = t.product_id ')
+            ->join('pt_order o', 'order_id = o.id', 'left')
+            ->join([$subQuery => 't'], 't.order_id = o.id', 'left')
+            ->join('pt_product p', 'p.id = op.product_id ', 'left')
             ->field('o.id order_id ,op.id order_product_id, op.product_id')
             ->where('o.order_status', 1)
             ->where('o.pay_status', 1)
