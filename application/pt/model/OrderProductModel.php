@@ -115,7 +115,7 @@ class OrderProductModel extends Model
             ->where('o.order_status', 1)
             ->where('o.pay_status', 1)
             ->where('o.member_id', $member_id)
-            ->where('t.count < p.number')
+            ->where('t.count < p.number or t.count is null')
             ->whereBetweenTimeField('begin_at', 'end_at')
             ->find();
         return $list;

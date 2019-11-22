@@ -92,7 +92,7 @@ class CoachModel extends Model
                 ->where(array('o.order_status' => 1, 'o.pay_status' => 1))
                 ->where(array('coach_id' => $this->coach_id))
                 ->whereBetweenTimeField('begin_at', 'end_at')
-                ->where('t.count < p.number')
+                ->where('t.count < p.number or t.count is null')
                 ->field('o.member_id')->column('o.member_id');
             $query->whereIn('id', $member_ids);
         })->where('status', 1)->select();
