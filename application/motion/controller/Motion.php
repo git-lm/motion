@@ -4,6 +4,7 @@ namespace app\motion\controller;
 
 use controller\BasicAdmin;
 use app\motion\model\Motion as motionModel;
+use service\ToolsService;
 
 /**
  * 系统用户管理控制器
@@ -32,6 +33,8 @@ class Motion extends BasicAdmin
         $order['create_time'] = 'desc';
 
         $types = $typemodel->get_motion_types($where, $order);
+        $types = ToolsService::arr2tree((array) $types, 'id', 'parent_id');
+
         $this->assign('types', $types);
         return $this->fetch();
     }
@@ -74,6 +77,7 @@ class Motion extends BasicAdmin
     public function add()
     {
         $where[] = ['status', '<>', 0];
+        $where[] = ['parent_id', '<>', 0];
         $order['create_time'] = 'desc';
         //获取所有类型
         $motioType = new \app\motion\model\MotionType;
@@ -129,6 +133,7 @@ class Motion extends BasicAdmin
         //判断类型是否存在
         $list = $this->check_data($id);
         $where[] = ['status', '<>', 0];
+        $where[] = ['parent_id', '<>', 0];
         $order['create_time'] = 'desc';
         //获取所有类型
         $motioType = new \app\motion\model\MotionType;

@@ -22,7 +22,13 @@
             lay-verify="required" class="layui-select full-width block" name="mtid" lay-ignore="">
             <option value=""> - 请选择类型 -</option>
             <!--{volist name="types" id="type"}-->
-            <option value="{$type.id}">{$type.name}</option>
+            <optgroup label="{$type.name}">
+                <!-- {if(!empty($type.sub))} -->
+                <!--{volist name="type.sub" id="m"}-->
+                <option value="{$m.id}">{$m.name}</option>
+                <!--{/volist}-->
+                <!-- {/if} -->
+            </optgroup>
             <!--{/volist}-->
         </select>
     </div>
@@ -93,10 +99,11 @@
 </script>
 <script type="text/html" id="motionhandle">
       <!--{if auth("$classuri/edit")}-->
-    <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="id" data-title="编辑动作库" lay-event="open">编辑</a>
-    <!--{/if}-->
-      <!--{if auth("$classuri/del")}-->
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="id" lay-event="del">删除</a>
-    <!--{/if}-->
+<a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="id" data-title="编辑动作库"
+    lay-event="open">编辑</a>
+<!--{/if}-->
+<!--{if auth("$classuri/del")}-->
+<a class="layui-btn layui-btn-danger layui-btn-xs" data-action="{:url('del')}" data-field="id" lay-event="del">删除</a>
+<!--{/if}-->
 </script>
 {/block}

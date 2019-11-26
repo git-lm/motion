@@ -59,11 +59,13 @@ class MotionType extends BasicAdmin
         $where[] = ['parent_id', '=', 0];
         $order['sort'] = 'asc';
         $order['create_time'] = 'desc';
+        $parent_id = input('get.parent_id/d', 0);
         //获取所有菜单
         $lists = $this->motionTypeModel->get_motion_types($where, $order);
         //按级别获取菜单
         $types = $this->motionTypeModel->get_level_types($lists);
         $this->assign('types', $types);
+        $this->assign('parent_id', $parent_id);
         return $this->fetch();
     }
 

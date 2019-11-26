@@ -5,11 +5,12 @@
         <label class="layui-form-label">所属类型</label>
         <div class="layui-input-block">
             <select xm-select-search xm-select-search-type="dl" xm-select-radio xm-select-direction="down"
-                xm-select="add_type" required class="layui-select full-width block" lay-verify="required"
+                xm-select="add_type{:date('s')}" required class="layui-select full-width block" lay-verify="required"
                 name="parent_id" lay-ignore="">
-                <option selected="selected" value="0"> - 顶级类型 -</option>
+                <option {if($parent_id==0)}selected="selected" {/if} value="0"> - 顶级类型 -</option>
                 <!--{volist name="types" id="type"}-->
-                <option value="{$type.id}"> - {$type.name} -</option>
+                <option {if($type.id==$parent_id)}selected="selected" {/if} value="{$type.id}"> - {$type.name} -
+                </option>
                 <!--{/volist}-->
             </select>
         </div>
@@ -40,6 +41,6 @@
 </form>
 {block name="script"}
 <script>
-    formSelects.render('add_type');
+    formSelects.render('add_type{:date("s")}');
 </script>
 {/block}

@@ -69,7 +69,15 @@
     })
 </script>
 <script type="text/html" id="typehandle">
-      <!--{if auth("$classuri/edit")}-->
+    {{# if(d.parent_id == 0){ }}
+<!--{if auth("$classuri/edit")}-->
+<a class="layui-btn layui-btn-xs" data-action="{:url('add')}?parent_id={{d.id}}" data-field="tid" data-title="添加分类"
+    lay-event="open">添加分类</a>
+<!--{/if}-->
+{{#} else {}}
+<a class="layui-btn layui-btn-xs layui-btn-disabled">添加分类</a>
+{{#}}}
+<!--{if auth("$classuri/edit")}-->
 <a class="layui-btn layui-btn-xs" data-action="{:url('edit')}" data-field="tid" data-title="编辑类型"
     lay-event="open">编辑</a>
 <!--{/if}-->
