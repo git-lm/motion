@@ -5,6 +5,7 @@ namespace app\motion\controller;
 use controller\BasicAdmin;
 use app\motion\model\Member as memberModel;
 use app\motion\model\MemberData as memberDataModel;
+use app\motion\model\Template;
 use think\facade\Request;
 
 class Member extends BasicAdmin
@@ -482,11 +483,17 @@ class Member extends BasicAdmin
         $this->check_data($mid);
         if (request()->isGet()) {
             $this->assign('mid', $mid);
+            $template = Template::where(['status' => 1])->select();
+            $this->assign('template', $template);
             return $this->fetch();
         }
         $expire_time = request()->has('expire_time', 'post') ? request()->post('expire_time/s') : '';
         if (!$expire_time) {
             $this->error('请正确选择时间');
+        }
+        $template_id = input('post.template_id/d', 0);
+        if (!$template_id) {
+            $this->error('请正确选择模板');
         }
         if (isset($expire_time) && $expire_time !== '') {
             list($start, $end) = explode(' - ', $expire_time);
@@ -494,13 +501,7 @@ class Member extends BasicAdmin
         if (!$start || !$end) {
             $this->error('请正确选择时间');
         }
-        $where[] = ['is_system', '=', 1];
-        $where[] = ['m.status', '=', 1];
-        $systemMember = $this->memberModel->get_member($where);
-        if (empty($systemMember)) {
-            $this->error('无系统会员');
-        }
-        $code = $this->memberModel->initializeClass($mid,  $systemMember['id'], $start, $end);
+        $code = $this->memberModel->initializeClass($mid,  $template_id, $start, $end);
         if ($code) {
             $this->success('添加成功', '');
         } else {

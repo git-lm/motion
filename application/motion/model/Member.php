@@ -629,43 +629,48 @@ class Member extends Model
      * @param string $mid               要添加的会员
      * @param string $systemMid         系统会员
      * @param string $start             开始时间
-     * @param string $end               结束时间
+     * @param string $end               结束时间   144 871
      */
-    public function initializeClass($mid, $systemMid, $start, $end)
+    public function initializeClass($mid, $template_id, $start, $end)
     {
         $mwhere[] = ['m.id', '=', $mid];
         $member =   $this->get_member($mwhere);
         $lessonModel = new lessonModel();
-        $lwhere['l.m_id'] = $systemMid;
-        $lwhere['l.status'] = 1;
-        $lorder['class_time'] = 'asc';
-        $courses = $lessonModel->get_arrange_lists($lwhere, $lorder);
+        $template =  Template::where(['id' => $template_id])->with(['lesson.course'])->find();
+
         //计算时差
         $day = floor((strtotime($end) - strtotime($start)) / 86400);
         Db::startTrans();
         try {
             for ($i = 0; $i < $day; $i++) {
-                if (!empty($courses[$i])) {
-                    $littleWhere['l_id'] = ['=', $courses[$i]['id']];
-                    $littleWhere['status'] = ['=', 1];
-                    //获取计划详情
-                    $littleOrder['sort'] = 'asc';
-                    $littleOrder['create_time'] = 'desc';
-                    $littles = $lessonModel->get_little_courses($littleWhere, $littleOrder);
-                    //添加计划
-                    unset($courses[$i]['id']);
-                    $courses[$i]['create_time'] = time();
-                    $courses[$i]['m_id'] = $mid;
-                    $courses[$i]['coach_id'] = $member['c_id'];
-                    $courses[$i]['class_time'] = strtotime('+' . $i . ' day', strtotime($start));
-                    //获取自增ID
-                    $course_id = $lessonModel->add($courses[$i]);
-                    if (!empty($littles)) {
-                        foreach ($littles as $little) {
-                            unset($little['id']);
-                            $little['l_id'] = $course_id;
-                            $little['create_time'] = time();
-                            $lessonModel->little_add($little);
+                if (!empty($template['lesson'])) {
+                    $lesson = $template['lesson']->toArray();
+                    array_multisort(array_column($lesson, 'sort'), SORT_ASC, $lesson);
+                    if (!empty($lesson[$i])) {
+                        $courses['create_time'] = time();
+                        $courses['m_id'] = $mid;
+                        $courses['coach_id'] = $member['c_id'];
+                        $courses['class_time'] = strtotime('+' . $i . ' day', strtotime($start));
+                        $courses['name'] = $lesson[$i]['name'];
+                        $courses['warmup'] = $lesson[$i]['warmup'];
+                        $courses['warmup_mids'] = $lesson[$i]['warmup_mids'];
+                        $courses['colldown'] = $lesson[$i]['colldown'];
+                        $courses['colldown_mids'] = $lesson[$i]['colldown_mids'];
+                        //获取自增ID
+                        $course_id = $lessonModel->add($courses);
+                        if (!empty($lesson[$i]['course'])) {
+                            $lessonCourse = $lesson[$i]['course'];
+                            array_multisort(array_column($lessonCourse, 'sort'), SORT_ASC, $lessonCourse);
+                            foreach ($lessonCourse as $lc) {
+                                $little['name'] = $lc['name'];
+                                $little['m_ids'] = $lc['m_ids'];
+                                $little['remark'] = $lc['remark'];
+                                $little['num'] = $lc['num'];
+                                $little['sort'] = $lc['sort'];
+                                $little['l_id'] = $course_id;
+                                $little['create_time'] = time();
+                                $lessonModel->little_add($little);
+                            }
                         }
                     }
                 }

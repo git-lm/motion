@@ -13,6 +13,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use think\db;
 use think\facade\Request;
 use app\motion\model\MemberType;
+use app\motion\model\Template;
+use app\motion\model\TemplateLesson;
+use app\motion\model\TemplateCourse;
 
 class Lesson extends BasicAdmin
 {
@@ -1429,5 +1432,333 @@ class Lesson extends BasicAdmin
             $this->error('无此小动作');
         }
         return $list;
+    }
+    public function template()
+    {
+        $this->assign('title', '备课模板');
+        return $this->fetch();
+    }
+    public function getTemplate()
+    {
+        $query = Template::where(['status' => 1])->append(['createTimeStr']);
+        $res = $query->paginate(10, false);
+        $list = $res->getCollection();
+        $count = $res->total();
+        echo $this->tableReturn($list, $count);
+    }
+
+    /**
+     * 渲染新增窗口
+     */
+    public function templateAdd()
+    {
+        if ($this->request->isPost()) {
+            $param = input('post.');
+            $model = new Template();
+            $code = $model->save($param);
+            if ($code) {
+                $this->success('保存成功', '');
+            } else {
+                $this->error('保存失败');
+            }
+        }
+        return $this->fetch();
+    }
+
+    /**
+     * 编辑模板
+     */
+    public function templateEdit()
+    {
+        if ($this->request->isPost()) {
+            $param = input('post.');
+            $model = new Template();
+            $list = $model->where(['id' => $param['id']])->find();
+            $code = $list->save($param);
+            if ($code) {
+                $this->success('保存成功', '');
+            } else {
+                $this->error('保存失败');
+            }
+        }
+        $id = input('get.id/d', 0);
+        $model = new Template();
+        $list = $model->where(['id' => $id])->find();
+        $this->assign('list', $list);
+        return $this->fetch();
+    }
+
+    /**
+     * 编辑模板
+     */
+    public function templateDel()
+    {
+        //获取数据
+        $id = input('post.id/d', 0);
+        if (!$id) {
+            $this->error('请正确选择模板');
+        }
+        $model = new Template();
+        $list = $model->where(['id' => $id])->find();
+        if (empty($list)) {
+            $this->error('模板不存在');
+        }
+        $list->status = 0;
+        $code =  $list->save();
+        if ($code) {
+            $this->success('删除成功', '');
+        } else {
+            $this->error('删除失败');
+        }
+    }
+
+    /**
+     * 备课模板计划
+     */
+    public function templateLesson()
+    {
+        $id = input('get.id/d', 0);
+        $this->assign('title', '备案模板计划');
+        $this->assign('t_id', $id);
+        return $this->fetch();
+    }
+
+    public function getTemplateLesson()
+    {
+        $t_id = input('get.t_id/d', 0);
+        $data = input('get.');
+        $query = TemplateLesson::where(['status' => 1, 't_id' => $t_id])->append(['createTimeStr', 'warmupMidsStr', 'colldownMidsStr']);
+        $res = $query->paginate(10, false);
+        $list = $res->getCollection();
+        $count = $res->total();
+        echo $this->tableReturn($list, $count);
+    }
+
+    /**
+     * 渲染新增窗口
+     */
+    public function templateLessonAdd()
+    {
+        if ($this->request->isPost()) {
+            $param = input('post.');
+            $model = new TemplateLesson();
+            $code = $model->save($param);
+            if ($code) {
+                $this->success('保存成功', '');
+            } else {
+                $this->error('保存失败');
+            }
+        }
+        $t_id = input('get.t_id/d', 0);
+        $this->assign('t_id', $t_id);
+        //获取所有分组视频
+        $types = $this->motionModel->get_type_motions();
+        $this->assign('types', $types);
+        return $this->fetch();
+    }
+
+    /**
+     * 修改序号
+     */
+    public function templateLessonEditSort()
+    {
+        $id = input('post.id/d', 0);
+        $sort = input('post.sort/d', 0);
+        if (!$id) {
+            $this->error('请选择要编辑的动作');
+        }
+        if (!$sort && $sort != 0) {
+            $this->error('请填写序号');
+        }
+        $model = new TemplateLesson();
+        $list = $model->where(['id' => $id])->find();
+        $list->sort = $sort;
+        $code = $list->save();
+        if ($code) {
+            $this->success('编辑成功', '');
+        } else {
+            $this->error('编辑失败');
+        }
+    }
+
+    /**
+     * 编辑模板
+     */
+    public function templateLessonEdit()
+    {
+        if ($this->request->isPost()) {
+            $param = input('post.');
+            if (empty($param['title'])) {
+                $this->error('请填写模板名称');
+            }
+            $model = new TemplateLesson();
+            $list = $model->where(['id' => $param['id']])->find();
+            $code = $list->save($param);
+            if ($code) {
+                $this->success('保存成功', '');
+            } else {
+                $this->error('保存失败');
+            }
+        }
+        $id = input('get.id/d', 0);
+        $model = new TemplateLesson();
+        $list = $model->where(['id' => $id])->find();
+        $this->assign('list', $list);
+        //获取所有分组视频
+        $types = $this->motionModel->get_type_motions();
+        $this->assign('types', $types);
+        return $this->fetch();
+    }
+
+    /**
+     * 编辑模板
+     */
+    public function templateLessonDel()
+    {
+        //获取数据
+        $id = input('post.id/d', 0);
+        if (!$id) {
+            $this->error('请正确选择模板');
+        }
+        $model = new TemplateLesson();
+        $list = $model->where(['id' => $id])->find();
+        if (empty($list)) {
+            $this->error('模板不存在');
+        }
+        $list->status = 0;
+        $code =  $list->save();
+        if ($code) {
+            $this->success('删除成功', '');
+        } else {
+            $this->error('删除失败');
+        }
+    }
+
+    /**
+     * 模板详情
+     */
+    public function templateCourse()
+    {
+        $this->assign('title', '模板详情');
+        //排课ID
+        $id = input('get.id/d', 0);;
+        if (!$id) {
+            $this->error('请正确选择');
+        }
+        //判断排课是否存在
+        $this->assign('lid', $id);
+        return $this->fetch();
+    }
+
+    public function getTemplateCourse()
+    {
+        $data = input('get.');
+        $id = input('get.lid/d', 0);
+        $query = TemplateCourse::where(['status' => 1, 'l_id' => $id])->append(['createTimeStr', 'midsStr']);
+        $res = $query->paginate(10, false);
+        $list = $res->getCollection();
+        $count = $res->total();
+        echo $this->tableReturn($list, $count);
+    }
+    /**
+     * 添加小动作
+     */
+    public function templateCourseAdd()
+    {
+        if ($this->request->isPost()) {
+            $param = input('param.');
+            $model = new TemplateCourse();
+            $code = $model->save($param);
+            if ($code) {
+                $this->success('添加成功', '');
+            } else {
+                $this->error('添加失败');
+            }
+        }
+        //排课ID
+        $lid = input('get.lid/d', 0);;;
+        if (!$lid) {
+            $this->error('请正确选择');
+        }
+        $this->assign('lid', $lid);
+        //获取所有分组视频
+        $types = $this->motionModel->get_type_motions();
+        $this->assign('types', $types);
+        return $this->fetch();
+    }
+
+    /**
+     * 修改序号
+     */
+    public function templateCourseEditSort()
+    {
+        $id = input('post.id/d', 0);
+        $sort = input('post.sort/d', 0);
+        if (!$id) {
+            $this->error('请选择要编辑的动作');
+        }
+        if (!$sort && $sort != 0) {
+            $this->error('请填写序号');
+        }
+        $model = new TemplateCourse();
+        $list = $model->where(['id' => $id])->find();
+        $list->sort = $sort;
+        $code = $list->save();
+        if ($code) {
+            $this->success('编辑成功', '');
+        } else {
+            $this->error('编辑失败');
+        }
+    }
+
+    /**
+     * 修改序号
+     */
+    public function templateCourseEdit()
+    {
+        if ($this->request->isPost()) {
+            $param = input('post.');
+
+            $model = new TemplateCourse();
+            $list = $model->where(['id' => $param['id']])->find();
+            $code = $list->save($param);
+            if ($code) {
+                $this->success('保存成功', '');
+            } else {
+                $this->error('保存失败');
+            }
+        }
+        $id = input('get.id/d', 0);
+        $model = new TemplateCourse();
+        $list = $model->where(['id' => $id])->find();
+        $this->assign('list', $list);
+        //获取所有分组视频
+        $types = $this->motionModel->get_type_motions();
+        $this->assign('types', $types);
+        return $this->fetch();
+    }
+
+    /**
+     * 删除模板详情
+     */
+    public function templateCourseDel()
+    {
+        //获取数据
+        $id = input('post.id/d', 0);
+        if (!$id) {
+            $this->error('请正确选择模板详情');
+        }
+        $model = new TemplateCourse();
+        $list = $model->where(['id' => $id])->find();
+        if (empty($list)) {
+            $this->error('模板详情不存在');
+        }
+        $list->status = 0;
+        $code =  $list->save();
+        if ($code) {
+            $this->success('删除成功', '');
+        } else {
+            $this->error('删除失败');
+        }
     }
 }
